@@ -28,25 +28,65 @@ const durations = [
   { value: "1y", label: "فعال برای یک سال" },
 ];
 
+const warrantyPeriods = [
+  { value: "no-warranty", label: "بدون ضمانت" },
+  { value: "3months", label: "۳ ماه" },
+  { value: "6months", label: "۶ ماه" },
+  { value: "1year", label: "۱ سال" },
+  { value: "2years", label: "۲ سال" },
+  { value: "3years", label: "۳ سال" },
+  { value: "4years", label: "۴ سال" },
+  { value: "5years", label: "۵ سال" },
+];
+
+
 export default function CreateUserPage() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [warranty, setWarranty] = useState<string>("no-warranty");
   const [companyLogo, setCompanyLogo] = useState<File | null>(null);
   const [contractFile, setContractFile] = useState<File | null>(null);
   const [category, setCategory] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = () => {
+    if (password !== confirmPassword) {
+      setPasswordError("رمز عبور و تکرار آن مطابقت ندارند");
+      return false;
+    }
+    if (password.length < 6) {
+      setPasswordError("رمز عبور باید حداقل ۶ کاراکتر باشد");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validatePassword()) {
+      return;
+    }
+
     const formData = {
       firstName,
       lastName,
       phoneNumber,
+      email,
+      password,
+      address,
+      warranty,
       companyName,
       companyLogo,
       contractFile,
@@ -76,6 +116,7 @@ export default function CreateUserPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* اطلاعات شخصی */}
           <Input
             label="نام"
             value={firstName}
@@ -94,6 +135,7 @@ export default function CreateUserPage() {
 
           <Input
             label="شماره تماس"
+            type="number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="شماره تماس"
@@ -101,12 +143,64 @@ export default function CreateUserPage() {
           />
 
           <Input
+            label="ایمیل (اختیاری)"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="ایمیل"
+          />
+
+          {/* فیلدهای رمز عبور */}
+          <Input
+            label="رمز عبور"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="رمز عبور"
+            required
+            onBlur={validatePassword}
+          />
+
+          <Input
+            label="تکرار رمز عبور"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="تکرار رمز عبور"
+            required
+            onBlur={validatePassword}
+            error={passwordError}
+          />
+
+          {/* اطلاعات شرکت */}
+          <Input
             label="نام شرکت"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder="نام شرکت"
             required
           />
+
+          <div>
+            <label className="block text-sm font-medium mb-2">مدت ضمانت جنس</label>
+            <Select
+              options={warrantyPeriods}
+              value={warranty}
+              onChange={setWarranty}
+              placeholder="مدت ضمانت را انتخاب کنید"
+            />
+          </div>
+
+          {/* فیلد آدرس */}
+          <div className="md:col-span-2">
+            <Input
+              label="آدرس"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="آدرس کامل"
+              required
+            />
+          </div>
 
           <div>
             <label className="block text-sm font-medium mb-2">لگوی شرکت</label>
