@@ -30,7 +30,7 @@ export const Input = ({ label, error, icon, className, ...props }: InputProps) =
         />
 
       </div>
-      {error && <p className="text-xs text-error mt-1">{error}</p>}
+      {error && <p className="text-xs text-red-500 text-error mt-1">{error}</p>}
     </div>
   );
 };
