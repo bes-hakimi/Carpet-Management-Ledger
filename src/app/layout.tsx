@@ -1,10 +1,9 @@
-// ✅ app/layout.tsx
 import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { SyncProvider } from "@/offline/SyncProvider";
-import TopBar from "@/components/layout/topbar/TopBar";
 import ClientLayout from "@/components/layout/ClientLayout";
+import Providers from "./providers"; 
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -27,7 +26,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
@@ -36,9 +34,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className={`${vazirmatn.variable} font-sans antialiased bg-gray-50`}>
-        <SyncProvider />
-        <TopBar />
-        <ClientLayout>{children}</ClientLayout>
+        <Providers> 
+          <SyncProvider />
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
       </body>
     </html>
   );
