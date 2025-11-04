@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/layout/sidebar/Sidebar";
 import TopBar from "@/components/layout/topbar/TopBar";
 import MobileBottomBar from "@/components/layout/sidebar/MobileBottomBar";
+import { Toaster } from "react-hot-toast";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -19,7 +20,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {/* ✅ TopBar فقط اگر مسیر مجاز باشد */}
       {showTopBar && <TopBar />}
 
-      <div className={`flex flex-row-reverse flex-1 overflow-hidden ${showTopBar?"pt-[56px]" :""} `}>
+      <div className={`flex flex-row-reverse flex-1 overflow-hidden ${showTopBar ? "pt-[56px]" : ""} `}>
         {/* Sidebar فقط برای دسکتاپ */}
         {showTopBar && (
           <div className="fixed top-[56px] bottom-0 right-0 hidden sm:block z-10">
@@ -38,6 +39,31 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {/* 🔹 نوار پایین فقط برای موبایل */}
         {showTopBar && <MobileBottomBar />}
       </div>
+
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          // استایل کلی تمام toast ها
+          style: {
+            borderRadius: "8px",
+            padding: "8px",
+            fontSize: "14px",
+          },
+          success: {
+            style: {
+              background: "#14b8a6", // teal-500
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#ef4444", // قرمز Tailwind red-500
+              color: "white",
+            },
+          },
+          duration: 4000,
+        }}
+      />
     </div>
   );
 }

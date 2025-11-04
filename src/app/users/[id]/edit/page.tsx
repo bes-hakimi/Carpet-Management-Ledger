@@ -61,7 +61,7 @@ export default function EditUserPage() {
     updatedAt: ""
   });
   const [companyLogo, setCompanyLogo] = useState<File | null>(null);
-  const [contractFile, setContractFile] = useState<File | null>(null);
+  const [contractFileUrl, setContractFileUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // شبیه‌سازی دریافت داده از API
@@ -102,7 +102,7 @@ export default function EditUserPage() {
     const submitData = {
       ...formData,
       companyLogo,
-      contractFile
+      contractFileUrl
     };
     console.log("Data to update:", submitData);
     alert("اطلاعات کاربر با موفقیت به‌روزرسانی شد!");
@@ -153,7 +153,7 @@ export default function EditUserPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">اطلاعات اصلی</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
               label="نام"
@@ -191,7 +191,7 @@ export default function EditUserPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">فایل‌ها و مدارک</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium mb-3 text-gray-700">لگوی شرکت</label>
@@ -206,7 +206,7 @@ export default function EditUserPage() {
             <div>
               <label className="block text-sm font-medium mb-3 text-gray-700">فایل قرارداد</label>
               <FileUpload
-                onFileSelect={setContractFile}
+                onFileSelect={setContractFileUrl}
                 accept=".pdf,.doc,.docx"
                 label="آپلود قرارداد جدید"
                 maxSize={10}
@@ -218,7 +218,7 @@ export default function EditUserPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">تنظیمات فروشگاه</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Select
               label="کتگوری"
@@ -240,7 +240,7 @@ export default function EditUserPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">وضعیت حساب</h3>
-          
+
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div className="flex-1">
               <h4 className="font-medium text-gray-900">وضعیت حساب کاربری</h4>
@@ -261,7 +261,7 @@ export default function EditUserPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">توضیحات</h3>
-          
+
           <Textarea
             label="توضیحات کاربر"
             value={formData.description}

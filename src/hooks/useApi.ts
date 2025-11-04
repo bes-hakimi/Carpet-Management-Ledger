@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import apiClient from "@/lib/api/apiClient";
+import apiClient from "@/app/api/apiClient";
 import { ApiError } from "@/types/api/api";
 
 // ✅ Generic GET hook
