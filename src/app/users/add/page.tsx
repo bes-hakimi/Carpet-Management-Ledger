@@ -52,7 +52,8 @@ export default function CreateUserPage() {
   const [address, setAddress] = useState("");
   const [warranty, setWarranty] = useState<string>("no-warranty");
   const [companyLogo, setCompanyLogo] = useState<File | null>(null);
-  const [contractFile, setContractFile] = useState<File | null>(null);
+  const [contractFileUrl, setContractFileUrl] = useState<string | null>(null);
+
   const [category, setCategory] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [description, setDescription] = useState("");
@@ -89,7 +90,7 @@ export default function CreateUserPage() {
       warranty,
       companyName,
       companyLogo,
-      contractFile,
+      contractFileUrl,
       category,
       duration,
       description,
@@ -214,7 +215,7 @@ export default function CreateUserPage() {
           <div>
             <label className="block text-sm font-medium mb-2">فایل قرارداد</label>
             <FileUpload
-              onFileSelect={setContractFile}
+              onFileSelect={setContractFileUrl}
               accept=".pdf,.doc,.docx"
               label="فایل قرارداد را انتخاب کنید"
               maxSize={10}

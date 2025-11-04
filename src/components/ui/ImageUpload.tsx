@@ -3,6 +3,11 @@
 import { useState, useRef } from "react";
 import { Upload, Image, X, Eye } from "lucide-react";
 import { Modal } from "./Modal";
+import toast from "react-hot-toast";
+
+import { generateReactHelpers } from "@uploadthing/react";
+import type { OurFileRouter } from "@/app/api/uploadthing/route";
+import { UploadProgressBar } from "./UploadProgressBar";
 
 interface ImageUploadProps {
     onImageSelect: (file: File | null) => void;
@@ -19,29 +24,55 @@ export function ImageUpload({
     const [imagePreview, setImagePreview] = useState<string>("");
     const [isDragOver, setIsDragOver] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
+    const [uploadedUrl, setUploadedUrl] = useState<string>("");
+
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
-    const handleImageChange = (selectedImage: File | null) => {
-        if (selectedImage) {
-            if (!selectedImage.type.startsWith("image/")) {
-                alert("لطفاً فقط فایل تصویر انتخاب کنید");
-                return;
+    const [uploadProgress, setUploadProgress] = useState(0);
+
+    const { startUpload, isUploading } = useUploadThing("anyFile", {
+        onUploadProgress: (progress) => {
+            setUploadProgress(progress);
+        },
+    });
+
+    const handleImageChange = async (selectedImage: File | null) => {
+        if (!selectedImage) return;
+
+        if (!selectedImage.type.startsWith("image/")) {
+            toast.error("لطفاً فقط فایل تصویر انتخاب کنید");
+            return;
+        }
+
+        if (selectedImage.size > maxSize * 1024 * 1024) {
+            toast.error(`حجم عکس باید کمتر از ${maxSize} مگابایت باشد`);
+            return;
+        }
+
+        setImage(selectedImage);
+
+        const reader = new FileReader();
+        reader.onload = (e) => setImagePreview(e.target?.result as string);
+        reader.readAsDataURL(selectedImage);
+
+        setUploadedUrl("");
+        setUploadProgress(0);
+
+        try {
+            const res = await startUpload([selectedImage]);
+
+            if (res?.length) {
+                const fileUrl = res[0].ufsUrl;
+                setUploadedUrl(fileUrl);
+                onImageSelect(selectedImage);
+                toast.success("عکس با موفقیت آپلود شد!");
             }
-
-            if (selectedImage.size > maxSize * 1024 * 1024) {
-                alert(`حجم عکس باید کمتر از ${maxSize} مگابایت باشد`);
-                return;
-            }
-
-            setImage(selectedImage);
-            onImageSelect(selectedImage);
-
-            // ایجاد پیش‌نمایش
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setImagePreview(e.target?.result as string);
-            };
-            reader.readAsDataURL(selectedImage);
+        } catch (err) {
+            console.error(err);
+            toast.error("آپلود عکس با مشکل مواجه شد");
+            onImageSelect(null);
+            setUploadedUrl("");
         }
     };
 
@@ -105,7 +136,7 @@ export function ImageUpload({
                     }
         `}
             >
-                {imagePreview ? (
+                {uploadedUrl && imagePreview ? (
                     <div className="flex flex-col items-center space-y-2">
                         <div className="relative">
                             <img
@@ -128,9 +159,10 @@ export function ImageUpload({
                         <p className="text-xs text-gray-500">
                             {formatImageSize(image?.size)}
                         </p>
+
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center space-y-3">
+                    <div className="flex flex-col items-center justify-center space-y-2">
                         <Image size={48} className="text-gray-400" />
                         <div className="text-center">
                             <p className="text-sm font-medium text-gray-900">{label}</p>
@@ -140,12 +172,13 @@ export function ImageUpload({
                             <p className="text-xs text-gray-400 mt-1">
                                 حداکثر حجم: {maxSize}MB
                             </p>
+                            {isUploading && <UploadProgressBar progress={uploadProgress} />}
                         </div>
                     </div>
                 )}
             </div>
 
-            {image && (
+            {image && uploadedUrl && (
                 <div className="mt-2 flex items-center gap-3">
                     <button
                         type="button"
