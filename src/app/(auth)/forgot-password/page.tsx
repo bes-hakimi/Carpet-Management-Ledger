@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="h-full max-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 w-full max-w-md">
         <ForgotPasswordHeader step={step} />
         <ForgotPasswordForm
