@@ -10,7 +10,7 @@ import { UploadProgressBar } from "./UploadProgressBar";
 
 interface FileUploadProps {
   accept?: string;
-   onFileSelect: (fileUrl: string | null) => void; 
+  onFileSelect: (fileUrl: string | null) => void;
   label?: string;
   maxSize?: number; // in MB
 }
@@ -34,32 +34,32 @@ export function FileUpload({
 
 
   const handleFileChange = async (selectedFile: File | null) => {
-  if (!selectedFile) return;
+    if (!selectedFile) return;
 
-  if (selectedFile.size > maxSize * 1024 * 1024) {
-    toast.error(`حجم فایل باید کمتر از ${maxSize} مگابایت باشد`);
-    return;
-  }
-
-  setFile(selectedFile);
-  setUploadedUrl("");
-  setUploadProgress(0);
-
-  try {
-    const res = await startUpload([selectedFile]);
-
-    if (res?.length) {
-      const fileUrl = res[0].ufsUrl;
-      setUploadedUrl(fileUrl);
-      toast.success("فایل با موفقیت آپلود شد!");
-      onFileSelect(fileUrl); 
+    if (selectedFile.size > maxSize * 1024 * 1024) {
+      toast.error(`حجم فایل باید کمتر از ${maxSize} مگابایت باشد`);
+      return;
     }
-  } catch (err) {
-    console.error("Upload failed:", err);
-    toast.error("آپلود فایل با مشکل مواجه شد");
-    onFileSelect(null);
-  }
-};
+
+    setFile(selectedFile);
+    setUploadedUrl("");
+    setUploadProgress(0);
+
+    try {
+      const res = await startUpload([selectedFile]);
+
+      if (res?.length) {
+        const fileUrl = res[0].ufsUrl;
+        setUploadedUrl(fileUrl);
+        toast.success("فایل با موفقیت آپلود شد!");
+        onFileSelect(fileUrl);
+      }
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.error("آپلود فایل با مشکل مواجه شد");
+      onFileSelect(null);
+    }
+  };
 
 
 
@@ -134,11 +134,11 @@ export function FileUpload({
         <div className="flex flex-col items-center justify-center space-y-2">
           {getFileIcon()}
 
-          {uploadedUrl ? (
+          {uploadedUrl && file ? (
             <div className="text-center">
               <p className="text-sm font-medium text-gray-900">{file?.name}</p>
               <p className="text-xs text-gray-500 mt-1">
-                {formatFileSize(file!.size)}
+                {formatFileSize(file.size)}
               </p>
             </div>
           ) : (
