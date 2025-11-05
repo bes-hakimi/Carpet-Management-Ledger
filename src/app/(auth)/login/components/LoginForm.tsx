@@ -2,34 +2,31 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import PhoneInput from "./PhoneInput";
+import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
 interface LoginFormProps {
-    onSubmit: (phoneNumber: string, password: string) => void;
+    onSubmit: (email: string, password: string) => void;
     isLoading: boolean;
 }
 
 export default function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({
-        phoneNumber: "",
+        email: "",
         password: ""
     });
 
     const validateForm = () => {
-        const newErrors = {
-            phoneNumber: "",
-            password: ""
-        };
+        const newErrors = { email: "", password: "" };
 
-        if (!phoneNumber.trim()) {
-            newErrors.phoneNumber = "شماره تماس الزامی است";
-        } else if (!/^07\d{8}$/.test(phoneNumber)) {
-            newErrors.phoneNumber = "شماره تماس معتبر نیست";
+        if (!email.trim()) {
+            newErrors.email = "ایمیل الزامی است";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = "ایمیل معتبر نیست";
         }
 
         if (!password.trim()) {
@@ -39,15 +36,13 @@ export default function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         }
 
         setErrors(newErrors);
-        return !newErrors.phoneNumber && !newErrors.password;
+        return !newErrors.email && !newErrors.password;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!validateForm()) return;
-
-        onSubmit(phoneNumber, password);
+        onSubmit(email, password);
     };
 
     return (
@@ -58,10 +53,10 @@ export default function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
             onSubmit={handleSubmit}
             className="space-y-3 md:space-y-6"
         >
-            <PhoneInput
-                value={phoneNumber}
-                onChange={setPhoneNumber}
-                error={errors.phoneNumber}
+            <EmailInput
+                value={email}
+                onChange={setEmail}
+                error={errors.email}
             />
 
             <PasswordInput

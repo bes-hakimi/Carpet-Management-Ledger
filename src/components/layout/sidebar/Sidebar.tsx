@@ -1,10 +1,14 @@
-// components/layout/sidebar/Sidebar.tsx
 'use client';
 import clsx from 'clsx';
 import SidebarHeader from './SidebarHeader';
 import SidebarFooter from './SidebarFooter';
 import SidebarItem from './SidebarItem';
-import { sidebarMenu } from './SidebarMenuData';
+import { useAuth } from '@/hooks/useAuth'; // مسیر هوک خودتان
+
+// منوهای جدا برای هر نقش
+import { sidebarMenuSuperAdmin } from './sidebar-menu/SuperAdmin';
+import { sidebarMenuAdmin } from './sidebar-menu/Admin';
+import { sidebarMenuStaff } from './sidebar-menu/Staff';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -13,6 +17,20 @@ interface SidebarProps {
 
 const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const toggleCollapse = () => setCollapsed(!collapsed);
+
+  const { userData } = useAuth();
+  const role = userData?.user?.role || 'staff';
+  // type Role = 'superadmin' | 'admin' | 'staff';
+  // const role = 'staff' as Role;
+
+
+  // انتخاب منو بر اساس نقش
+  const sidebarMenu =
+    role === 'superadmin'
+      ? sidebarMenuSuperAdmin
+      : role === 'admin'
+        ? sidebarMenuAdmin
+        : sidebarMenuStaff;
 
   return (
     <aside

@@ -1,4 +1,5 @@
 export const USERS = {
+  login:"/accounts/login/",
   getAll: "/users",
   getOne: (id: number) => `/users/${id}`,
   create: "/users",
