@@ -1,8 +1,6 @@
-
-import LoginPage from "./(auth)/login/page";
+// app/page.tsx (Server Component)
+import ClientPageWrapper from '@/components/layout/ClientPageWrapper';
 
 export default function Home() {
-  return (
-   <LoginPage/>
-  );
+  return <ClientPageWrapper />;
 }

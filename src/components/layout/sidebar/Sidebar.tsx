@@ -1,9 +1,9 @@
-// components/layout/sidebar/Sidebar.tsx
 'use client';
 import clsx from 'clsx';
 import SidebarHeader from './SidebarHeader';
 import SidebarFooter from './SidebarFooter';
 import SidebarItem from './SidebarItem';
+import { useAuth } from '@/hooks/useAuth'; // مسیر هوک خودتان
 
 // منوهای جدا برای هر نقش
 import { sidebarMenuSuperAdmin } from './sidebar-menu/SuperAdmin';
@@ -18,16 +18,19 @@ interface SidebarProps {
 const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const toggleCollapse = () => setCollapsed(!collapsed);
 
-  // 🔹 نقش فعلاً به صورت دستی تنظیم می‌شود
-  const role = 'super_admin'; // بعداً از context یا API گرفته می‌شود
+  const { userData } = useAuth();
+  const role = userData?.user?.role || 'staff';
+  // type Role = 'superadmin' | 'admin' | 'staff';
+  // const role = 'staff' as Role;
 
-  // 🔹 انتخاب منو بر اساس نقش
+
+  // انتخاب منو بر اساس نقش
   const sidebarMenu =
-    role === 'super_admin'
+    role === 'superadmin'
       ? sidebarMenuSuperAdmin
       : role === 'admin'
-      ? sidebarMenuAdmin
-      : sidebarMenuStaff;
+        ? sidebarMenuAdmin
+        : sidebarMenuStaff;
 
   return (
     <aside
