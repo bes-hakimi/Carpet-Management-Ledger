@@ -19,7 +19,7 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const toggleCollapse = () => setCollapsed(!collapsed);
 
   const { userData } = useAuth();
-  const role = userData?.user?.role || 'staff';
+  const role = userData?.user?.role || 'superadmin';
   // type Role = 'superadmin' | 'admin' | 'staff';
   // const role = 'staff' as Role;
 
