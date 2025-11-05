@@ -2,7 +2,7 @@ export const USERS = {
   login:"/accounts/login/",
   getAll: "/users",
   getOne: (id: number) => `/users/${id}`,
-  create: "/users",
+  create: "/accounts/signup/",
   update: (id: number) => `/users/${id}`,
   delete: (id: number) => `/users/${id}`,
 };

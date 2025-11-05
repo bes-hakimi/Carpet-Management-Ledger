@@ -2,8 +2,8 @@ import axios from "axios";
 
 // ساخت instance
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  withCredentials: true,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: false,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -13,18 +13,27 @@ const apiClient = axios.create({
 // اضافه کردن توکن قبل از ارسال هر درخواست
 apiClient.interceptors.request.use(
   (config) => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("management-ledger");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const token = parsed?.access || parsed?.token || null;
 
-    if (token) {
-      config.headers = config.headers ?? {};
-      (config.headers as Record<string, string>).Authorization = `Bearer ${token}`;
+          if (token) {
+            config.headers = config.headers ?? {};
+            (config.headers as Record<string, string>).Authorization = `Bearer ${token}`;
+          }
+        } catch (error) {
+          console.error("Invalid token format in localStorage");
+        }
+      }
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
+
 
 // مدیریت پاسخ‌ها و خطاها
 apiClient.interceptors.response.use(

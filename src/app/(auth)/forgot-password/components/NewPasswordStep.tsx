@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import PasswordInput from "@/app/(auth)/login/components/PasswordInput";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 interface NewPasswordStepProps {
   onSubmit: (newPassword: string) => void;

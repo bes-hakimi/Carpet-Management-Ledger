@@ -10,9 +10,9 @@ import type { OurFileRouter } from "@/app/api/uploadthing/route";
 import { UploadProgressBar } from "./UploadProgressBar";
 
 interface ImageUploadProps {
-    onImageSelect: (file: File | null) => void;
+    onImageSelect: (url: string | null) => void;
     label?: string;
-    maxSize?: number; // in MB
+    maxSize?: number;
 }
 
 export function ImageUpload({
@@ -65,7 +65,7 @@ export function ImageUpload({
             if (res?.length) {
                 const fileUrl = res[0].ufsUrl;
                 setUploadedUrl(fileUrl);
-                onImageSelect(selectedImage);
+                onImageSelect(fileUrl);
                 toast.success("عکس با موفقیت آپلود شد!");
             }
         } catch (err) {
@@ -96,11 +96,10 @@ export function ImageUpload({
     const removeImage = () => {
         setImage(null);
         setImagePreview("");
-        onImageSelect(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
+        setUploadedUrl("");
+        onImageSelect(null); 
     };
+
 
     const formatImageSize = (bytes?: number) => {
         if (!bytes) return "0 Bytes";

@@ -38,7 +38,7 @@ export default function PasswordInput({
       <label className="text-sm font-medium text-gray-600">{label}</label>
       <div className="relative">
         <Input
-          type={showPassword ? "text" : "password"} // اینجا تصحیح شد
+          type={showPassword ? "text" : "password"} 
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
