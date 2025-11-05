@@ -94,7 +94,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             if (loading) {
                 return (
                     <>
-                        <Loader2 className={`${iconSizes[size]} animate-spin`} />
+                        <Loader2 className={`${iconSizes[size]} animate-spin ml-1`} />
                         {loadingText && <span>{loadingText}</span>}
                     </>
                 );
