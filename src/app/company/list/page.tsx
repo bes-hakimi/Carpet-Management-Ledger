@@ -1,7 +1,7 @@
 // src/app/companies/page.tsx
 "use client";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { UserTable } from "../components/UserTable";
+import { CompanyTable } from "../components/CompanyTable";
 import { useRouter } from "next/navigation";
 
 // تعریف interface برای Company
@@ -46,12 +46,12 @@ export default function CompaniesPage() {
 
   const handleView = (company: Company) => {
     console.log("View company:", company);
-    router.push(`/users/${company.id}/details`);
+    router.push(`/company/${company.id}/details`);
   };
 
   const handleEdit = (company: Company) => {
     console.log("Edit company:", company);
-    router.push(`/users/${company.id}/edit`);
+    router.push(`/company/${company.id}/edit`);
   };
 
   const handleDelete = (company: Company) => {
@@ -69,7 +69,7 @@ export default function CompaniesPage() {
         showHomeIcon={true}
       />
 
-      <UserTable
+      <CompanyTable
         companies={mockCompanies}
         onView={handleView}
         onEdit={handleEdit}
