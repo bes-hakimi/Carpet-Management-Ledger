@@ -1,15 +1,9 @@
 export const USERS = {
-  login:"/accounts/login/",
-  getAll: "/users",
-  getOne: (id: number) => `/users/${id}`,
+  login: "/accounts/login/",
+  getAll: "/accounts/company/list/",
+  details: (id: number) => `/accounts/user/details/${id}`,
   create: "/accounts/signup/",
-  update: (id: number) => `/users/${id}`,
-  delete: (id: number) => `/users/${id}`,
+  update: (id: number) => `/accounts/user/update/${id}`,
+  delete: (id: number) => `/accounts/user/delete/${id}`,
 };
 
-// Optional: types
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}

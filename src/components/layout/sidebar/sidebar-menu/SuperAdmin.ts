@@ -55,6 +55,14 @@ export const sidebarMenuSuperAdmin = [
     ],
   },
   {
+    title: "کارمندان",
+    icon: Users,
+    submenu: [
+      { title: "افزودن کارمند", icon: UserPlus, link: "/staff/create" },
+      { title: "لیست کارمندان", icon: List, link: "/staff/list" },
+    ],
+  },
+  {
     title: "شرکت‌ها",
     icon: Building,
     submenu: [

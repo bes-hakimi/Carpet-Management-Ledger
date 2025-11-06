@@ -1,10 +1,9 @@
 // src/components/ui/ImageUpload.tsx
 "use client";
 import { useState, useRef } from "react";
-import { Upload, Image, X, Eye } from "lucide-react";
+import { Upload, Image, X, Eye, AlertCircle } from "lucide-react";
 import { Modal } from "./Modal";
 import toast from "react-hot-toast";
-
 import { generateReactHelpers } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/route";
 import { UploadProgressBar } from "./UploadProgressBar";
@@ -13,24 +12,24 @@ interface ImageUploadProps {
     onImageSelect: (url: string | null) => void;
     label?: string;
     maxSize?: number;
+    error?: string | null; // 👈 خطای ارسالی از والد
 }
 
 export function ImageUpload({
     onImageSelect,
     label = "انتخاب عکس",
-    maxSize = 5
+    maxSize = 5,
+    error = null, // 👈 مقدار پیش‌فرض
 }: ImageUploadProps) {
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>("");
     const [isDragOver, setIsDragOver] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [uploadedUrl, setUploadedUrl] = useState<string>("");
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { useUploadThing } = generateReactHelpers<OurFileRouter>();
-
-    const [uploadProgress, setUploadProgress] = useState(0);
-
     const { startUpload, isUploading } = useUploadThing("anyFile", {
         onUploadProgress: (progress) => {
             setUploadProgress(progress);
@@ -83,23 +82,12 @@ export function ImageUpload({
         handleImageChange(droppedFile);
     };
 
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragOver(true);
-    };
-
-    const handleDragLeave = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragOver(false);
-    };
-
     const removeImage = () => {
         setImage(null);
         setImagePreview("");
         setUploadedUrl("");
-        onImageSelect(null); 
+        onImageSelect(null);
     };
-
 
     const formatImageSize = (bytes?: number) => {
         if (!bytes) return "0 Bytes";
@@ -108,7 +96,6 @@ export function ImageUpload({
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
-
 
     return (
         <div className="w-full">
@@ -123,16 +110,16 @@ export function ImageUpload({
             <div
                 onClick={() => fileInputRef.current?.click()}
                 onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                className={`
-          border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 h-40
+                onDragOver={(e) => e.preventDefault()}
+                onDragLeave={(e) => e.preventDefault()}
+                className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 h-40
           ${isDragOver
                         ? "border-teal-500 bg-teal-50"
                         : image
                             ? "border-teal-500 bg-teal-50"
                             : "border-gray-300 bg-gray-50 hover:border-teal-400 hover:bg-teal-50"
-                    }
+                    } 
+          ${error ? "border-red-400 bg-red-50" : ""}
         `}
             >
                 {uploadedUrl && imagePreview ? (
@@ -155,34 +142,36 @@ export function ImageUpload({
                             </button>
                         </div>
                         <p className="text-sm font-medium text-gray-900">{image?.name}</p>
-                        <p className="text-xs text-gray-500">
-                            {formatImageSize(image?.size)}
-                        </p>
-
+                        <p className="text-xs text-gray-500">{formatImageSize(image?.size)}</p>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                        <Image size={48} className="text-gray-400" />
-                        <div className="text-center">
+                    <div className="flex items-center justify-center">
+                        <div className="w-fit flex flex-col items-center">
+                            <Image size={48} className="text-gray-400" />
                             <p className="text-sm font-medium text-gray-900">{label}</p>
                             <p className="text-xs text-gray-500 mt-1">
                                 عکس را اینجا رها کنید یا برای انتخاب کلیک کنید
                             </p>
-                            <p className="text-xs text-gray-400 mt-1">
-                                حداکثر حجم: {maxSize}MB
-                            </p>
+                            <p className="text-xs text-gray-400 mt-1">حداکثر حجم: {maxSize}MB</p>
                             {isUploading && <UploadProgressBar progress={uploadProgress} />}
                         </div>
                     </div>
                 )}
             </div>
 
+            {error && (
+                <div className="mt-2 flex items-center gap-1 text-xs text-red-500">
+                    <AlertCircle size={14} />
+                    <span>{error}</span>
+                </div>
+            )}
+
             {image && uploadedUrl && (
                 <div className="mt-2 flex items-center gap-3">
                     <button
                         type="button"
                         onClick={removeImage}
-                        className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 hover:cursor-pointer transition-colors "
+                        className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 transition-colors"
                     >
                         <X size={16} />
                         حذف عکس
@@ -190,7 +179,6 @@ export function ImageUpload({
                 </div>
             )}
 
-            {/* ✅ استفاده از Modal سفارشی برای پیش‌نمایش عکس */}
             <Modal open={showPreview} onClose={() => setShowPreview(false)} size="lg">
                 <img
                     src={imagePreview}
@@ -198,7 +186,6 @@ export function ImageUpload({
                     className="w-full h-auto max-h-[80vh] object-cover rounded-lg"
                 />
             </Modal>
-
         </div>
     );
 }

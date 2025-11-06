@@ -14,16 +14,16 @@ import toast, { Toaster } from "react-hot-toast";
 import { useApiPost } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { categories, durations, warrantyPeriods } from "../constants/userOptions";
+import PasswordInput from "@/components/ui/PasswordInput";
 
-export default function CreateUserPage() {
+export default function CreateCompanyPage() {
   const router = useRouter();
-
   const { mutate: createUser, isPending } = useApiPost(USERS.create);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("+93");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,55 +35,130 @@ export default function CreateUserPage() {
   const [duration, setDuration] = useState<string>("");
   const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState(true);
-  const [passwordError, setPasswordError] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validatePassword = () => {
-    if (password !== confirmPassword) {
-      setPasswordError("رمز عبور و تکرار آن مطابقت ندارند");
-      return false;
+  // ✅ اعتبارسنجی فرم
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!firstName.trim()) newErrors.firstName = "نام الزامی است";
+    if (!lastName.trim()) newErrors.lastName = "نام خانوادگی الزامی است";
+    if (!companyName.trim()) newErrors.companyName = "نام شرکت الزامی است";
+
+    // شماره باید یا فرمت محلی 07xxxxxxxx یا بین‌المللی +937xxxxxxxx باشد
+    const phoneLocalRegex = /^07\d{8}$/;      // مثال: 0700123456
+    const phoneIntlRegex = /^\+937\d{8}$/;   // مثال: +93700123456
+    if (!phoneLocalRegex.test(phoneNumber) && !phoneIntlRegex.test(phoneNumber)) {
+      newErrors.phoneNumber = "لطفاً شماره تماس با فرمت افغانستان وارد کنید";
     }
-    if (password.length < 6) {
-      setPasswordError("رمز عبور باید حداقل ۶ کاراکتر باشد");
-      return false;
-    }
-    setPasswordError("");
-    return true;
+
+    if (!email.trim()) newErrors.email = "ایمیل الزامی است";
+    if (!password.trim()) newErrors.password = "رمز عبور الزامی است";
+    if (!confirmPassword.trim()) newErrors.confirmPassword = "تکرار رمز عبور الزامی است";
+    if (!address.trim()) newErrors.address = "آدرس الزامی است";
+    if (!category.trim()) newErrors.category = "کتگوری الزامی است";
+    if (!duration.trim()) newErrors.duration = "مدت فعال بودن الزامی است";
+
+    // لوگو و قرارداد نباید خالی باشند
+    if (!companyLogo) newErrors.companyLogo = "لوگو شرکت الزامی است";
+    if (!contractFileUrl) newErrors.contract = "فایل قرارداد الزامی است";
+
+    if (password && confirmPassword && password !== confirmPassword)
+      newErrors.confirmPassword = "رمز عبور و تکرار آن مطابقت ندارند";
+    if (password && password.length < 6)
+      newErrors.password = "رمز عبور باید حداقل ۶ کاراکتر باشد";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
+  // helper برای نگاشت خطای API به errors state
+  const handleApiErrors = (data: any) => {
+    // data معمولاً شبیه { "email": ["..."], "role": ["..."] }
+    if (!data || typeof data !== "object") return;
+    const apiErrors: Record<string, string> = {};
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        apiErrors[key] = value.join(" ");
+      } else if (typeof value === "string") {
+        apiErrors[key] = value;
+      } else {
+        apiErrors[key] = JSON.stringify(value);
+      }
+    });
+    // ادغام با خطاهای محلی (در صورت وجود)
+    setErrors(prev => ({ ...prev, ...apiErrors }));
+  };
+
+  // ✅ ارسال فرم
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validatePassword()) return;
+    setErrors({}); // پاک‌سازی خطاهای قدیمی
+
+    if (!validateForm()) return;
+
+    // نرمالایز شماره به فرمت بین‌المللی +93...
+    let normalizedPhone = phoneNumber;
+    const phoneLocalRegex = /^07(\d{8})$/;
+    if (phoneLocalRegex.test(phoneNumber)) {
+      normalizedPhone = phoneNumber; // 0791929394
+    } else {
+      // +93791929394 → 93791929394
+      normalizedPhone = phoneNumber.replace("+", "");
+    }
+
+    const phoneNumberAsNumber = Number(normalizedPhone);
 
     const payload = {
-      email: email,
+      email,
       first_name: firstName,
       last_name: lastName,
-      password: password,
+      password,
       role: "admin",
-      phone: Number(phoneNumber),
-      category: category,
+      phone: phoneNumberAsNumber,
+      category,
       company_name: companyName,
       company_logo: companyLogo || "",
       contract: contractFileUrl || "",
       time_of_active: duration,
       status: isActive,
-      reson_of_status: warranty,
+      warranty: warranty,
       address,
       description,
     };
+
+    console.log("Submitting payload:", payload);
+
     createUser(payload, {
       onSuccess: () => {
         toast.success(`شرکت ${companyName} با موفقیت ایجاد شد`);
         router.push("/company/list");
       },
       onError: (error: any) => {
-        console.log("Error creating user:", error);
-        toast.error(
-          error?.response?.data?.message ||
-          "مشکلی در ارسال اطلاعات به سرور رخ داد"
-        );
+        console.error("API Error:", error);
+
+        // داده‌های خطای API
+        const data = error?.response?.data ?? error?.data ?? null;
+
+        if (data && typeof data === "object") {
+          // mapping به فرم
+          handleApiErrors(data);
+
+          // نمایش toast برای هر پیام موجود
+          Object.entries(data).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              value.forEach(msg => toast.error(msg));
+            } else if (typeof value === "string") {
+              toast.error(value);
+            }
+          });
+
+        } else {
+          toast.error("مشکلی در ارسال اطلاعات به سرور رخ داد");
+        }
       },
     });
+
   };
 
   const handleCancel = () => {
@@ -94,59 +169,150 @@ export default function CreateUserPage() {
 
   return (
     <div className="w-full">
-      <Toaster position="top-right" reverseOrder={false} />
-
-      <PageHeader
-        title="ایجاد شرکت"
-        showHomeIcon
-        description="اطلاعات شرکت را در فرم زیر وارد کنید"
-      />
+      <PageHeader title="ایجاد شرکت" showHomeIcon description="اطلاعات شرکت را در فرم زیر وارد کنید" />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input label="نام" placeholder="نام" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-          <Input label="نام خانوادگی" placeholder="نام خانوادگی" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-          <Input label="شماره تماس" placeholder="شماره تماس" type="number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
-          <Input label="ایمیل" placeholder="ایمل" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <Input label="رمز عبور" placeholder="رمز عبور" type="password" value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} required />
-          <Input label="تکرار رمز عبور" placeholder="تکرار رمز عبور" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onBlur={validatePassword} error={passwordError} required />
-          <Input label="نام شرکت" placeholder="نام شرکت" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
-          <Select label="مدت ضمانت اجناس" placeholder="مدت ضمانت را انتخاب کنید" options={warrantyPeriods} value={warranty} onChange={setWarranty} />
+          <Input
+            label="نام"
+            placeholder="نام مدیر شرکت را وارد کنید"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            error={errors.firstName}
+          />
+
+          <Input
+            label="نام خانوادگی"
+            placeholder="نام خانوادگی مدیر شرکت"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            error={errors.lastName}
+          />
+
+          <Input
+            label="شماره تماس"
+            type="text"
+            placeholder="شماره تماس با فرمت افغانستان"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            error={errors.phoneNumber}
+          />
+
+          <Input
+            label="ایمیل"
+            type="email"
+            placeholder="example@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={errors.email}
+          />
+
+          <PasswordInput
+            label="رمز عبور"
+            value={password}
+            onChange={setPassword}
+            error={errors.password}
+            animated={false}
+            placeholder="رمز عبور خود را وارد کنید"
+          />
+
+          <PasswordInput
+            label="تکرار رمز عبور"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            animated={false}
+            error={errors.confirmPassword}
+            placeholder="رمز عبور را دوباره وارد کنید"
+          />
+
+          <Input
+            label="نام شرکت"
+            placeholder="مثلاً: شرکت سپهر تجارت"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+            error={errors.companyName}
+          />
+
+          <Select
+            label="مدت ضمانت اجناس"
+            options={warrantyPeriods}
+            value={warranty}
+            onChange={setWarranty}
+            placeholder="انتخاب مدت ضمانت"
+          />
 
           <div className="md:col-span-2">
-            <Input label="آدرس" value={address} onChange={(e) => setAddress(e.target.value)} required />
+            <Input
+              label="آدرس"
+              placeholder="آدرس دقیق شرکت را وارد کنید"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              error={errors.address}
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">لوگو شرکت</label>
-            <ImageUpload onImageSelect={setCompanyLogo} label="انتخاب لوگو" maxSize={2} />
+            <ImageUpload
+              onImageSelect={setCompanyLogo}
+              label="انتخاب لوگو"
+              maxSize={2}
+              error={errors.companyLogo} // ارسال خطا به خود کامپوننت
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">فایل قرارداد</label>
-            <FileUpload onFileSelect={setContractFileUrl} accept=".pdf,.doc,.docx" label="انتخاب فایل قرارداد" maxSize={10} />
+            <FileUpload
+              onFileSelect={setContractFileUrl}
+              accept=".pdf,.doc,.docx"
+              label="انتخاب فایل قرارداد"
+              maxSize={10}
+              error={errors.contract} // ارسال خطا به خود کامپوننت
+            />
           </div>
 
-          <Select label="کتگوری" placeholder="انتخاب کتگوری" options={categories} value={category} onChange={setCategory} />
-          <Select label="مدت فعال بودن" placeholder="مدت فعال بودن شرکت" options={durations} value={duration} onChange={setDuration} />
+          <Select
+            label="کتگوری"
+            options={categories}
+            value={category}
+            onChange={setCategory}
+            placeholder="انتخاب نوع فعالیت شرکت"
+            error={errors.category}
+          />
+
+          <Select
+            label="مدت فعال بودن"
+            options={durations}
+            value={duration}
+            onChange={setDuration}
+            placeholder="انتخاب مدت فعال بودن حساب"
+            error={errors.duration}
+          />
 
           <div className="md:col-span-2 bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium text-gray-900">وضعیت حساب شرکت</h4>
-                <p className="text-sm text-gray-600 mt-1">{isActive ? "حساب شرکت فعال است و می‌تواند از سیستم استفاده کند" : "حساب شرکت غیرفعال است و دسترسی ندارد"}</p>
+                <p className="text-sm text-gray-600 mt-1">{isActive ? "حساب شرکت فعال است" : "حساب شرکت غیرفعال است"}</p>
               </div>
               <Switch size="md" checked={isActive} onChange={setIsActive} />
             </div>
           </div>
         </div>
 
-        <Textarea value={description} onChange={setDescription} placeholder="توضیحات شرکت" rows={4} />
+        <Textarea
+          label="توضیحات"
+          value={description}
+          onChange={setDescription}
+          placeholder="توضیحات تکمیلی در مورد شرکت"
+          rows={4}
+        />
 
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
           <CancelButton onClick={handleCancel}>انصراف</CancelButton>
-          <SaveButton type="submit" disabled={isPending}>
-            {isPending ? "در حال ارسال..." : "ایجاد شرکت"}
+          <SaveButton type="submit" loading={isPending}>
+            ایجاد شرکت
           </SaveButton>
         </div>
       </form>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { PageHeader } from "@/components/ui/PageHeader";
-import { CompanyTable } from "../components/CompanyTable";
+import { StaffTable } from "../components/StaffTable";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 
 import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
@@ -18,8 +18,6 @@ interface Company {
   name: string;
   category: string;
   owner: string;
-  email: string;
-  phone: string;
   status: "active" | "inactive";
   createdAt: string;
 }
@@ -31,8 +29,6 @@ interface ApiCompany {
   category: string;
   first_name: string;
   last_name: string;
-  email: string;
-  phone: string;
   status: boolean;
   date_joined: string;
 }
@@ -53,14 +49,14 @@ export default function CompaniesListPage() {
   // ✅ حذف داینامیک
   const deleteCompanyMutation = useApiDeleteDynamic<void>();
 
+
+
   // ✅ تبدیل داده API به تایپ Company
   const companies: Company[] = apiCompanies.map(item => ({
     id: item.id.toString(),
     name: item.company_name,
     category: item.category,
     owner: `${item.first_name} ${item.last_name}`,
-    email: item.email,
-    phone: item.phone,
     status: item.status ? "active" : "inactive",
     createdAt: item.date_joined,
   }));
@@ -98,11 +94,13 @@ export default function CompaniesListPage() {
 
   // بستن modal
   const handleCloseModal = () => {
-    if (deleteCompanyMutation.status !== "pending") {
+    if (deleteCompanyMutation.status !== 'pending') {
       setIsModalOpen(false);
       setSelectedCompany(null);
     }
   };
+
+
 
   // ===========================
   // رندر صفحه
@@ -119,7 +117,7 @@ export default function CompaniesListPage() {
         showHomeIcon
       />
 
-      <CompanyTable
+      <StaffTable
         companies={companies}
         onView={handleView}
         onEdit={handleEdit}
@@ -133,9 +131,11 @@ export default function CompaniesListPage() {
         itemName={selectedCompany?.name}
         confirmText="حذف"
         cancelText="لغو"
-        isLoading={deleteCompanyMutation.status === "pending"}
+        isLoading={deleteCompanyMutation.status === 'pending'}
         type="danger"
       />
+
+
     </div>
   );
 }

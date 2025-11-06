@@ -24,6 +24,8 @@ interface BranchTableProps {
 }
 
 export function BranchTable({ branches, onView, onEdit, onDelete }: BranchTableProps) {
+
+  console.log("Rendering BranchTable with branches:", branches);
   const columns = [
   {
     key: "branchName" as const,
@@ -35,7 +37,7 @@ export function BranchTable({ branches, onView, onEdit, onDelete }: BranchTableP
           <Building size={20} className="text-white" />
         </div>
         <div>
-          <div className="font-medium text-gray-900">{value as string}</div>
+          <div className="font-medium text-gray-900 text-nowrap">{value as string}</div>
           <div className="text-xs text-gray-500">ID: {row.id}</div>
         </div>
       </div>
