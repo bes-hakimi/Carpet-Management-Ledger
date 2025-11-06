@@ -11,6 +11,8 @@ import {
   Wallet,
   Building2,
   MapPinPlus,
+  Users,
+  UserPlus,
 } from "lucide-react";
 
 export const sidebarMenuAdmin = [
@@ -49,6 +51,14 @@ export const sidebarMenuAdmin = [
     submenu: [
       { title: "افزودن شعبه", icon: MapPinPlus, link: "/branch/create" },
       { title: "لیست شعبات", icon: List, link: "/branch/list" },
+    ],
+  },
+  {
+    title: "کارمندان",
+    icon: Users,
+    submenu: [
+      { title: "افزودن کارمند", icon: UserPlus, link: "/staff/create" },
+      { title: "لیست کارمندان", icon: List, link: "/staff/list" },
     ],
   },
   {

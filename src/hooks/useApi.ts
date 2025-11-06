@@ -42,14 +42,19 @@ export function useApiPatch<T, U>(url: string) {
   });
 }
 
-// ✅ Generic DELETE hook
-export function useApiDelete<T>(url: string) {
+// src/hooks/useApi.ts
+export function useApiDeleteDynamic<T>() {
   const queryClient = useQueryClient();
-  return useMutation<T, ApiError, void>({
-    mutationFn: async () => {
+
+  const mutation = useMutation<T, ApiError, string>({
+    mutationFn: async (url: string) => {
       const res = await apiClient.delete<T>(url);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries(),
   });
+
+  return mutation; 
 }
+
+

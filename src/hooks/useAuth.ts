@@ -39,7 +39,7 @@ export function useAuth() {
       const expired = new Date().getTime() > parsed.expiresAt;
       setIsExpired(expired);
 
-      setUserData(parsed); // داده‌ها را نگه می‌داریم، فقط وضعیت expired مشخص می‌شود
+      setUserData(parsed); 
     } catch (error) {
       console.error("Failed to parse stored user data:", error);
       localStorage.removeItem("management-ledger");
@@ -68,6 +68,8 @@ export function useAuth() {
   };
 
   const isLoggedIn = !!userData && !isExpired;
+  const token = userData?.access || userData?.token || null;
+
 
   return {
     userData,
@@ -75,5 +77,6 @@ export function useAuth() {
     logout,
     isLoggedIn,
     isExpired,
+    token,
   };
 }

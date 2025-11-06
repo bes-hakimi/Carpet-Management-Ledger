@@ -1,25 +1,26 @@
 // src/components/ui/FileUpload.tsx
 "use client";
 import { useState, useRef } from "react";
-import { Upload, File, Image, X } from "lucide-react";
+import { Upload, File, Image, X, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateReactHelpers } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/route";
 import { UploadProgressBar } from "./UploadProgressBar";
-
 
 interface FileUploadProps {
   accept?: string;
   onFileSelect: (fileUrl: string | null) => void;
   label?: string;
   maxSize?: number; // in MB
+  error?: string | null; // 👈 اضافه شد
 }
 
 export function FileUpload({
   accept = "*/*",
   onFileSelect,
   label = "انتخاب فایل",
-  maxSize = 10
+  maxSize = 10,
+  error = null, // 👈 مقدار پیش‌فرض
 }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -30,8 +31,6 @@ export function FileUpload({
   const { startUpload, isUploading } = useUploadThing("anyFile", {
     onUploadProgress: (progress) => setUploadProgress(progress),
   });
-
-
 
   const handleFileChange = async (selectedFile: File | null) => {
     if (!selectedFile) return;
@@ -61,8 +60,6 @@ export function FileUpload({
     }
   };
 
-
-
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
@@ -90,11 +87,9 @@ export function FileUpload({
 
   const getFileIcon = () => {
     if (!file) return <Upload size={48} className="text-gray-400" />;
-
     if (file.type.startsWith("image/")) {
       return <Image size={48} className="text-teal-500" />;
     }
-
     return <File size={48} className="text-teal-500" />;
   };
 
@@ -127,8 +122,8 @@ export function FileUpload({
             ? "border-teal-500 bg-teal-50"
             : file
               ? "border-teal-500 bg-teal-50"
-              : "border-gray-300 bg-gray-50 hover:border-teal-400 hover:bg-teal-50"
-          }
+              : "border-gray-300 bg-gray-50 hover:border-teal-400 hover:bg-teal-50"}
+          ${error ? "border-red-400 bg-red-50" : ""}
         `}
       >
         <div className="flex flex-col items-center justify-center space-y-2">
@@ -150,13 +145,19 @@ export function FileUpload({
               <p className="text-xs text-gray-400 mt-1">
                 حداکثر حجم: {maxSize}MB
               </p>
-              {isUploading && <UploadProgressBar progress={uploadProgress} />}
-
+              {isUploading &&  <UploadProgressBar progress={uploadProgress} />}
             </div>
           )}
-
         </div>
       </div>
+
+      {/* 👇 نمایش پیام خطا */}
+      {error && (
+        <div className="mt-2 flex items-center gap-1 text-xs text-red-500">
+          <AlertCircle size={14} />
+          <span>{error}</span>
+        </div>
+      )}
 
       {file && uploadedUrl && (
         <button

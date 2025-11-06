@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import EmailInput from "./EmailInput";
-import PasswordInput from "./PasswordInput";
+import PasswordInput from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 

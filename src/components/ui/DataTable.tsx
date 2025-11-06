@@ -138,7 +138,7 @@ export function DataTable<T>({
               {columns.map((column) => (
                 <th
                   key={column.key as string}
-                  className={`px-6 py-4 text-right text-sm font-semibold text-gray-900 ${column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
+                  className={`px-6 py-4 text-right text-sm font-semibold text-gray-900 text-nowrap ${column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
                     }`}
                   onClick={() => column.sortable && handleSort(column.key)}
                 >
@@ -177,7 +177,7 @@ export function DataTable<T>({
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map((column) => (
-                  <td key={column.key as string} className="px-6 py-4 text-sm text-gray-900">
+                  <td key={column.key as string} className="px-6 py-4 text-sm text-gray-900 text-nowrap">
                     {column.render 
                       ? column.render(row[column.key], row) 
                       : String(row[column.key])

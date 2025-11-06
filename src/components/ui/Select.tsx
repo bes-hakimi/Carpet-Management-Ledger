@@ -23,7 +23,7 @@ export function Select({
   value,
   label,
   onChange,
-  placeholder = "Select Options",
+  placeholder = "انتخاب کنید...",
   disabled = false,
   error,
   searchable = false,
@@ -45,14 +45,12 @@ export function Select({
     lg: "px-4 py-2.5 text-base"
   };
 
-  // فیلتر options بر اساس جستجو
   const filteredOptions = searchable
     ? options.filter(option =>
-      option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : options;
 
-  // بستن دراپ‌دان هنگام کلیک خارج
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
@@ -64,7 +62,6 @@ export function Select({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // فوکوس روی input جستجو وقتی دراپ‌دان باز می‌شود
   useEffect(() => {
     if (open && searchable && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -86,7 +83,11 @@ export function Select({
   return (
     <div ref={selectRef} className={`relative w-full ${className || ''}`}>
       {label && (
-        <label className={`text-sm font-medium mb-1 ${error ? 'text-red-600' : 'text-gray-600'} ${disabled ? 'opacity-50' : ''}`}>
+        <label
+          className={`text-sm font-medium mb-1 ${
+            error ? "text-red-600" : "text-gray-600"
+          }`}
+        >
           {label}
           {required && <span className="text-red-500 mr-1">*</span>}
         </label>
@@ -97,9 +98,9 @@ export function Select({
         type="button"
         onClick={() => !disabled && setOpen(!open)}
         disabled={disabled}
-        className={`w-full ${sizes[size]} rounded-md ring ring-gray-300 bg-white flex items-center justify-between hover:ring-2 hover:ring-teal-500 transition-all duration-150 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${error ? 'ring-red-500' : ''} ${open ? 'ring-2 ring-teal-500' : ''}`}
+        className={`w-full ${sizes[size]} rounded-md ring-1 ring-gray-300 bg-white flex items-center justify-between transition-all duration-150 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${error ? 'ring-red-500' : 'hover:ring-2 hover:ring-teal-500'} ${open ? 'ring-2 ring-teal-500' : ''}`}
       >
-        <span className={`${selected ? "text-gray-900" : "text-gray-500"} ${disabled ? 'text-gray-400' : ''}`}>
+        <span className={`${selected ? "text-gray-900" : "text-gray-400"}`}>
           {selected ? selected.label : placeholder}
         </span>
 
@@ -114,22 +115,16 @@ export function Select({
           )}
           <ChevronDown
             size={18}
-            className={`text-teal-500 transition-all duration-100 ${open ? "rotate-180" : ""} ${disabled ? 'text-gray-400' : ''}`}
+            className={`text-teal-500 transition-all duration-100 ${open ? "rotate-180" : ""}`}
           />
         </div>
       </button>
 
-      {/* Error message */}
-      {error && (
-        <p className="mt-1 text-sm text-red-600">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
 
-      {/* لیست options */}
+      {/* لیست گزینه‌ها */}
       {open && (
         <div className="absolute left-0 right-0 mt-1 rounded-lg bg-white border border-gray-200 overflow-hidden shadow-lg z-50">
-          {/* Search input */}
           {searchable && (
             <div className="p-2 border-b border-gray-200">
               <div className="relative">
@@ -143,13 +138,12 @@ export function Select({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="جستجو..."
-                  className="w-full pr-9 pl-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
+                  className="w-full pr-9 pl-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 placeholder:text-gray-400"
                 />
               </div>
             </div>
           )}
 
-          {/* Options list */}
           <div className="space-y-1 max-h-48 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-3 text-sm text-gray-500 text-center">
@@ -160,7 +154,9 @@ export function Select({
                 <div
                   key={option.value}
                   onClick={() => handleSelect(option.value)}
-                  className={`flex items-center justify-between text-sm px-4 py-2 cursor-pointer hover:bg-teal-500 hover:text-white transition-all duration-150 ${value === option.value ? "bg-teal-500 text-white" : ""}`}
+                  className={`flex items-center justify-between text-sm px-4 py-2 cursor-pointer hover:bg-teal-500 hover:text-white transition-all duration-150 ${
+                    value === option.value ? "bg-teal-500 text-white" : ""
+                  }`}
                 >
                   <span>{option.label}</span>
                   {value === option.value && <Check size={16} />}

@@ -9,14 +9,16 @@ interface PasswordInputProps {
   error?: string;
   label?: string;
   placeholder?: string;
+  animated?: boolean; // ← نام پراپ تغییر کرد
 }
 
-export default function PasswordInput({ 
-  value, 
-  onChange, 
-  error, 
+export default function PasswordInput({
+  value,
+  onChange,
+  error,
   label = "رمز عبور",
-  placeholder = "رمز عبور خود را وارد کنید"
+  placeholder = "رمز عبور خود را وارد کنید",
+  animated = true, // ← پیش‌فرض فعال است
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,23 +30,27 @@ export default function PasswordInput({
     onChange(e.target.value);
   };
 
+  const Wrapper: React.ElementType = animated ? motion.div : "div";
+
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, delay: 0.4 }}
+    <Wrapper
+      {...(animated && {
+        initial: { opacity: 0, x: 20 },
+        animate: { opacity: 1, x: 0 },
+        transition: { duration: 0.4, delay: 0.4 },
+      })}
       className="w-full flex flex-col space-y-1"
     >
       <label className="text-sm font-medium text-gray-600">{label}</label>
       <div className="relative">
         <Input
-          type={showPassword ? "text" : "password"} // اینجا تصحیح شد
+          type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
-          error={undefined} // خطا را اینجا غیرفعال می‌کنیم
+          error={undefined}
           icon={<Lock className="w-4 h-4" />}
-          className={error ? "border-red-500 focus:ring-red-500" : ""} // اضافه کردن استایل خطا
+          className={error ? "border-red-500 focus:ring-red-500" : ""}
         />
         <button
           type="button"
@@ -58,8 +64,7 @@ export default function PasswordInput({
           )}
         </button>
       </div>
-      {/* فقط اینجا خطا را نشان بده */}
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
-    </motion.div>
+    </Wrapper>
   );
 }
