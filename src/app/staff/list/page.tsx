@@ -43,7 +43,7 @@ export default function CompaniesListPage() {
   // ✅ گرفتن شرکت‌ها از API
   const { data: apiCompanies = [], isLoading, error, refetch } = useApiGet<ApiCompany[]>(
     "companies",
-    USERS.getAll
+    USERS.getStaffList
   );
 
   // ✅ حذف داینامیک

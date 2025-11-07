@@ -1,7 +1,6 @@
-// src/components/ui/FileUpload.tsx
 "use client";
-import { useState, useRef } from "react";
-import { Upload, File, Image, X, AlertCircle } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Upload, File, Image, X, AlertCircle, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateReactHelpers } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/route";
@@ -11,8 +10,9 @@ interface FileUploadProps {
   accept?: string;
   onFileSelect: (fileUrl: string | null) => void;
   label?: string;
-  maxSize?: number; // in MB
-  error?: string | null; // 👈 اضافه شد
+  maxSize?: number;
+  error?: string | null;
+  initialFileUrl?: string; // ✅ پراپ جدید برای نمایش فایل موجود از API
 }
 
 export function FileUpload({
@@ -20,7 +20,8 @@ export function FileUpload({
   onFileSelect,
   label = "انتخاب فایل",
   maxSize = 10,
-  error = null, // 👈 مقدار پیش‌فرض
+  error = null,
+  initialFileUrl, // ✅
 }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -31,6 +32,13 @@ export function FileUpload({
   const { startUpload, isUploading } = useUploadThing("anyFile", {
     onUploadProgress: (progress) => setUploadProgress(progress),
   });
+
+  // ✅ اگر فایل از API آمده، در ابتدا آن را تنظیم کن
+  useEffect(() => {
+    if (initialFileUrl) {
+      setUploadedUrl(initialFileUrl);
+    }
+  }, [initialFileUrl]);
 
   const handleFileChange = async (selectedFile: File | null) => {
     if (!selectedFile) return;
@@ -79,18 +87,19 @@ export function FileUpload({
 
   const removeFile = () => {
     setFile(null);
+    setUploadedUrl("");
     onFileSelect(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const getFileIcon = () => {
-    if (!file) return <Upload size={48} className="text-gray-400" />;
-    if (file.type.startsWith("image/")) {
+    if (uploadedUrl && uploadedUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i))
       return <Image size={48} className="text-teal-500" />;
-    }
-    return <File size={48} className="text-teal-500" />;
+    if (file?.type.startsWith("image/"))
+      return <Image size={48} className="text-teal-500" />;
+    if (file || uploadedUrl)
+      return <File size={48} className="text-teal-500" />;
+    return <Upload size={48} className="text-gray-400" />;
   };
 
   const formatFileSize = (bytes: number) => {
@@ -116,11 +125,10 @@ export function FileUpload({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`
-          border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 h-40
+        className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 h-40
           ${isDragOver
             ? "border-teal-500 bg-teal-50"
-            : file
+            : uploadedUrl || file
               ? "border-teal-500 bg-teal-50"
               : "border-gray-300 bg-gray-50 hover:border-teal-400 hover:bg-teal-50"}
           ${error ? "border-red-400 bg-red-50" : ""}
@@ -129,12 +137,29 @@ export function FileUpload({
         <div className="flex flex-col items-center justify-center space-y-2">
           {getFileIcon()}
 
-          {uploadedUrl && file ? (
+          {(uploadedUrl || !file) ? (
             <div className="text-center">
-              <p className="text-sm font-medium text-gray-900">{file?.name}</p>
-              <p className="text-xs text-gray-500 mt-1">
-                {formatFileSize(file.size)}
-              </p>
+              {/* ✅ نمایش نام فایل یا لینک فایل موجود */}
+              {uploadedUrl && !file ? (
+                <a
+                  href={uploadedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-600 text-sm flex items-center justify-center gap-1 hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  مشاهده فایل <ExternalLink size={14} />
+                </a>
+              ) : (
+                <p className="text-sm font-medium text-gray-900">{file?.name}</p>
+              )}
+
+              {file && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {formatFileSize(file.size)}
+                </p>
+              )}
+              {isUploading && <UploadProgressBar progress={uploadProgress} />}
             </div>
           ) : (
             <div className="text-center">
@@ -145,13 +170,12 @@ export function FileUpload({
               <p className="text-xs text-gray-400 mt-1">
                 حداکثر حجم: {maxSize}MB
               </p>
-              {isUploading &&  <UploadProgressBar progress={uploadProgress} />}
+              {isUploading && <UploadProgressBar progress={uploadProgress} />}
             </div>
           )}
         </div>
       </div>
 
-      {/* 👇 نمایش پیام خطا */}
       {error && (
         <div className="mt-2 flex items-center gap-1 text-xs text-red-500">
           <AlertCircle size={14} />
@@ -159,11 +183,14 @@ export function FileUpload({
         </div>
       )}
 
-      {file && uploadedUrl && (
+      {(file || uploadedUrl) && (
         <button
           type="button"
-          onClick={removeFile}
-          className="mt-2 flex items-center gap-1 text-sm text-red-500 hover:text-red-700 hover:cursor-pointer transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            removeFile();
+          }}
+          className="mt-2 flex items-center gap-1 text-sm text-red-500 hover:text-red-700 transition-colors"
         >
           <X size={16} />
           حذف فایل

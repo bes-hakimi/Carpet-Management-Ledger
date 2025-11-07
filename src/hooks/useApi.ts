@@ -42,6 +42,18 @@ export function useApiPatch<T, U>(url: string) {
   });
 }
 
+// ✅ Generic PUT hook
+export function useApiPut<T, U>(url: string) {
+  const queryClient = useQueryClient();
+  return useMutation<T, ApiError, U>({
+    mutationFn: async (body: U) => {
+      const res = await apiClient.put<T>(url, body);
+      return res.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
+
 // src/hooks/useApi.ts
 export function useApiDeleteDynamic<T>() {
   const queryClient = useQueryClient();
@@ -54,7 +66,7 @@ export function useApiDeleteDynamic<T>() {
     onSuccess: () => queryClient.invalidateQueries(),
   });
 
-  return mutation; 
+  return mutation;
 }
 
 

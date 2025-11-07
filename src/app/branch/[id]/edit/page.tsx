@@ -1,191 +1,216 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { toast } from "react-hot-toast";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { SaveButton, CancelButton, DeleteButton } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Switch } from "@/components/ui/Switch";
-import { useRouter, useParams } from "next/navigation";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 
-interface BranchData {
-  id: string;
-  branchName: string;
-  managerName: string;
-  phoneNumber: string;
-  email: string;
-  address: string;
-  description: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { useApiGet, useApiPut, useApiDeleteDynamic } from "@/hooks/useApi";
+import { USERS } from "@/endpoints/users";
+import { IUser } from "@/types/user/user";
 
 export default function EditBranchPage() {
   const router = useRouter();
   const params = useParams();
-  const branchId = params.id as string;
+  const branchId = Number(params.id);
 
-  const [formData, setFormData] = useState<BranchData>({
-    id: "",
-    branchName: "",
-    managerName: "",
-    phoneNumber: "",
-    email: "",
-    address: "",
-    description: "",
-    isActive: true,
-    createdAt: "",
-    updatedAt: ""
-  });
+  const { data: branch, isLoading } = useApiGet<IUser>(
+    `branch-${branchId}`,
+    USERS.details(branchId)
+  );
 
-  // شبیه‌سازی دریافت داده از API
+  const updateMutation = useApiPut<IUser, Partial<IUser>>(USERS.update(branchId));
+  const deleteMutation = useApiDeleteDynamic<{ message: string }>();
+
+  const [formData, setFormData] = useState<Partial<IUser>>({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   useEffect(() => {
-    setFormData({
-      id: branchId,
-      branchName: "شعبه کابل مرکزی",
-      managerName: "احمد حفیظی",
-      phoneNumber: "0700123456",
-      email: "kabul@company.af",
-      address: "کابل، ناحیه 7، جاده مرکزی",
-      description: "شعبه اصلی شرکت",
-      isActive: true,
-      createdAt: "2025-03-10",
-      updatedAt: "2025-03-20",
-    });
-  }, [branchId]);
+    if (branch) setFormData(branch);
+  }, [branch]);
 
-  const handleInputChange = (field: keyof BranchData, value: string | boolean) => {
-    setFormData(prev => ({
+  const handleInputChange = (field: keyof IUser, value: string | boolean) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Data to update:", formData);
-    alert("اطلاعات شعبه با موفقیت به‌روزرسانی شد!");
-    router.push("/branch/list");
+
+    const body: Partial<IUser> = {
+      ...formData,
+    };
+
+    const toastId = toast.loading("در حال ذخیره تغییرات...");
+
+    await updateMutation.mutateAsync(body, {
+      onSuccess: () => {
+        toast.success("اطلاعات شعبه با موفقیت ذخیره شد!", { id: toastId });
+        router.push("/branch/list");
+      },
+      onError: (error) => {
+        toast.error(`خطا در ویرایش: ${error.message}`, { id: toastId });
+      },
+    });
   };
 
-  const handleCancel = () => {
-    if (confirm("آیا از انصراف مطمئن هستید؟ تغییرات ذخیره نخواهند شد.")) {
-      router.back();
-    }
+  const handleDeleteConfirm = async () => {
+    const toastId = toast.loading("در حال حذف شعبه...");
+    await deleteMutation.mutateAsync(USERS.delete(branchId), {
+      onSuccess: () => {
+        toast.success("شعبه با موفقیت حذف شد!", { id: toastId });
+        setIsDeleteModalOpen(false);
+        router.push("/branch/list");
+      },
+      onError: (error) => {
+        toast.error(`خطا در حذف: ${error.message}`, { id: toastId });
+      },
+    });
   };
 
-  const handleDelete = () => {
-    if (confirm("آیا از حذف این شعبه مطمئن هستید؟ این عمل غیرقابل بازگشت است.")) {
-      console.log("Deleting branch:", branchId);
-      alert("شعبه با موفقیت حذف شد!");
-      router.push("/branch/list");
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="w-full">
+        <PageHeader
+          title="ویرایش شعبه"
+          showHomeIcon
+          description="در حال بارگذاری اطلاعات شعبه..."
+        />
+        <div className="animate-pulse space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-12 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
       <PageHeader
         title="ویرایش شعبه"
-        showHomeIcon={true}
+        showHomeIcon
         description="اطلاعات شعبه را ویرایش کنید"
       />
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* اطلاعات اصلی شعبه */}
+        {/* ✅ اطلاعات اصلی */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">اطلاعات اصلی شعبه</h3>
+          <h3 className="text-lg font-semibold mb-6">اطلاعات اصلی</h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="نام شعبه"
-              value={formData.branchName}
-              onChange={(e) => handleInputChange("branchName", e.target.value)}
-              placeholder="نام شعبه"
+              label="نام"
+              value={formData.first_name || ""}
+              onChange={(e) => handleInputChange("first_name", e.target.value)}
+              placeholder="نام"
               required
             />
             <Input
-              label="مدیر شعبه"
-              value={formData.managerName}
-              onChange={(e) => handleInputChange("managerName", e.target.value)}
-              placeholder="مدیر شعبه"
+              label="نام خانوادگی"
+              value={formData.last_name || ""}
+              onChange={(e) => handleInputChange("last_name", e.target.value)}
+              placeholder="نام خانوادگی"
               required
             />
             <Input
               label="شماره تماس"
-              value={formData.phoneNumber}
-              onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+              value={formData.phone?.toString() || ""}
+              onChange={(e) => handleInputChange("phone", e.target.value)}
               placeholder="شماره تماس"
               required
             />
             <Input
-              label="ایمیل"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder="ایمیل شعبه"
+              label="نام شعبه"
+              value={formData.company_name || ""}
+              onChange={(e) => handleInputChange("company_name", e.target.value)}
+              placeholder="نام شعبه"
+              required
             />
-            <div className="md:col-span-2">
-              <Input
-                label="آدرس"
-                value={formData.address}
-                onChange={(e) => handleInputChange("address", e.target.value)}
-                placeholder="آدرس شعبه"
-                required
-              />
-            </div>
+
           </div>
         </div>
 
-        {/* وضعیت فعال/غیرفعال */}
+        {/* ✅ وضعیت */}
+        {/* ✅ وضعیت */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">وضعیت شعبه</h3>
+          <h3 className="text-lg font-semibold mb-6">وضعیت حساب</h3>
+
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div className="flex-1">
-              <h4 className="font-medium text-gray-900">وضعیت شعبه</h4>
-              <p className="text-sm text-gray-600 mt-1">
-                {formData.isActive
-                  ? "شعبه فعال است و در سیستم نمایش داده می‌شود"
-                  : "شعبه غیرفعال است و دسترسی ندارد"}
+            <div>
+              <h4 className="font-medium">
+                {formData.is_active ? "حساب فعال است" : "حساب غیرفعال است"}
+              </h4>
+              <p className="text-sm text-gray-500">
+                {formData.is_active
+                  ? "با غیرفعال کردن، حساب کاربر موقتاً از دسترسی خارج می‌شود."
+                  : "لطفاً دلیل غیرفعال کردن حساب را بنویسید."}
               </p>
             </div>
             <Switch
-              size="md"
-              checked={formData.isActive}
-              onChange={(checked) => handleInputChange("isActive", checked)}
+              checked={formData.is_active ?? true}
+              onChange={(checked) => handleInputChange("is_active", checked)}
             />
           </div>
+
+        
+          {!formData.is_active && (
+            <div className="mt-4">
+              <Textarea
+                label="دلیل غیرفعال کردن حساب"
+                value={formData.reson_of_status || ""}
+                onChange={(value) => handleInputChange("reson_of_status", value)}
+                placeholder="مثلاً: تخلف از قوانین، درخواست کاربر، عدم پرداخت هزینه و ..."
+                rows={3}
+                required
+              />
+            </div>
+          )}
         </div>
 
-        {/* توضیحات */}
+
+        {/* ✅ توضیحات */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">توضیحات</h3>
           <Textarea
-            label="توضیحات شعبه"
-            value={formData.description}
+            label="توضیحات"
+            value={formData.description || ""}
             onChange={(value) => handleInputChange("description", value)}
-            placeholder="توضیحات شعبه"
             rows={4}
           />
         </div>
 
-        {/* دکمه‌های اقدام */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-gray-200">
-          <div className="flex gap-3">
-            <DeleteButton size="md" onClick={handleDelete}>
-              حذف شعبه
-            </DeleteButton>
-          </div>
+        {/* ✅ دکمه‌ها */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-end items-center pt-6">
+          <DeleteButton onClick={() => setIsDeleteModalOpen(true)}>
+            حذف شعبه
+          </DeleteButton>
+          <CancelButton onClick={() => router.back()}>
+            انصراف
+          </CancelButton>
+          <SaveButton type="submit" loading={updateMutation.isPending}>
+            ذخیره تغییرات
+          </SaveButton>
 
-          <div className="flex gap-3">
-            <CancelButton size="md" onClick={handleCancel}>
-              انصراف
-            </CancelButton>
-
-            <SaveButton size="md" type="submit">
-              ذخیره تغییرات
-            </SaveButton>
-          </div>
         </div>
       </form>
+
+      {/* ✅ مدال حذف */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        isLoading={deleteMutation.isPending}
+        itemName={`${formData.first_name || ""} ${formData.last_name || ""}`}
+      />
     </div>
   );
 }

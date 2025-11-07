@@ -43,7 +43,7 @@ export default function BranchListPage() {
   const { data: apiUsers = [], isLoading, error, refetch } = useQuery<ApiUser[], ApiError>({
     queryKey: ["branches"],
     queryFn: async () => {
-      const res = await apiClient.get<ApiUser[]>(USERS.getAll);
+      const res = await apiClient.get<ApiUser[]>(USERS.getBranchList);
       return res.data;
     },
     retry: 1,

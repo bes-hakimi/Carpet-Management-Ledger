@@ -1,9 +1,11 @@
 export const USERS = {
   login: "/accounts/login/",
-  getAll: "/accounts/company/list/",
-  details: (id: number) => `/accounts/user/details/${id}`,
   create: "/accounts/signup/",
-  update: (id: number) => `/accounts/user/update/${id}`,
-  delete: (id: number) => `/accounts/user/delete/${id}`,
+  getCompanyList: "/accounts/company/list/",
+  getBranchList: "/accounts/company/branch/list/",
+  getStaffList: "/accounts/company/statff/list/",
+  details: (id: number) => `/accounts/user/details/${id}/`,
+  update: (id: number) => `/accounts/user/update/${id}/`,
+  delete: (id: number) => `/accounts/user/delete/${id}/`,
 };
 
