@@ -148,22 +148,22 @@ export default function EditBranchPage() {
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div>
               <h4 className="font-medium">
-                {formData.is_active ? "حساب فعال است" : "حساب غیرفعال است"}
+                {formData.status ? "حساب فعال است" : "حساب غیرفعال است"}
               </h4>
               <p className="text-sm text-gray-500">
-                {formData.is_active
+                {formData.status
                   ? "با غیرفعال کردن، حساب کاربر موقتاً از دسترسی خارج می‌شود."
                   : "لطفاً دلیل غیرفعال کردن حساب را بنویسید."}
               </p>
             </div>
             <Switch
-              checked={formData.is_active ?? true}
-              onChange={(checked) => handleInputChange("is_active", checked)}
+              checked={formData.status ?? true}
+              onChange={(checked) => handleInputChange("status", checked)}
             />
           </div>
 
         
-          {!formData.is_active && (
+          {!formData.status && (
             <div className="mt-4">
               <Textarea
                 label="دلیل غیرفعال کردن حساب"

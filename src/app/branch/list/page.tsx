@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/hooks/apiClient";
 import { USERS } from "@/endpoints/users";
 import { ApiError } from "@/types/api/api";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
 // تعریف interface برای Branch
 interface Branch {
@@ -85,8 +86,23 @@ export default function BranchListPage() {
     deleteBranchMutation.mutate(branch.id);
   };
 
-  if (isLoading) return <p>در حال بارگذاری...</p>;
+  if (isLoading) return<div className="flex w-full h-full items-center justify-center"> <ContentLoader/> </div>;
   if (error) return <p>خطا در دریافت داده‌ها: {error.message}</p>;
+  if (!apiUsers || apiUsers.length === 0) {
+    return (
+      <div className="w-full">
+        <Toaster position="top-right" reverseOrder={false} />
+        <PageHeader
+          title="مدیریت شعبات"
+          description="هیچ شعبه‌ای یافت نشد."
+          showHomeIcon
+        />
+        <p className="text-center mt-6 text-gray-500">
+          هنوز هیچ شعبه‌ای ثبت نشده است. می‌توانید از طریق پنل، شعبه جدید اضافه کنید.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

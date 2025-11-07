@@ -137,7 +137,7 @@ export function FileUpload({
         <div className="flex flex-col items-center justify-center space-y-2">
           {getFileIcon()}
 
-          {(uploadedUrl || !file) ? (
+          {(uploadedUrl) ? (
             <div className="text-center">
               {/* ✅ نمایش نام فایل یا لینک فایل موجود */}
               {uploadedUrl && !file ? (

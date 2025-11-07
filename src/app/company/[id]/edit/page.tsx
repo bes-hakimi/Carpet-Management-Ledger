@@ -192,29 +192,28 @@ export default function EditUserPage() {
         </div>
 
         {/* ✅ وضعیت */}
-        {/* ✅ وضعیت */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold mb-6">وضعیت حساب</h3>
 
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div>
               <h4 className="font-medium">
-                {formData.is_active ? "حساب فعال است" : "حساب غیرفعال است"}
+                {formData.status ? "حساب فعال است" : "حساب غیرفعال است"}
               </h4>
               <p className="text-sm text-gray-500">
-                {formData.is_active
+                {formData.status
                   ? "با غیرفعال کردن، حساب کاربر موقتاً از دسترسی خارج می‌شود."
                   : "لطفاً دلیل غیرفعال کردن حساب را بنویسید."}
               </p>
             </div>
             <Switch
-              checked={formData.is_active ?? true}
-              onChange={(checked) => handleInputChange("is_active", checked)}
+              checked={formData.status ?? true}
+              onChange={(checked) => handleInputChange("status", checked)}
             />
           </div>
 
         
-          {!formData.is_active && (
+          {!formData.status && (
             <div className="mt-4">
               <Textarea
                 label="دلیل غیرفعال کردن حساب"

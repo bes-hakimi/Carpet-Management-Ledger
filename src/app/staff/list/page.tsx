@@ -11,6 +11,7 @@ import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { ApiError } from "@/types/api/api";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
 // ✅ تایپ جدول شرکت‌ها
 interface Company {
@@ -106,7 +107,7 @@ export default function CompaniesListPage() {
   // رندر صفحه
   // ===========================
 
-  if (isLoading) return <p>در حال بارگذاری...</p>;
+  if (isLoading) return <div className="flex w-full h-full items-center justify-center"> <ContentLoader/> </div>;
   if (error) return <p>خطا در دریافت داده‌ها: {error.message}</p>;
 
   return (
