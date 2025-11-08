@@ -183,7 +183,7 @@ export function FileUpload({
         </div>
       )}
 
-      {(file || uploadedUrl) && (
+      {(initialFileUrl || uploadedUrl) && (
         <button
           type="button"
           onClick={(e) => {

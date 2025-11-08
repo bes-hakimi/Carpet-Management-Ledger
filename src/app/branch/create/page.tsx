@@ -14,6 +14,7 @@ import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function CreateBranchPage() {
   const router = useRouter();
+  const { mutate: createBranch, isPending } = useApiPost(USERS.create);
 
   const [formData, setFormData] = useState({
     branchName: "",
@@ -29,24 +30,29 @@ export default function CreateBranchPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const createBranch = useApiPost(USERS.create);
+  // ✅ فرمت شماره تماس افغانستان (07xxxxxxxx یا +937xxxxxxxx)
+  const phoneLocalRegex = /^07\d{8}$/;
+  const phoneIntlRegex = /^\+937\d{8}$/;
 
-  const afghanistanPhoneRegex = /^0[7]\d{8}$/;
-
+  // ✅ اعتبارسنجی فرم
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.branchName.trim()) newErrors.branchName = "نام شعبه الزامی است";
     if (!formData.managerName.trim()) newErrors.managerName = "نام مدیر الزامی است";
+
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "شماره تماس الزامی است";
-    else if (!afghanistanPhoneRegex.test(formData.phoneNumber))
-      newErrors.phoneNumber = "شماره تماس باید با 07 شروع شود و 9 رقم باشد (مثلاً 0791234567)";
+    else if (!phoneLocalRegex.test(formData.phoneNumber) && !phoneIntlRegex.test(formData.phoneNumber))
+      newErrors.phoneNumber =  "لطفاً شماره تماس با فرمت افغانستان وارد کنید";
+
     if (!formData.email.trim()) newErrors.email = "ایمیل الزامی است";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "ایمیل نامعتبر است";
+
     if (!formData.address.trim()) newErrors.address = "آدرس الزامی است";
     if (!formData.password.trim()) newErrors.password = "رمز عبور الزامی است";
     else if (formData.password.length < 6)
       newErrors.password = "رمز عبور باید حداقل ۶ کاراکتر باشد";
+
     if (formData.confirmPassword !== formData.password)
       newErrors.confirmPassword = "تأیید رمز عبور مطابقت ندارد";
 
@@ -54,46 +60,50 @@ export default function CreateBranchPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // ✅ مدیریت تغییر فیلدها
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // ✅ ارسال فرم به API
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
     if (!validate()) {
       toast.error("لطفاً خطاهای فرم را بررسی کنید.");
       return;
     }
 
-    try {
-      const payload = {
-        ...formData,
-        phoneNumber: formData.phoneNumber.replace(/^\+93/, "0"), // ✅ فرمت اصلاحی شماره تماس
-      };
+    // فرمت شماره تماس برای ارسال به API
 
-      await createBranch.mutateAsync(payload);
-      toast.success("شعبه با موفقیت ایجاد شد!");
-      setTimeout(() => router.push("/branch/list"), 2000);
-    } catch (error: any) {
-      // ✅ هندل ارور با ساختار سرور
-      if (error?.response?.data) {
-        const serverErrors = error.response.data;
-        const formattedErrors: Record<string, string> = {};
+    const payload = {
+      branch_name: formData.branchName,
+      manager_name: formData.managerName,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phoneNumber,
+      address: formData.address,
+      description: formData.description,
+      status: formData.isActive,
+      role: "branch",
+    };
 
-        Object.entries(serverErrors).forEach(([key, messages]) => {
-          if (Array.isArray(messages)) formattedErrors[key] = messages[0];
-        });
+    console.log("Submitting payload:", payload);
 
-        setErrors((prev) => ({ ...prev, ...formattedErrors }));
+    createBranch(payload, {
+      onSuccess: () => {
+        toast.success(`شعبه ${formData.branchName} با موفقیت ایجاد شد`);
+        router.push("/branch/list");
+      },
+      onError: (error: any) => {
+        console.error("API Error:", error);
 
-        const firstError = Object.values(formattedErrors)[0];
-        if (firstError) toast.error(firstError);
-        else toast.error("خطا در ایجاد شعبه");
-      } else {
-        toast.error("خطا در ارتباط با سرور");
-      }
-    }
+        const message = error?.response?.data.message ?? "مشکلی در ارسال اطلاعات به سرور رخ داد";
+        toast.error(message);
+      },
+    });
   };
 
   const handleCancel = () => {
@@ -130,11 +140,11 @@ export default function CreateBranchPage() {
 
           <Input
             label="شماره تماس"
-            type="tel"
+            type="text"
             dir="rtl"
             value={formData.phoneNumber}
             onChange={(e) => handleChange("phoneNumber", e.target.value)}
-            placeholder="مثلاً 0791234567"
+            placeholder="شماره تماس با فرمت افغانستان"
             error={errors.phoneNumber}
           />
 
@@ -175,42 +185,36 @@ export default function CreateBranchPage() {
             />
           </div>
 
-          <div className="md:col-span-2">
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium text-gray-900">وضعیت شعبه</h4>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {formData.isActive
-                      ? "شعبه فعال است و در سیستم نمایش داده می‌شود"
-                      : "شعبه غیرفعال است و دسترسی ندارد"}
-                  </p>
-                </div>
-                <Switch
-                  size="md"
-                  checked={formData.isActive}
-                  onChange={(checked) => handleChange("isActive", checked)}
-                />
+          <div className="md:col-span-2 bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-900">وضعیت شعبه</h4>
+                <p className="text-sm text-gray-600 mt-1">
+                  {formData.isActive
+                    ? "شعبه فعال است و در سیستم نمایش داده می‌شود"
+                    : "شعبه غیرفعال است و دسترسی ندارد"}
+                </p>
               </div>
+              <Switch
+                size="md"
+                checked={formData.isActive}
+                onChange={(checked) => handleChange("isActive", checked)}
+              />
             </div>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">توضیحات</label>
-          <Textarea
-            value={formData.description}
-            onChange={(val) => handleChange("description", val)}
-            placeholder="توضیحات شعبه (اختیاری)"
-            rows={4}
-          />
-        </div>
+        <Textarea
+          label="توضیحات"
+          value={formData.description}
+          onChange={(val) => handleChange("description", val)}
+          placeholder="توضیحات شعبه (اختیاری)"
+          rows={4}
+        />
 
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
-          <CancelButton size="md" onClick={handleCancel}>
-            انصراف
-          </CancelButton>
-          <SaveButton size="md" type="submit" loading={createBranch.isPending}>
+          <CancelButton onClick={handleCancel}>انصراف</CancelButton>
+          <SaveButton type="submit" loading={isPending}>
             ایجاد شعبه
           </SaveButton>
         </div>

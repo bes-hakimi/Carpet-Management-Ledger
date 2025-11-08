@@ -25,7 +25,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {/* ✅ TopBar فقط اگر مسیر مجاز باشد */}
       {showTopBar && <TopBar />}
 
-      <div className={`flex flex-row-reverse flex-1 overflow-hidden ${showTopBar ? "pt-10 md:pt-[56px]" : ""} `}>
+      <div className={`flex flex-row-reverse flex-1 overflow-hidden ${showTopBar ? "pt-14 md:pt-[56px]" : ""} `}>
         {/* Sidebar فقط برای دسکتاپ */}
         {showTopBar && (
           <div className="fixed top-[56px] bottom-0 right-0 hidden sm:block z-10">

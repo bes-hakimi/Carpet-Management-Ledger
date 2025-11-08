@@ -10,7 +10,7 @@ import { ImageUpload } from "@/components/ui/ImageUpload";
 import { SaveButton, CancelButton } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Switch } from "@/components/ui/Switch";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useApiPost } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { categories, durations, warrantyPeriods } from "../constants/userOptions";
@@ -18,12 +18,12 @@ import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function CreateCompanyPage() {
   const router = useRouter();
-  const { mutate: createUser, isPending } = useApiPost(USERS.create);
+  const { mutate: createCompany, isPending } = useApiPost(USERS.create);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("+93");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -45,7 +45,6 @@ export default function CreateCompanyPage() {
     if (!lastName.trim()) newErrors.lastName = "نام خانوادگی الزامی است";
     if (!companyName.trim()) newErrors.companyName = "نام شرکت الزامی است";
 
-    // شماره باید یا فرمت محلی 07xxxxxxxx یا بین‌المللی +937xxxxxxxx باشد
     const phoneLocalRegex = /^07\d{8}$/;      // مثال: 0700123456
     const phoneIntlRegex = /^\+937\d{8}$/;   // مثال: +93700123456
     if (!phoneLocalRegex.test(phoneNumber) && !phoneIntlRegex.test(phoneNumber)) {
@@ -72,24 +71,6 @@ export default function CreateCompanyPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // helper برای نگاشت خطای API به errors state
-  const handleApiErrors = (data: any) => {
-    // data معمولاً شبیه { "email": ["..."], "role": ["..."] }
-    if (!data || typeof data !== "object") return;
-    const apiErrors: Record<string, string> = {};
-    Object.entries(data).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        apiErrors[key] = value.join(" ");
-      } else if (typeof value === "string") {
-        apiErrors[key] = value;
-      } else {
-        apiErrors[key] = JSON.stringify(value);
-      }
-    });
-    // ادغام با خطاهای محلی (در صورت وجود)
-    setErrors(prev => ({ ...prev, ...apiErrors }));
-  };
-
   // ✅ ارسال فرم
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,25 +78,13 @@ export default function CreateCompanyPage() {
 
     if (!validateForm()) return;
 
-    // نرمالایز شماره به فرمت بین‌المللی +93...
-    let normalizedPhone = phoneNumber;
-    const phoneLocalRegex = /^07(\d{8})$/;
-    if (phoneLocalRegex.test(phoneNumber)) {
-      normalizedPhone = phoneNumber; // 0791929394
-    } else {
-      // +93791929394 → 93791929394
-      normalizedPhone = phoneNumber.replace("+", "");
-    }
-
-    const phoneNumberAsNumber = Number(normalizedPhone);
-
     const payload = {
       email,
       first_name: firstName,
       last_name: lastName,
       password,
       role: "admin",
-      phone: phoneNumberAsNumber,
+      phone: phoneNumber,
       category,
       company_name: companyName,
       company_logo: companyLogo || "",
@@ -129,7 +98,7 @@ export default function CreateCompanyPage() {
 
     console.log("Submitting payload:", payload);
 
-    createUser(payload, {
+    createCompany(payload, {
       onSuccess: () => {
         toast.success(`شرکت ${companyName} با موفقیت ایجاد شد`);
         router.push("/company/list");
@@ -137,29 +106,12 @@ export default function CreateCompanyPage() {
       onError: (error: any) => {
         console.error("API Error:", error);
 
-        // داده‌های خطای API
-        const data = error?.response?.data ?? error?.data ?? null;
-
-        if (data && typeof data === "object") {
-          // mapping به فرم
-          handleApiErrors(data);
-
-          // نمایش toast برای هر پیام موجود
-          Object.entries(data).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-              value.forEach(msg => toast.error(msg));
-            } else if (typeof value === "string") {
-              toast.error(value);
-            }
-          });
-
-        } else {
-          toast.error("مشکلی در ارسال اطلاعات به سرور رخ داد");
-        }
+        const message = error?.response?.data.message ?? "مشکلی در ارسال اطلاعات به سرور رخ داد";
+        toast.error(message);
       },
     });
-
   };
+
 
   const handleCancel = () => {
     if (confirm("آیا از انصراف مطمئن هستید؟ اطلاعات ذخیره نخواهند شد.")) {

@@ -1,13 +1,15 @@
 // src/types/api.ts
-export type ApiError = {
+export interface ApiError {
   message?: string;
-  status?: number;
   response?: {
-    data?: unknown;
-    status?: number;
-    [key: string]: unknown;
+    data?: {
+      message?: string;
+      detail?: string;
+      [key: string]: unknown;
+    };
   };
-};
+}
+
 
 export type Paginated<T> = {
   results: T[];

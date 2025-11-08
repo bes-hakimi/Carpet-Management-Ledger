@@ -12,9 +12,9 @@ import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { ApiError } from "@/types/api/api";
 import { ContentLoader } from "@/components/loading/DataLoading";
+import { EmptyData } from "@/components/empty/EmptyData";
 
-// ✅ تایپ جدول شرکت‌ها
-interface Company {
+interface Staff {
   id: string;
   name: string;
   category: string;
@@ -23,8 +23,7 @@ interface Company {
   createdAt: string;
 }
 
-// ✅ تایپ داده‌ی خام API
-interface ApiCompany {
+interface ApiStaff {
   id: number;
   company_name: string;
   category: string;
@@ -34,109 +33,110 @@ interface ApiCompany {
   date_joined: string;
 }
 
-export default function CompaniesListPage() {
+interface StaffListResponse {
+  results?: ApiStaff[];
+  message?: string;
+}
+
+export default function StaffListPage() {
   const router = useRouter();
 
-  // ✅ وضعیت modal و شرکت انتخاب‌شده
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // ✅ گرفتن شرکت‌ها از API
-  const { data: apiCompanies = [], isLoading, error, refetch } = useApiGet<ApiCompany[]>(
-    "companies",
+  const { data: apiStaffData, isLoading, error, refetch } = useApiGet<StaffListResponse>(
+    "staff-list",
     USERS.getStaffList
   );
 
-  // ✅ حذف داینامیک
-  const deleteCompanyMutation = useApiDeleteDynamic<void>();
+  // ✅ بررسی نوع داده و map امن
+  const staffList: Staff[] = Array.isArray(apiStaffData?.results)
+    ? apiStaffData.results.map((item) => ({
+        id: item.id.toString(),
+        name: item.company_name,
+        category: item.category,
+        owner: `${item.first_name} ${item.last_name}`,
+        status: item.status ? "active" : "inactive",
+        createdAt: item.date_joined,
+      }))
+    : [];
 
+  const emptyMessage: string | null =
+    !Array.isArray(apiStaffData?.results) && typeof apiStaffData?.message === "string"
+      ? apiStaffData.message
+      : null;
 
+  const handleView = (staff: Staff) => router.push(`/staff/${staff.id}/details`);
+  const handleEdit = (staff: Staff) => router.push(`/staff/${staff.id}/edit`);
 
-  // ✅ تبدیل داده API به تایپ Company
-  const companies: Company[] = apiCompanies.map(item => ({
-    id: item.id.toString(),
-    name: item.company_name,
-    category: item.category,
-    owner: `${item.first_name} ${item.last_name}`,
-    status: item.status ? "active" : "inactive",
-    createdAt: item.date_joined,
-  }));
-
-  // ===========================
-  // دستورات view, edit, delete
-  // ===========================
-
-  const handleView = (company: Company) => router.push(`/company/${company.id}/details`);
-  const handleEdit = (company: Company) => router.push(`/company/${company.id}/edit`);
-
-  // باز کردن modal
-  const handleDeleteClick = (company: Company) => {
-    setSelectedCompany(company);
+  const handleDeleteClick = (staff: Staff) => {
+    setSelectedStaff(staff);
     setIsModalOpen(true);
   };
 
-  // تایید حذف
   const handleConfirmDelete = () => {
-    if (!selectedCompany) return;
+    if (!selectedStaff) return;
 
-    deleteCompanyMutation.mutate(USERS.delete(Number(selectedCompany.id)), {
+    deleteStaffMutation.mutate(USERS.delete(Number(selectedStaff.id)), {
       onSuccess: () => {
-        toast.success("شرکت با موفقیت حذف شد");
+        toast.success("کارمند با موفقیت حذف شد");
         setIsModalOpen(false);
-        setSelectedCompany(null);
+        setSelectedStaff(null);
         refetch();
       },
       onError: (error: ApiError) => {
         console.error(error);
-        toast.error(error.message || "حذف شرکت با مشکل مواجه شد");
+        toast.error(error.message || "حذف کارمند با مشکل مواجه شد");
       },
     });
   };
 
-  // بستن modal
   const handleCloseModal = () => {
-    if (deleteCompanyMutation.status !== 'pending') {
+    if (deleteStaffMutation.status !== "pending") {
       setIsModalOpen(false);
-      setSelectedCompany(null);
+      setSelectedStaff(null);
     }
   };
 
-
-
-  // ===========================
-  // رندر صفحه
-  // ===========================
-
-  if (isLoading) return <div className="flex w-full h-full items-center justify-center"> <ContentLoader/> </div>;
-  if (error) return <p>خطا در دریافت داده‌ها: {error.message}</p>;
+  const deleteStaffMutation = useApiDeleteDynamic<void>();
 
   return (
     <div className="w-full">
       <PageHeader
-        title="مدیریت شرکت‌ها"
-        description="لیست تمام شرکت‌های ثبت شده در سیستم"
+        title="مدیریت کارمندان"
+        description="لیست تمام کارمندان ثبت‌شده در سیستم"
         showHomeIcon
       />
 
-      <StaffTable
-        companies={companies}
-        onView={handleView}
-        onEdit={handleEdit}
-        onDelete={handleDeleteClick}
-      />
+      {isLoading ? (
+        <div className="flex w-full h-[300px] items-center justify-center">
+          <ContentLoader />
+        </div>
+      ) : error ? (
+        <p className="text-center text-red-500 mt-6">
+          خطا در دریافت داده‌ها: {error.message}
+        </p>
+      ) : emptyMessage ? (
+        <EmptyData title={emptyMessage} />
+      ) : (
+        <StaffTable
+          companies={staffList}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+        />
+      )}
 
       <DeleteConfirmationModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
-        itemName={selectedCompany?.name}
+        itemName={selectedStaff?.name}
         confirmText="حذف"
         cancelText="لغو"
-        isLoading={deleteCompanyMutation.status === 'pending'}
+        isLoading={deleteStaffMutation.status === "pending"}
         type="danger"
       />
-
-
     </div>
   );
 }
