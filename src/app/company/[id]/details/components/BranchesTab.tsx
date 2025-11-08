@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/ui/DataTable";
-import { Eye, Edit, Trash2, Building } from "lucide-react";
+import { Eye, Edit, Trash2, Building2 } from "lucide-react";
 import { IUser } from "@/types/user/user";
 
 interface BranchesTabProps {
@@ -21,7 +21,7 @@ export function BranchesTab({ data, onView, onEdit, onDelete }: BranchesTabProps
         return (
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
-              <Building size={20} className="text-white" />
+              <Building2 size={20} className="text-white" />
             </div>
             <div>
               <div className="font-medium text-gray-900">{branchName}</div>
@@ -50,7 +50,13 @@ export function BranchesTab({ data, onView, onEdit, onDelete }: BranchesTabProps
       render: (value: IUser[keyof IUser]) => (value as string) ?? "",
     },
     {
-      key: "is_active" as keyof IUser,
+      key: "date_joined" as keyof IUser,
+      label: "تاریخ ایجاد",
+      sortable: true,
+      render: (value: IUser[keyof IUser]) => (value ? new Date(value as string).toLocaleDateString("fa-IR") : ""),
+    },
+    {
+      key: "status" as keyof IUser,
       label: "وضعیت",
       sortable: true,
       render: (value: IUser[keyof IUser]) => {
@@ -62,20 +68,13 @@ export function BranchesTab({ data, onView, onEdit, onDelete }: BranchesTabProps
         const config = statusConfig[String(status) as keyof typeof statusConfig];
         return (
           <span
-            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-              config?.color || "bg-gray-100 text-gray-800"
-            }`}
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config?.color || "bg-gray-100 text-gray-800"
+              }`}
           >
             {config?.label || ""}
           </span>
         );
       },
-    },
-    {
-      key: "date_joined" as keyof IUser,
-      label: "تاریخ ایجاد",
-      sortable: true,
-      render: (value: IUser[keyof IUser]) => (value ? new Date(value as string).toLocaleDateString("fa-IR") : ""),
     },
   ];
 
