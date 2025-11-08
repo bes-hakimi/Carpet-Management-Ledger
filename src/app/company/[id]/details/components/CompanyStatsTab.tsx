@@ -1,9 +1,10 @@
 "use client";
 
 import { BarChart3, Users, Store, ShoppingCart, DollarSign, TrendingDown } from "lucide-react";
+import { IUser } from "@/types/user/user";
 
 interface Props {
-  data: any;
+  data: IUser;
 }
 
 export function CompanyStatsTab({ data }: Props) {

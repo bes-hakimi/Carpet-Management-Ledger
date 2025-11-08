@@ -9,29 +9,38 @@ import { SaveButton, CancelButton, DeleteButton } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Switch } from "@/components/ui/Switch";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
-
+import { ContentLoader } from "@/components/loading/DataLoading";
 import { useApiGet, useApiPut, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { IUser } from "@/types/user/user";
 
+interface StaffDetailsResponse {
+  details: IUser;
+}
+
 export default function EditStaffPage() {
   const router = useRouter();
   const params = useParams();
-  const staffId = Number(params.id);
 
-  const { data: staff, isLoading } = useApiGet<IUser>(
-    `staff-${staffId}`,
-    USERS.details(staffId)
-  );
+  // ✅ همیشه نوع را string نگه می‌داریم
+  const staffId = params?.id ? String(params.id) : "";
 
-  const updateMutation = useApiPut<IUser, Partial<IUser>>(USERS.update(staffId));
+  const { data: staff, isLoading } = useApiGet<StaffDetailsResponse>(
+  `staff-${staffId}`,
+  USERS.details(Number(staffId))
+);
+
+
+  const updateMutation = useApiPut<IUser, Partial<IUser>>(USERS.update(Number(staffId)));
   const deleteMutation = useApiDeleteDynamic<{ message: string }>();
 
   const [formData, setFormData] = useState<Partial<IUser>>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (staff) setFormData(staff);
+    if (staff?.details) {
+      setFormData(staff.details);
+    }
   }, [staff]);
 
   const handleInputChange = (field: keyof IUser, value: string | boolean) => {
@@ -43,34 +52,29 @@ export default function EditStaffPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
 
-    const body: Partial<IUser> = {
-      ...formData,
-    };
-
-    const toastId = toast.loading("در حال ذخیره تغییرات...");
-
-    await updateMutation.mutateAsync(body, {
+    await updateMutation.mutateAsync(formData, {
       onSuccess: () => {
-        toast.success("اطلاعات کارمند با موفقیت ذخیره شد!", { id: toastId });
+        toast.success("اطلاعات کارمند با موفقیت ذخیره شد!");
         router.push("/staff/list");
       },
       onError: (error) => {
-        toast.error(`خطا در ویرایش: ${error.message}`, { id: toastId });
+        toast.error(`خطا در ویرایش: ${error.message}`);
       },
     });
   };
 
   const handleDeleteConfirm = async () => {
     const toastId = toast.loading("در حال حذف کارمند...");
-    await deleteMutation.mutateAsync(USERS.delete(staffId), {
+    await deleteMutation.mutateAsync(USERS.delete(Number(staffId)), {
       onSuccess: () => {
-        toast.success("کارمند با موفقیت حذف شد!", { id: toastId });
+        toast.success("کارمند با موفقیت حذف شد!");
         setIsDeleteModalOpen(false);
         router.push("/staff/list");
       },
       onError: (error) => {
-        toast.error(`خطا در حذف: ${error.message}`, { id: toastId });
+        toast.error(`خطا در حذف: ${error.message}`);
       },
     });
   };
@@ -83,13 +87,15 @@ export default function EditStaffPage() {
           showHomeIcon
           description="در حال بارگذاری اطلاعات کارمند..."
         />
-        <div className="animate-pulse space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
+        <ContentLoader />
+      </div>
+    );
+  }
+
+  if (!formData?.id) {
+    return (
+      <div className="text-center mt-10 text-gray-500">
+        اطلاعاتی برای این کارمند یافت نشد.
       </div>
     );
   }
@@ -130,17 +136,15 @@ export default function EditStaffPage() {
               required
             />
             <Input
-              label="نام کارمند"
-              value={formData.company_name || ""}
-              onChange={(e) => handleInputChange("company_name", e.target.value)}
-              placeholder="نام کارمند"
+              label="آدرس"
+              value={formData.address || ""}
+              onChange={(e) => handleInputChange("address", e.target.value)}
+              placeholder="آدرس"
               required
             />
-
           </div>
         </div>
 
-        {/* ✅ وضعیت */}
         {/* ✅ وضعیت */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold mb-6">وضعیت حساب</h3>
@@ -162,7 +166,6 @@ export default function EditStaffPage() {
             />
           </div>
 
-        
           {!formData.status && (
             <div className="mt-4">
               <Textarea
@@ -177,7 +180,6 @@ export default function EditStaffPage() {
           )}
         </div>
 
-
         {/* ✅ توضیحات */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <Textarea
@@ -190,16 +192,13 @@ export default function EditStaffPage() {
 
         {/* ✅ دکمه‌ها */}
         <div className="flex flex-col sm:flex-row gap-4 justify-end items-center pt-6">
-          <DeleteButton onClick={() => setIsDeleteModalOpen(true)}>
+          <DeleteButton type="button" onClick={() => setIsDeleteModalOpen(true)}>
             حذف کارمند
           </DeleteButton>
-          <CancelButton onClick={() => router.back()}>
-            انصراف
-          </CancelButton>
+          <CancelButton type="button" onClick={() => router.back()}>انصراف</CancelButton>
           <SaveButton type="submit" loading={updateMutation.isPending}>
             ذخیره تغییرات
           </SaveButton>
-
         </div>
       </form>
 

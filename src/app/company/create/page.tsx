@@ -15,6 +15,7 @@ import { useApiPost } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { categories, durations, warrantyPeriods } from "../constants/userOptions";
 import PasswordInput from "@/components/ui/PasswordInput";
+import { ApiError } from "@/types/api/api";
 
 export default function CreateCompanyPage() {
   const router = useRouter();
@@ -103,10 +104,16 @@ export default function CreateCompanyPage() {
         toast.success(`شرکت ${companyName} با موفقیت ایجاد شد`);
         router.push("/company/list");
       },
-      onError: (error: any) => {
+      onError: (error: ApiError) => {
         console.error("API Error:", error);
 
-        const message = error?.response?.data.message ?? "مشکلی در ارسال اطلاعات به سرور رخ داد";
+        // بررسی می‌کنیم که پیام خطا از response.data یا خود شیء خطا باشد
+        const message =
+          error.response?.data?.message ??
+          error.response?.data?.detail ??
+          error.message ??
+          "مشکلی در ارسال اطلاعات به سرور رخ داد";
+
         toast.error(message);
       },
     });
@@ -114,9 +121,7 @@ export default function CreateCompanyPage() {
 
 
   const handleCancel = () => {
-    if (confirm("آیا از انصراف مطمئن هستید؟ اطلاعات ذخیره نخواهند شد.")) {
-      router.back();
-    }
+    router.back();
   };
 
   return (
@@ -262,7 +267,7 @@ export default function CreateCompanyPage() {
         />
 
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
-          <CancelButton onClick={handleCancel}>انصراف</CancelButton>
+          <CancelButton type="button" onClick={handleCancel}>انصراف</CancelButton>
           <SaveButton type="submit" loading={isPending}>
             ایجاد شرکت
           </SaveButton>

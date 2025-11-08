@@ -240,10 +240,10 @@ export default function EditUserPage() {
 
         {/* ✅ دکمه‌ها */}
         <div className="flex flex-col sm:flex-row gap-4 justify-end items-center pt-6">
-          <DeleteButton onClick={() => setIsDeleteModalOpen(true)}>
+          <DeleteButton type="button" onClick={() => setIsDeleteModalOpen(true)}>
             حذف شرکت
           </DeleteButton>
-          <CancelButton onClick={() => router.back()}>
+          <CancelButton type="button" onClick={() => router.back()}>
             انصراف
           </CancelButton>
           <SaveButton type="submit" loading={updateMutation.isPending}>

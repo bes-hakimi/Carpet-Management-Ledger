@@ -12,83 +12,60 @@ import { ApiError } from "@/types/api/api";
 import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import { EmptyData } from "@/components/empty/EmptyData";
+import { IUser } from "@/types/user/user";
 
-interface Branch {
-  id: string;
-  branchName: string;
-  managerName: string;
-  phoneNumber: string;
-  email?: string;
-  address: string;
-  isActive: boolean;
-  description?: string;
-  createdAt: string;
+type ApiResponse = { results?: IUser[]; message?: string } | IUser[];
+
+function isIUserArray(data: unknown): data is IUser[] {
+  return Array.isArray(data) && data.every((item) => typeof item === "object" && "id" in item);
 }
 
-interface ApiUser {
-  id: number;
-  company_name: string;
-  first_name: string;
-  last_name: string;
-  phone: number;
-  email?: string;
-  role: string;
-  status: boolean;
-  date_joined: string;
-}
-
-interface BranchListResponse {
-  results?: ApiUser[];
-  message?: string;
+function isApiResponseObject(data: unknown): data is { results?: IUser[]; message?: string } {
+  return typeof data === "object" && data !== null && ("results" in data || "message" in data);
 }
 
 export default function BranchListPage() {
   const router = useRouter();
-  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+  const [selectedBranch, setSelectedBranch] = useState<IUser | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: apiUsersData, isLoading, error } = useApiGet<BranchListResponse>(
+  const { data: apiData, isLoading, error, refetch } = useApiGet<ApiResponse>(
     "branches",
     USERS.getBranchList
   );
 
-  // ✅ بررسی اینکه results آرایه باشد
-  const branches: Branch[] = Array.isArray(apiUsersData?.results)
-    ? apiUsersData.results.map((user) => ({
-        id: user.id.toString(),
-        branchName: user.company_name,
-        managerName: `${user.first_name} ${user.last_name}`,
-        phoneNumber: user.phone.toString(),
-        email: user.email,
-        address: "-",
-        isActive: user.status,
-        description: "-",
-        createdAt: user.date_joined,
-      }))
+  const deleteBranchMutation = useApiDeleteDynamic<{ message?: string }>();
+
+  // ✅ تعیین لیست کاربران با تایپ دقیق
+  const branches: IUser[] = isIUserArray(apiData)
+    ? apiData
+    : isApiResponseObject(apiData) && Array.isArray(apiData.results)
+    ? apiData.results
     : [];
 
-  // ✅ پیام خالی
   const emptyMessage: string | null =
-    !Array.isArray(apiUsersData?.results) && typeof apiUsersData?.message === "string"
-      ? apiUsersData.message
+    branches.length === 0
+      ? isApiResponseObject(apiData)
+        ? apiData.message || "هیچ شعبه‌ای یافت نشد."
+        : "هیچ شعبه‌ای یافت نشد."
       : null;
 
-  const deleteBranchMutation = useApiDeleteDynamic<void>();
-
-  const handleView = (branch: Branch) => router.push(`/branch/${branch.id}/details`);
-  const handleEdit = (branch: Branch) => router.push(`/branch/${branch.id}/edit`);
-  const handleDelete = (branch: Branch) => {
+  const handleView = (branch: IUser) => router.push(`/branch/${branch.id}/details`);
+  const handleEdit = (branch: IUser) => router.push(`/branch/${branch.id}/edit`);
+  const handleDelete = (branch: IUser) => {
     setSelectedBranch(branch);
     setIsModalOpen(true);
   };
 
-  const confirmDelete = async () => {
-    if (!selectedBranch) return;
+  const confirmDelete = () => {
+    if (!selectedBranch?.id) return;
 
-    deleteBranchMutation.mutate(USERS.delete(Number(selectedBranch.id)), {
-      onSuccess: (res: any) => {
+    deleteBranchMutation.mutate(USERS.delete(selectedBranch.id), {
+      onSuccess: (res) => {
         toast.success(res?.message || "شعبه با موفقیت حذف شد");
         setIsModalOpen(false);
+        setSelectedBranch(null);
+        refetch();
       },
       onError: (err: ApiError) => {
         const message =
@@ -100,6 +77,13 @@ export default function BranchListPage() {
         setIsModalOpen(false);
       },
     });
+  };
+
+  const handleCloseModal = () => {
+    if (!deleteBranchMutation.isPending) {
+      setIsModalOpen(false);
+      setSelectedBranch(null);
+    }
   };
 
   return (
@@ -115,12 +99,12 @@ export default function BranchListPage() {
           <ContentLoader />
         </div>
       ) : error ? (
-        <p className="text-center text-red-500 mt-6">{error.message}</p>
+        <p className="text-center text-red-500 mt-6">{(error as ApiError)?.message || "خطا در دریافت داده‌ها"}</p>
       ) : emptyMessage ? (
         <EmptyData title={emptyMessage} />
       ) : (
         <BranchTable
-          branches={branches}
+          branches={branches} // BranchTable از IUser تایپ دریافت می‌کند
           onView={handleView}
           onEdit={handleEdit}
           onDelete={handleDelete}
@@ -129,10 +113,10 @@ export default function BranchListPage() {
 
       <DeleteConfirmationModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         onConfirm={confirmDelete}
         isLoading={deleteBranchMutation.isPending}
-        itemName={selectedBranch?.branchName}
+        itemName={selectedBranch?.branch_name || selectedBranch?.company_name || "—"}
         title="حذف شعبه"
         message="آیا از حذف این شعبه مطمئن هستید؟ این عمل غیرقابل بازگشت است."
       />

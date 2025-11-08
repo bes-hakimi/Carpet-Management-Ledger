@@ -9,17 +9,25 @@ import { SaveButton, CancelButton, DeleteButton } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Switch } from "@/components/ui/Switch";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
 import { useApiGet, useApiPut, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { IUser } from "@/types/user/user";
+
+interface BranchApiResponse {
+  details: IUser;
+  branches: unknown[];
+  staffs: unknown[];
+}
 
 export default function EditBranchPage() {
   const router = useRouter();
   const params = useParams();
   const branchId = Number(params.id);
 
-  const { data: branch, isLoading } = useApiGet<IUser>(
+  // ✅ استفاده از نوع صحیح که شامل details است
+  const { data: branch, isLoading } = useApiGet<BranchApiResponse>(
     `branch-${branchId}`,
     USERS.details(branchId)
   );
@@ -30,8 +38,11 @@ export default function EditBranchPage() {
   const [formData, setFormData] = useState<Partial<IUser>>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // ✅ پر کردن فرم با داده‌ی موجود در details
   useEffect(() => {
-    if (branch) setFormData(branch);
+    if (branch?.details) {
+      setFormData(branch.details);
+    }
   }, [branch]);
 
   const handleInputChange = (field: keyof IUser, value: string | boolean) => {
@@ -44,19 +55,13 @@ export default function EditBranchPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const body: Partial<IUser> = {
-      ...formData,
-    };
-
-    const toastId = toast.loading("در حال ذخیره تغییرات...");
-
-    await updateMutation.mutateAsync(body, {
+    await updateMutation.mutateAsync(formData, {
       onSuccess: () => {
-        toast.success("اطلاعات شعبه با موفقیت ذخیره شد!", { id: toastId });
+        toast.success("اطلاعات شعبه با موفقیت ذخیره شد!");
         router.push("/branch/list");
       },
       onError: (error) => {
-        toast.error(`خطا در ویرایش: ${error.message}`, { id: toastId });
+        toast.error(`خطا در ویرایش: ${error.message}`);
       },
     });
   };
@@ -65,12 +70,12 @@ export default function EditBranchPage() {
     const toastId = toast.loading("در حال حذف شعبه...");
     await deleteMutation.mutateAsync(USERS.delete(branchId), {
       onSuccess: () => {
-        toast.success("شعبه با موفقیت حذف شد!", { id: toastId });
+        toast.success("شعبه با موفقیت حذف شد!");
         setIsDeleteModalOpen(false);
         router.push("/branch/list");
       },
       onError: (error) => {
-        toast.error(`خطا در حذف: ${error.message}`, { id: toastId });
+        toast.error(`خطا در حذف: ${error.message}`);
       },
     });
   };
@@ -83,13 +88,7 @@ export default function EditBranchPage() {
           showHomeIcon
           description="در حال بارگذاری اطلاعات شعبه..."
         />
-        <div className="animate-pulse space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
+        <ContentLoader />
       </div>
     );
   }
@@ -103,23 +102,22 @@ export default function EditBranchPage() {
       />
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* ✅ اطلاعات اصلی */}
+        {/* اطلاعات اصلی */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold mb-6">اطلاعات اصلی</h3>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="نام"
-              value={formData.first_name || ""}
-              onChange={(e) => handleInputChange("first_name", e.target.value)}
-              placeholder="نام"
+              label="نام شعبه"
+              value={formData.branch_name || ""}
+              onChange={(e) => handleInputChange("branch_name", e.target.value)}
+              placeholder="نام شعبه"
               required
             />
             <Input
-              label="نام خانوادگی"
-              value={formData.last_name || ""}
-              onChange={(e) => handleInputChange("last_name", e.target.value)}
-              placeholder="نام خانوادگی"
+              label="مدیر شعبه"
+              value={formData.first_name || ""}
+              onChange={(e) => handleInputChange("first_name", e.target.value)}
+              placeholder="مدیر شعبه"
               required
             />
             <Input
@@ -130,21 +128,18 @@ export default function EditBranchPage() {
               required
             />
             <Input
-              label="نام شعبه"
-              value={formData.company_name || ""}
-              onChange={(e) => handleInputChange("company_name", e.target.value)}
-              placeholder="نام شعبه"
+              label="آدرس"
+              value={formData.address || ""}
+              onChange={(e) => handleInputChange("address", e.target.value)}
+              placeholder="آدرس شعبه"
               required
             />
-
           </div>
         </div>
 
-        {/* ✅ وضعیت */}
-        {/* ✅ وضعیت */}
+        {/* وضعیت حساب */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold mb-6">وضعیت حساب</h3>
-
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div>
               <h4 className="font-medium">
@@ -162,7 +157,6 @@ export default function EditBranchPage() {
             />
           </div>
 
-        
           {!formData.status && (
             <div className="mt-4">
               <Textarea
@@ -177,8 +171,7 @@ export default function EditBranchPage() {
           )}
         </div>
 
-
-        {/* ✅ توضیحات */}
+        {/* توضیحات */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <Textarea
             label="توضیحات"
@@ -188,22 +181,19 @@ export default function EditBranchPage() {
           />
         </div>
 
-        {/* ✅ دکمه‌ها */}
+        {/* دکمه‌ها */}
         <div className="flex flex-col sm:flex-row gap-4 justify-end items-center pt-6">
-          <DeleteButton onClick={() => setIsDeleteModalOpen(true)}>
+          <DeleteButton type="button" onClick={() => setIsDeleteModalOpen(true)}>
             حذف شعبه
           </DeleteButton>
-          <CancelButton onClick={() => router.back()}>
-            انصراف
-          </CancelButton>
+          <CancelButton type="button" onClick={() => router.back()}>انصراف</CancelButton>
           <SaveButton type="submit" loading={updateMutation.isPending}>
             ذخیره تغییرات
           </SaveButton>
-
         </div>
       </form>
 
-      {/* ✅ مدال حذف */}
+      {/* مدال حذف */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

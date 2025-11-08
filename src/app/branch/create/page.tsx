@@ -11,6 +11,7 @@ import { useApiPost } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import toast from "react-hot-toast";
 import PasswordInput from "@/components/ui/PasswordInput";
+import { ApiError } from "@/types/api/api";
 
 export default function CreateBranchPage() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function CreateBranchPage() {
 
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "شماره تماس الزامی است";
     else if (!phoneLocalRegex.test(formData.phoneNumber) && !phoneIntlRegex.test(formData.phoneNumber))
-      newErrors.phoneNumber =  "لطفاً شماره تماس با فرمت افغانستان وارد کنید";
+      newErrors.phoneNumber = "لطفاً شماره تماس با فرمت افغانستان وارد کنید";
 
     if (!formData.email.trim()) newErrors.email = "ایمیل الزامی است";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "ایمیل نامعتبر است";
@@ -80,7 +81,7 @@ export default function CreateBranchPage() {
 
     const payload = {
       branch_name: formData.branchName,
-      manager_name: formData.managerName,
+      first_name: formData.managerName,
       email: formData.email,
       password: formData.password,
       phone: formData.phoneNumber,
@@ -97,19 +98,21 @@ export default function CreateBranchPage() {
         toast.success(`شعبه ${formData.branchName} با موفقیت ایجاد شد`);
         router.push("/branch/list");
       },
-      onError: (error: any) => {
+      onError: (error: ApiError) => {
         console.error("API Error:", error);
 
-        const message = error?.response?.data.message ?? "مشکلی در ارسال اطلاعات به سرور رخ داد";
+        const message =
+          error.response?.data?.message ??
+          error.response?.data?.detail ??
+          error.message ??
+          "مشکلی در ارسال اطلاعات به سرور رخ داد";
         toast.error(message);
       },
     });
   };
 
   const handleCancel = () => {
-    if (confirm("آیا از انصراف مطمئن هستید؟ اطلاعات ذخیره نخواهند شد.")) {
-      router.back();
-    }
+    router.back();
   };
 
   return (
@@ -213,7 +216,7 @@ export default function CreateBranchPage() {
         />
 
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
-          <CancelButton onClick={handleCancel}>انصراف</CancelButton>
+          <CancelButton type="button" onClick={handleCancel}>انصراف</CancelButton>
           <SaveButton type="submit" loading={isPending}>
             ایجاد شعبه
           </SaveButton>

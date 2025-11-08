@@ -58,15 +58,16 @@ export function useApiPut<T, U>(url: string) {
 export function useApiDeleteDynamic<T>() {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<T, ApiError, string>({
+  return useMutation<T, ApiError, string>({
     mutationFn: async (url: string) => {
       const res = await apiClient.delete<T>(url);
       return res.data;
     },
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: (_data) => {
+      // حالا TypeScript می‌داند _data از نوع T است
+      queryClient.invalidateQueries();
+    },
   });
-
-  return mutation;
 }
 
 

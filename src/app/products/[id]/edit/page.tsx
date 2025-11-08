@@ -164,9 +164,12 @@ export default function EditProductPage() {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleImageSelect = (file: File | null) => {
-        if (file) setImages((prev) => [...prev, file]);
+    const handleImageSelect = (url: string | null) => {
+        if (!url) return;
+
+        console.log("Selected image URL:", url);
     };
+
 
     const removeImage = (index: number) => {
         setImages((prev) => prev.filter((_, i) => i !== index));

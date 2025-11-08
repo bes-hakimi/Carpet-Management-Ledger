@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { useApiPost } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import PasswordInput from "@/components/ui/PasswordInput";
+import { ApiError } from "@/types/api/api";
 
 export default function CreateStaffPage() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function CreateStaffPage() {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("07");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -81,19 +82,23 @@ export default function CreateStaffPage() {
         toast.success(`کارمند ${firstName} ${lastName} با موفقیت ایجاد شد`);
         router.push("/staff/list");
       },
-      onError: (error: any) => {
+      onError: (error: ApiError) => {
         console.error("API Error:", error);
 
-        const message = error?.response?.data.message ?? "مشکلی در ارسال اطلاعات به سرور رخ داد";
+        // بررسی می‌کنیم که پیام خطا از response.data یا خود شیء خطا باشد
+        const message =
+          error.response?.data?.message ??
+          error.response?.data?.detail ??
+          error.message ??
+          "مشکلی در ارسال اطلاعات به سرور رخ داد";
+
         toast.error(message);
       },
     });
   };
 
   const handleCancel = () => {
-    if (confirm("آیا از انصراف مطمئن هستید؟ اطلاعات ذخیره نخواهند شد.")) {
-      router.back();
-    }
+    router.back();
   };
 
   return (
@@ -190,7 +195,7 @@ export default function CreateStaffPage() {
         />
 
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
-          <CancelButton onClick={handleCancel}>انصراف</CancelButton>
+          <CancelButton type="button" onClick={handleCancel}>انصراف</CancelButton>
           <SaveButton type="submit" loading={isPending}>
             ایجاد کارمند
           </SaveButton>

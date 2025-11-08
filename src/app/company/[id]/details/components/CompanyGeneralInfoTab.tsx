@@ -3,15 +3,17 @@
 
 import { User, Phone, Building, Folder, Clock, Calendar, Image as ImageIcon, FileText, Download, Circle, RefreshCw, Mail } from "lucide-react";
 import Image from "next/image";
+import { IUser } from "@/types/user/user";
 
 interface Props {
-    data: any;
+    data: IUser;
     onDownload?: (fileType: "logo" | "contract") => void;
     isDeleting?: boolean;
 }
 
 export function CompanyGeneralInfoTab({ data, onDownload, isDeleting }: Props) {
 
+    console.log("details data", data)
     const InfoCard = ({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) => (
         <div className={`bg-gray-50 rounded-lg p-4 border border-gray-200 ${className}`}>
             <h3 className="text-sm font-medium text-gray-500 mb-2">{title}</h3>
@@ -19,12 +21,13 @@ export function CompanyGeneralInfoTab({ data, onDownload, isDeleting }: Props) {
         </div>
     );
 
-    const StatusBadge = ({ isActive }: { isActive: boolean }) => (
+    const StatusBadge = ({ isActive }: { isActive?: boolean }) => (
         <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
             <Circle className={`w-2 h-2 ml-2 fill-current ${isActive ? "text-green-500" : "text-red-500"}`} />
             {isActive ? "فعال" : "غیرفعال"}
         </span>
     );
+
 
     return (
         <div className="space-y-6">

@@ -14,34 +14,17 @@ import { ApiError } from "@/types/api/api";
 import { ContentLoader } from "@/components/loading/DataLoading";
 import { EmptyData } from "@/components/empty/EmptyData";
 
-interface Staff {
-  id: string;
-  name: string;
-  category: string;
-  owner: string;
-  status: "active" | "inactive";
-  createdAt: string;
-}
-
-interface ApiStaff {
-  id: number;
-  company_name: string;
-  category: string;
-  first_name: string;
-  last_name: string;
-  status: boolean;
-  date_joined: string;
-}
+import { IUser } from "@/types/user/user";
 
 interface StaffListResponse {
-  results?: ApiStaff[];
+  data?: IUser[];
   message?: string;
 }
 
 export default function StaffListPage() {
   const router = useRouter();
 
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<IUser | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: apiStaffData, isLoading, error, refetch } = useApiGet<StaffListResponse>(
@@ -49,35 +32,31 @@ export default function StaffListPage() {
     USERS.getStaffList
   );
 
-  // ✅ بررسی نوع داده و map امن
-  const staffList: Staff[] = Array.isArray(apiStaffData?.results)
-    ? apiStaffData.results.map((item) => ({
-        id: item.id.toString(),
-        name: item.company_name,
-        category: item.category,
-        owner: `${item.first_name} ${item.last_name}`,
-        status: item.status ? "active" : "inactive",
-        createdAt: item.date_joined,
-      }))
-    : [];
+  console.log("staff list", apiStaffData)
+
+  // مستقیم استفاده از IUser
+  const staffList: IUser[] = Array.isArray(apiStaffData) ? apiStaffData : [];
 
   const emptyMessage: string | null =
-    !Array.isArray(apiStaffData?.results) && typeof apiStaffData?.message === "string"
+    (!Array.isArray(apiStaffData?.data) || apiStaffData.data.length === 0) &&
+    typeof apiStaffData?.message === "string"
       ? apiStaffData.message
       : null;
 
-  const handleView = (staff: Staff) => router.push(`/staff/${staff.id}/details`);
-  const handleEdit = (staff: Staff) => router.push(`/staff/${staff.id}/edit`);
+  const handleView = (staff: IUser) => router.push(`/staff/${staff.id}/details`);
+  const handleEdit = (staff: IUser) => router.push(`/staff/${staff.id}/edit`);
 
-  const handleDeleteClick = (staff: Staff) => {
+  const handleDeleteClick = (staff: IUser) => {
     setSelectedStaff(staff);
     setIsModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (!selectedStaff) return;
+  const deleteStaffMutation = useApiDeleteDynamic<void>();
 
-    deleteStaffMutation.mutate(USERS.delete(Number(selectedStaff.id)), {
+  const handleConfirmDelete = () => {
+    if (!selectedStaff?.id) return;
+
+    deleteStaffMutation.mutate(USERS.delete(selectedStaff.id), {
       onSuccess: () => {
         toast.success("کارمند با موفقیت حذف شد");
         setIsModalOpen(false);
@@ -97,8 +76,6 @@ export default function StaffListPage() {
       setSelectedStaff(null);
     }
   };
-
-  const deleteStaffMutation = useApiDeleteDynamic<void>();
 
   return (
     <div className="w-full">
@@ -120,7 +97,7 @@ export default function StaffListPage() {
         <EmptyData title={emptyMessage} />
       ) : (
         <StaffTable
-          companies={staffList}
+          staff={staffList} 
           onView={handleView}
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
@@ -131,7 +108,7 @@ export default function StaffListPage() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
-        itemName={selectedStaff?.name}
+        itemName={selectedStaff?.company_name || `${selectedStaff?.first_name} ${selectedStaff?.last_name}`}
         confirmText="حذف"
         cancelText="لغو"
         isLoading={deleteStaffMutation.status === "pending"}
