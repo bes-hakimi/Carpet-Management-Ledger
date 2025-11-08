@@ -1,106 +1,124 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 import { PageHeader } from "@/components/ui/PageHeader";
 import { BranchTable } from "../components/BranchTable";
-import toast, { Toaster } from "react-hot-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import apiClient from "@/hooks/apiClient";
+import { ContentLoader } from "@/components/loading/DataLoading";
 import { USERS } from "@/endpoints/users";
 import { ApiError } from "@/types/api/api";
+import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import { EmptyData } from "@/components/empty/EmptyData";
+import { IUser } from "@/types/user/user";
 
-// تعریف interface برای Branch
-interface Branch {
-  id: string;
-  branchName: string;
-  managerName: string;
-  phoneNumber: string;
-  email?: string;
-  address: string;
-  isActive: boolean;
-  description?: string;
-  createdAt: string;
+type ApiResponse = { results?: IUser[]; message?: string } | IUser[];
+
+function isIUserArray(data: unknown): data is IUser[] {
+  return Array.isArray(data) && data.every((item) => typeof item === "object" && "id" in item);
 }
 
-// interface برای داده‌ی API کاربران
-interface ApiUser {
-  id: number;
-  company_name: string;
-  first_name: string;
-  last_name: string;
-  phone: number;
-  email?: string;
-  role: string;
-  status: boolean;
-  date_joined: string;
+function isApiResponseObject(data: unknown): data is { results?: IUser[]; message?: string } {
+  return typeof data === "object" && data !== null && ("results" in data || "message" in data);
 }
 
 export default function BranchListPage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const [selectedBranch, setSelectedBranch] = useState<IUser | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // fetch شعب از API
-  const { data: apiUsers = [], isLoading, error, refetch } = useQuery<ApiUser[], ApiError>({
-    queryKey: ["branches"],
-    queryFn: async () => {
-      const res = await apiClient.get<ApiUser[]>(USERS.getAll);
-      return res.data;
-    },
-    retry: 1,
-  });
+  const { data: apiData, isLoading, error, refetch } = useApiGet<ApiResponse>(
+    "branches",
+    USERS.getBranchList
+  );
 
-  // تبدیل داده‌های API به Branch[]
-  const branches: Branch[] = (apiUsers || []).map(user => ({
-    id: user.id.toString(),
-    branchName: user.company_name,
-    managerName: `${user.first_name} ${user.last_name}`,
-    phoneNumber: user.phone.toString(),
-    email: user.email,
-    address: "-", // اگر فیلد آدرس وجود ندارد
-    isActive: user.status,
-    description: "-", // اگر فیلد توضیحات وجود ندارد
-    createdAt: user.date_joined,
-  }));
+  const deleteBranchMutation = useApiDeleteDynamic<{ message?: string }>();
 
-  // حذف شعبه به صورت داینامیک
-  const deleteBranchMutation = useMutation<void, ApiError, string>({
-    mutationFn: async (id: string) => {
-      const res = await apiClient.delete<void>(USERS.delete(Number(id)));
-      return res.data;
-    },
-    onSuccess: () => {
-      toast.success("شعبه با موفقیت حذف شد");
-      queryClient.invalidateQueries({ queryKey: ["branches"] });
-    },
-    onError: (err: ApiError) => {
-      console.error(err);
-      toast.error(err.message || "حذف شعبه با مشکل مواجه شد");
-    },
-  });
+  // ✅ تعیین لیست کاربران با تایپ دقیق
+  const branches: IUser[] = isIUserArray(apiData)
+    ? apiData
+    : isApiResponseObject(apiData) && Array.isArray(apiData.results)
+    ? apiData.results
+    : [];
 
-  const handleView = (branch: Branch) => router.push(`/branch/${branch.id}/details`);
-  const handleEdit = (branch: Branch) => router.push(`/branch/${branch.id}/edit`);
-  const handleDelete = (branch: Branch) => {
-    if (!confirm(`آیا از حذف شعبه "${branch.branchName}" مطمئن هستید؟`)) return;
-    deleteBranchMutation.mutate(branch.id);
+  const emptyMessage: string | null =
+    branches.length === 0
+      ? isApiResponseObject(apiData)
+        ? apiData.message || "هیچ شعبه‌ای یافت نشد."
+        : "هیچ شعبه‌ای یافت نشد."
+      : null;
+
+  const handleView = (branch: IUser) => router.push(`/branch/${branch.id}/details`);
+  const handleEdit = (branch: IUser) => router.push(`/branch/${branch.id}/edit`);
+  const handleDelete = (branch: IUser) => {
+    setSelectedBranch(branch);
+    setIsModalOpen(true);
   };
 
-  if (isLoading) return <p>در حال بارگذاری...</p>;
-  if (error) return <p>خطا در دریافت داده‌ها: {error.message}</p>;
+  const confirmDelete = () => {
+    if (!selectedBranch?.id) return;
+
+    deleteBranchMutation.mutate(USERS.delete(selectedBranch.id), {
+      onSuccess: (res) => {
+        toast.success(res?.message || "شعبه با موفقیت حذف شد");
+        setIsModalOpen(false);
+        setSelectedBranch(null);
+        refetch();
+      },
+      onError: (err: ApiError) => {
+        const message =
+          err.response?.data?.message ||
+          err.response?.data?.detail ||
+          err.message ||
+          "خطا در حذف شعبه";
+        toast.error(message);
+        setIsModalOpen(false);
+      },
+    });
+  };
+
+  const handleCloseModal = () => {
+    if (!deleteBranchMutation.isPending) {
+      setIsModalOpen(false);
+      setSelectedBranch(null);
+    }
+  };
 
   return (
     <div className="w-full">
-      <Toaster position="top-right" reverseOrder={false} />
       <PageHeader
         title="مدیریت شعبات"
-        description="لیست تمام شعب ثبت شده در سیستم"
+        description="لیست تمام شعبات ثبت شده در سیستم"
         showHomeIcon
       />
-      <BranchTable
-        branches={branches}
-        onView={handleView}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+
+      {isLoading ? (
+        <div className="flex w-full h-[300px] items-center justify-center">
+          <ContentLoader />
+        </div>
+      ) : error ? (
+        <p className="text-center text-red-500 mt-6">{(error as ApiError)?.message || "خطا در دریافت داده‌ها"}</p>
+      ) : emptyMessage ? (
+        <EmptyData title={emptyMessage} />
+      ) : (
+        <BranchTable
+          branches={branches} // BranchTable از IUser تایپ دریافت می‌کند
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
+
+      <DeleteConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={confirmDelete}
+        isLoading={deleteBranchMutation.isPending}
+        itemName={selectedBranch?.branch_name || selectedBranch?.company_name || "—"}
+        title="حذف شعبه"
+        message="آیا از حذف این شعبه مطمئن هستید؟ این عمل غیرقابل بازگشت است."
       />
     </div>
   );

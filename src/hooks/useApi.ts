@@ -42,19 +42,32 @@ export function useApiPatch<T, U>(url: string) {
   });
 }
 
-// src/hooks/useApi.ts
-export function useApiDeleteDynamic<T>() {
+// ✅ Generic PUT hook
+export function useApiPut<T, U>(url: string) {
   const queryClient = useQueryClient();
-
-  const mutation = useMutation<T, ApiError, string>({
-    mutationFn: async (url: string) => {
-      const res = await apiClient.delete<T>(url);
+  return useMutation<T, ApiError, U>({
+    mutationFn: async (body: U) => {
+      const res = await apiClient.put<T>(url, body);
       return res.data;
     },
     onSuccess: () => queryClient.invalidateQueries(),
   });
+}
 
-  return mutation; 
+// src/hooks/useApi.ts
+export function useApiDeleteDynamic<T>() {
+  const queryClient = useQueryClient();
+
+  return useMutation<T, ApiError, string>({
+    mutationFn: async (url: string) => {
+      const res = await apiClient.delete<T>(url);
+      return res.data;
+    },
+    onSuccess: (_data) => {
+      // حالا TypeScript می‌داند _data از نوع T است
+      queryClient.invalidateQueries();
+    },
+  });
 }
 
 

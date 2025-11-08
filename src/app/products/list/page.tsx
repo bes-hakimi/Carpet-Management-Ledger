@@ -1,226 +1,195 @@
-// src/app/products/page.tsx
 "use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
-import { Eye, Edit, Trash2, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { AddButton } from "@/components/ui/Button";
+import { Eye, Edit, Trash2 } from "lucide-react";
 import { ProductType } from "@/types/product/product";
-
-// داده‌های نمونه
-const mockProducts: ProductType[] = [
-  {
-    id: "1",
-    name: "قالین افغانی دست‌باف",
-    code: "CAR001",
-    type: "handmade",
-    size: "3x4",
-    quality: "premium",
-    purchasePrice: 15000,
-    salePrice: 22000,
-    stock: 5,
-    status: "available",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: "2",
-    name: "قالین ایرانی ماشینی",
-    code: "CAR002",
-    type: "machine",
-    size: "4x6",
-    quality: "standard",
-    purchasePrice: 8000,
-    salePrice: 12000,
-    stock: 12,
-    status: "available",
-    createdAt: "2024-01-20",
-  },
-  {
-    id: "3",
-    name: "گبه اصیل افغانی",
-    code: "CAR003",
-    type: "gabbeh",
-    size: "2x3",
-    quality: "luxury",
-    purchasePrice: 25000,
-    salePrice: 35000,
-    stock: 0,
-    status: "out_of_stock",
-    createdAt: "2024-01-10",
-  },
-];
+import { PRODUCT } from "@/endpoints/products";
+import Image from "next/image";
+import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import { ContentLoader } from "@/components/loading/DataLoading";
+import { EmptyData } from "@/components/empty/EmptyData";
+import { ApiError } from "@/types/api/api";
 
 export default function ProductsPage() {
   const router = useRouter();
-  const [products, setProducts] = useState<ProductType[]>(mockProducts);
+  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const handleView = (product: ProductType) => {
-    console.log("View product:", product);
-    router.push(`/products/${product.id}/details`);
-  };
+  const { data: apiResponse, isLoading, error, refetch } = useApiGet<
+    ProductType[] | { message: string }
+  >("products", PRODUCT.list);
 
-  const handleEdit = (product: ProductType) => {
-    console.log("Edit product:", product);
-    router.push(`/products/${product.id}/edit`);
-  };
+  const deleteMutation = useApiDeleteDynamic<void>();
+  const { mutateAsync, status } = deleteMutation;
+
+  // اگر response آرایه بود، محصولات هستند، وگرنه پیام خالی است
+  const products: ProductType[] = Array.isArray(apiResponse) ? apiResponse : [];
+  const emptyMessage =
+    !Array.isArray(apiResponse) && typeof apiResponse?.message === "string"
+      ? apiResponse.message
+      : null;
+
+  const handleView = (product: ProductType) => router.push(`/products/${product.id}/details`);
+  const handleEdit = (product: ProductType) => router.push(`/products/${product.id}/edit`);
+  const handleAddProduct = () => router.push("/products/add");
 
   const handleDelete = (product: ProductType) => {
-    if (confirm(`آیا از حذف محصول "${product.name}" مطمئن هستید؟`)) {
-      setProducts(prev => prev.filter(p => p.id !== product.id));
-      console.log("Delete product:", product);
-    }
+    setSelectedProduct(product);
+    setDeleteModalOpen(true);
   };
 
-  const handleAddProduct = () => {
-    router.push("/products/add");
+  const confirmDelete = async () => {
+    if (!selectedProduct) return;
+    try {
+      await mutateAsync(PRODUCT.delete(selectedProduct.id));
+      setDeleteModalOpen(false);
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const columns = [
     {
-      key: "name" as const,
+      key: "name" as keyof ProductType,
       label: "نام محصول",
       sortable: true,
-      render: (value: string | number, row: ProductType) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">ق</span>
+      render: (value: string | number | null, row: ProductType) => {
+        const displayValue = value ?? "-";
+        return (
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10 rounded-lg border-2 border-teal-500 overflow-hidden">
+              <Image
+                src={row.image || "/placeholder.png"}
+                alt={row.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <div className="font-medium text-gray-900">{displayValue}</div>
+              <div className="text-xs text-gray-500">کد: {row.slug || "-"}</div>
+            </div>
           </div>
-          <div>
-            <div className="font-medium text-gray-900">{value as string}</div>
-            <div className="text-xs text-gray-500">کد: {row.code}</div>
-          </div>
-        </div>
-      )
+        );
+      },
     },
     {
-      key: "type" as const,
+      key: "type" as keyof ProductType,
       label: "نوع",
       sortable: true,
-      render: (value: string | number) => {
-        const typeConfig = {
-          handmade: { color: "bg-blue-100 text-blue-800", label: "دست‌باف" },
-          machine: { color: "bg-green-100 text-green-800", label: "ماشینی" },
-          kilim: { color: "bg-purple-100 text-purple-800", label: "کلیم" },
-          gabbeh: { color: "bg-amber-100 text-amber-800", label: "گبه" }
-        };
-
-        const config = typeConfig[value as keyof typeof typeConfig] || { color: "bg-gray-100 text-gray-800", label: value as string };
-        return (
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config.color}`}>
-            {config.label}
-          </span>
-        );
-      }
+      render: (value: string | number | null) => (
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+          {value ?? "-"}
+        </span>
+      ),
     },
     {
-      key: "size" as const,
+      key: "size" as keyof ProductType,
       label: "سایز",
       sortable: true,
-      render: (value: string | number) => (
-        <span className="font-medium">{value as string} متر</span>
-      )
+      render: (value: string | number | null) => <span className="font-medium">{value ?? "-"}</span>,
     },
     {
-      key: "purchasePrice" as const,
+      key: "main_price" as keyof ProductType,
       label: "قیمت خرید",
       sortable: true,
-      render: (value: string | number) => (
-        <span className="font-medium text-gray-900">
-          {(value as number).toLocaleString()} افغانی
-        </span>
-      )
+      render: (value: string | number | null) => {
+        const price = Number(value) || 0;
+        return <span className="font-medium text-gray-900">{price.toLocaleString()} افغانی</span>;
+      },
     },
     {
-      key: "stock" as const,
+      key: "stock_qty" as keyof ProductType,
       label: "موجودی",
       sortable: true,
-      render: (value: string | number, row: ProductType) => {
-        const numericValue = value as number;
+      render: (value: string | number | null) => {
+        const numericValue = Number(value) || 0;
         const isOutOfStock = numericValue === 0;
         const isLowStock = numericValue > 0 && numericValue < 5;
-
         return (
           <div className="flex flex-col">
-            <span className={`font-medium ${isOutOfStock ? "text-red-600" :
-              isLowStock ? "text-amber-600" : "text-green-600"
-              }`}>
+            <span
+              className={`font-medium ${
+                isOutOfStock
+                  ? "text-red-600"
+                  : isLowStock
+                  ? "text-amber-600"
+                  : "text-green-600"
+              }`}
+            >
               {numericValue} عدد
             </span>
-            {isLowStock && (
-              <span className="text-xs text-amber-500">موجودی کم</span>
-            )}
-            {isOutOfStock && (
-              <span className="text-xs text-red-500">ناموجود</span>
-            )}
+            {isLowStock && <span className="text-xs text-amber-500">موجودی کم</span>}
+            {isOutOfStock && <span className="text-xs text-red-500">ناموجود</span>}
           </div>
         );
-      }
+      },
     },
     {
-      key: "status" as const,
-      label: "وضعیت",
+      key: "country" as keyof ProductType,
       sortable: true,
-      render: (value: string | number) => {
-        const statusConfig = {
-          available: { color: "bg-green-100 text-green-800", label: "موجود" },
-          out_of_stock: { color: "bg-red-100 text-red-800", label: "ناموجود" },
-          discontinued: { color: "bg-gray-100 text-gray-800", label: "متوقف شده" }
-        };
-
-        const config = statusConfig[value as keyof typeof statusConfig] || { color: "bg-gray-100 text-gray-800", label: value as string };
-        return (
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config.color}`}>
-            {config.label}
-          </span>
-        );
-      }
-    }
+      label: "مبدأ",
+      render: (value: string | number | null) => (
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+          {value ?? "-"}
+        </span>
+      ),
+    },
   ];
 
   const actions = (product: ProductType) => [
-    {
-      label: "مشاهده",
-      icon: <Eye size={16} />,
-      onClick: () => handleView(product)
-    },
-    {
-      label: "ویرایش",
-      icon: <Edit size={16} />,
-      onClick: () => handleEdit(product)
-    },
-    {
-      label: "حذف",
-      icon: <Trash2 size={16} />,
-      onClick: () => handleDelete(product)
-    }
+    { label: "مشاهده", icon: <Eye size={16} />, onClick: () => handleView(product) },
+    { label: "ویرایش", icon: <Edit size={16} />, onClick: () => handleEdit(product) },
+    { label: "حذف", icon: <Trash2 size={16} />, onClick: () => handleDelete(product) },
   ];
 
   return (
     <div className="w-full">
       <PageHeader
         title="مدیریت محصولات"
-        description="لیست تمام قالین‌های موجود در سیستم"
-        showHomeIcon={true}
-        backUrl="/dashboard"
+        description="لیست تمام محصولات موجود در سیستم"
+        showHomeIcon
       />
 
       <div className="mb-6 flex justify-end">
-        <AddButton
-          size="md"
-          onClick={handleAddProduct}
-        >
+        <AddButton size="md" onClick={handleAddProduct}>
           افزودن محصول جدید
         </AddButton>
       </div>
 
-      <DataTable<ProductType>
-        data={products}
-        columns={columns}
-        title="لیست محصولات"
-        searchable={true}
-        actions={actions}
-        onRowClick={handleView}
+      {isLoading ? (
+        <div className="flex w-full h-[300px] items-center justify-center">
+          <ContentLoader />
+        </div>
+      ) : error ? (
+        <p className="text-center text-red-500 mt-4">
+          {(error as ApiError).message || "خطا در دریافت اطلاعات"}
+        </p>
+      ) : emptyMessage ? (
+        <EmptyData title={emptyMessage} />
+      ) : (
+        <DataTable<ProductType>
+          data={products}
+          columns={columns}
+          title="لیست محصولات"
+          searchable
+          actions={actions}
+          onRowClick={handleView}
+        />
+      )}
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        itemName={selectedProduct?.name}
+        isLoading={status === "pending"}
       />
     </div>
   );

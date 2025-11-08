@@ -1,108 +1,96 @@
-
 import { DataTable } from "@/components/ui/DataTable";
 import { Eye, Edit, Trash2, Building } from "lucide-react";
-
-interface Company {
-    id: string;
-    name: string;
-    category: string;
-    owner: string;
-    status: 'active' | 'inactive';
-    createdAt: string;
-}
+import { IUser } from "@/types/user/user";
 
 interface StaffTableProps {
-    companies: Company[];
-    onView: (company: Company) => void;
-    onEdit: (company: Company) => void;
-    onDelete: (company: Company) => void;
+    staff: IUser[];
+    onView: (staff: IUser) => void;
+    onEdit: (staff: IUser) => void;
+    onDelete: (staff: IUser) => void;
 }
 
-
-export function StaffTable({ companies, onView, onEdit, onDelete }: StaffTableProps) {
-
-    console.log("Rendering CompanyTable with companies:", companies);
+export function StaffTable({ staff, onView, onEdit, onDelete }: StaffTableProps) {
     const columns = [
         {
-            key: "name" as const,
-            label: "نام شرکت",
+            key: "company_name" as const,
+            label: "نام کارمند",
             sortable: true,
-            render: (value: string | number, row: Company) => (
+            render: (value: IUser[keyof IUser], row: IUser) => (
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
                         <Building size={20} className="text-white" />
                     </div>
                     <div>
-                        <div className="font-medium text-gray-900">{value as string}</div>
+                        <div className="font-medium text-gray-900">
+                            {row.first_name} {row.last_name}
+                        </div>
                         <div className="text-xs text-gray-500">ID: {row.id}</div>
                     </div>
                 </div>
-            )
+            ),
         },
         {
-            key: "category" as const,
-            label: "دسته‌بندی",
+            key: "phone" as const,
+            label: "شماره تماس",
             sortable: true,
-            render: (value: string | number) => (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {value as string}
+            render: (value: IUser[keyof IUser], row: IUser) => (
+                <span className="inline-flex items-center text-sm">
+                    {row.phone ?? "-"}
                 </span>
-            )
+            ),
         },
         {
-            key: "owner" as const,
-            label: "مالک",
-            sortable: true
+            key: "email" as const,
+            label: "ایمیل",
+            sortable: true,
+            render: (value: IUser[keyof IUser], row: IUser) => (
+                <span className="inline-flex items-center text-sm ">
+                    {row.email ?? "-"}
+                </span>
+            ),
         },
+
+        {
+            key: "date_joined" as const,
+            label: "تاریخ ایجاد",
+            sortable: true,
+            render: (value: IUser[keyof IUser], row: IUser) =>
+                row.date_joined ? new Date(row.date_joined).toLocaleDateString("fa-IR") : "-",
+        },
+
         {
             key: "status" as const,
             label: "وضعیت",
             sortable: true,
-            render: (value: string | number) => {
+            render: (value: IUser[keyof IUser], row: IUser) => {
                 const statusConfig = {
-                    active: { color: "bg-green-100 text-green-800", label: "فعال" },
-                    inactive: { color: "bg-red-100 text-red-800", label: "غیرفعال" },
+                    true: { color: "bg-green-100 text-green-800", label: "فعال" },
+                    false: { color: "bg-red-100 text-red-800", label: "غیرفعال" },
                 };
-
-                const config = statusConfig[value as keyof typeof statusConfig];
+                const config = statusConfig[row.status ? "true" : "false"];
                 return (
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config?.color || 'bg-gray-100 text-gray-800'}`}>
-                        {config?.label || value as string}
+                    <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config?.color ?? "bg-gray-100 text-gray-800"
+                            }`}
+                    >
+                        {config?.label ?? "-"}
                     </span>
                 );
-            }
+            },
         },
-        {
-            key: "createdAt" as const,
-            label: "تاریخ ایجاد",
-            sortable: true,
-            render: (value: string | number) => new Date(value as string).toLocaleDateString('fa-IR')
-        }
     ];
 
-    const actions = (company: Company) => [
-        {
-            label: "مشاهده",
-            icon: <Eye size={16} />,
-            onClick: () => onView(company)
-        },
-        {
-            label: "ویرایش",
-            icon: <Edit size={16} />,
-            onClick: () => onEdit(company)
-        },
-        {
-            label: "حذف",
-            icon: <Trash2 size={16} />,
-            onClick: () => onDelete(company)
-        }
+    const actions = (row: IUser) => [
+        { label: "مشاهده", icon: <Eye size={16} />, onClick: () => onView(row) },
+        { label: "ویرایش", icon: <Edit size={16} />, onClick: () => onEdit(row) },
+        { label: "حذف", icon: <Trash2 size={16} />, onClick: () => onDelete(row) },
     ];
 
     return (
-        <DataTable<Company>
-            data={companies}
+        <DataTable<IUser>
+            data={staff}
             columns={columns}
-            title="لیست شرکت‌ها"
+            title="لیست کارمندان"
             searchable={true}
             actions={actions}
             onRowClick={onView}

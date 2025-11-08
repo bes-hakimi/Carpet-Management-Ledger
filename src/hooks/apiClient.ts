@@ -36,19 +36,34 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ مدیریت خطاها
+// مدیریت پاسخ‌ها و خطاها
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("✅ API Response:", {
+      url: response.config.url,
+      method: response.config.method,
+      status: response.status,
+      data: response.data,
+    });
+    return response;
+  },
   async (error) => {
     const status = error?.response?.status;
+    const url = error?.config?.url;
+    const method = error?.config?.method;
 
-    if (status === 401) {
+    console.error("❌ API Error:", {
+      url,
+      method,
+      status,
+      message: error.message,
+      data: error?.response?.data,
+    });
+
+    if (status === 401 && typeof window !== "undefined") {
       console.warn("🚫 Unauthorized: invalid or expired token.");
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("management-ledger");
-      }
-      // در صورت نیاز می‌توانی اینجا ریدایرکت به لاگین بزاری
-      // window.location.href = "/login";
+      localStorage.removeItem("management-ledger");
+      // window.location.href = "/login"; // در صورت نیاز ریدایرکت
     }
 
     if (status && status >= 500) {
@@ -58,5 +73,6 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default apiClient;

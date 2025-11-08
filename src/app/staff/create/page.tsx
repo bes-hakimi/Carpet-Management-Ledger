@@ -11,14 +11,15 @@ import toast from "react-hot-toast";
 import { useApiPost } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import PasswordInput from "@/components/ui/PasswordInput";
+import { ApiError } from "@/types/api/api";
 
 export default function CreateStaffPage() {
   const router = useRouter();
-  const { mutate: createUser, isPending } = useApiPost(USERS.create);
+  const { mutate: createStaff, isPending } = useApiPost(USERS.create);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("07");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,9 +35,10 @@ export default function CreateStaffPage() {
     if (!firstName.trim()) newErrors.firstName = "نام الزامی است";
     if (!lastName.trim()) newErrors.lastName = "نام خانوادگی الزامی است";
 
-    const phoneRegex = /^07\d{8}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      newErrors.phoneNumber = "شماره تماس باید با 07 شروع شود و 10 رقم باشد";
+    const phoneLocalRegex = /^07\d{8}$/;      // مثال: 0700123456
+    const phoneIntlRegex = /^\+937\d{8}$/;   // مثال: +93700123456
+    if (!phoneLocalRegex.test(phoneNumber) && !phoneIntlRegex.test(phoneNumber)) {
+      newErrors.phoneNumber = "لطفاً شماره تماس با فرمت افغانستان وارد کنید";
     }
 
     if (!email.trim()) newErrors.email = "ایمیل الزامی است";
@@ -53,16 +55,6 @@ export default function CreateStaffPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 🔹 نگاشت خطای API
-  const handleApiErrors = (data: any) => {
-    if (!data || typeof data !== "object") return;
-    const apiErrors: Record<string, string> = {};
-    Object.entries(data).forEach(([key, value]) => {
-      if (Array.isArray(value)) apiErrors[key] = value.join(" ");
-      else if (typeof value === "string") apiErrors[key] = value;
-    });
-    setErrors((prev) => ({ ...prev, ...apiErrors }));
-  };
 
   // ✅ ارسال فرم
   const handleSubmit = (e: React.FormEvent) => {
@@ -71,16 +63,13 @@ export default function CreateStaffPage() {
 
     if (!validateForm()) return;
 
-    // نرمال‌سازی شماره تماس (حذف صفر و تبدیل به عدد)
-    const normalizedPhone = Number(phoneNumber.replace(/^0/, "7"));
-
     const payload = {
       email,
       first_name: firstName,
       last_name: lastName,
       password,
       role: "staff",
-      phone: normalizedPhone,
+      phone: phoneNumber,
       status: isActive,
       address,
       description,
@@ -88,31 +77,28 @@ export default function CreateStaffPage() {
 
     console.log("Submitting payload:", payload);
 
-    createUser(payload, {
+    createStaff(payload, {
       onSuccess: () => {
         toast.success(`کارمند ${firstName} ${lastName} با موفقیت ایجاد شد`);
-        router.push("/company/list");
+        router.push("/staff/list");
       },
-      onError: (error: any) => {
+      onError: (error: ApiError) => {
         console.error("API Error:", error);
-        const data = error?.response?.data ?? error?.data ?? null;
-        if (data && typeof data === "object") {
-          handleApiErrors(data);
-          Object.entries(data).forEach(([key, value]) => {
-            if (Array.isArray(value)) value.forEach((msg) => toast.error(msg));
-            else if (typeof value === "string") toast.error(value);
-          });
-        } else {
-          toast.error("مشکلی در ارسال اطلاعات به سرور رخ داد");
-        }
+
+        // بررسی می‌کنیم که پیام خطا از response.data یا خود شیء خطا باشد
+        const message =
+          error.response?.data?.message ??
+          error.response?.data?.detail ??
+          error.message ??
+          "مشکلی در ارسال اطلاعات به سرور رخ داد";
+
+        toast.error(message);
       },
     });
   };
 
   const handleCancel = () => {
-    if (confirm("آیا از انصراف مطمئن هستید؟ اطلاعات ذخیره نخواهند شد.")) {
-      router.back();
-    }
+    router.back();
   };
 
   return (
@@ -144,7 +130,7 @@ export default function CreateStaffPage() {
           <Input
             label="شماره تماس"
             type="text"
-            placeholder="مثلاً 0700200200"
+            placeholder="شماره تماس با فرمت افغانستان"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             error={errors.phoneNumber}
@@ -209,7 +195,7 @@ export default function CreateStaffPage() {
         />
 
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
-          <CancelButton onClick={handleCancel}>انصراف</CancelButton>
+          <CancelButton type="button" onClick={handleCancel}>انصراف</CancelButton>
           <SaveButton type="submit" loading={isPending}>
             ایجاد کارمند
           </SaveButton>

@@ -7,12 +7,12 @@ import toast from "react-hot-toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CompanyTable } from "../components/CompanyTable";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
-
 import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { ApiError } from "@/types/api/api";
+import { ContentLoader } from "@/components/loading/DataLoading";
+import { EmptyData } from "@/components/empty/EmptyData";
 
-// ✅ تایپ جدول شرکت‌ها
 interface Company {
   id: string;
   name: string;
@@ -24,7 +24,6 @@ interface Company {
   createdAt: string;
 }
 
-// ✅ تایپ داده‌ی خام API
 interface ApiCompany {
   id: number;
   company_name: string;
@@ -39,22 +38,25 @@ interface ApiCompany {
 
 export default function CompaniesListPage() {
   const router = useRouter();
-
-  // ✅ وضعیت modal و شرکت انتخاب‌شده
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // ✅ گرفتن شرکت‌ها از API
-  const { data: apiCompanies = [], isLoading, error, refetch } = useApiGet<ApiCompany[]>(
-    "companies",
-    USERS.getAll
-  );
+  const { data: apiResponse, isLoading, error, refetch } = useApiGet<
+    ApiCompany[] | { message: string }
+  >("companies", USERS.getCompanyList);
 
-  // ✅ حذف داینامیک
   const deleteCompanyMutation = useApiDeleteDynamic<void>();
 
-  // ✅ تبدیل داده API به تایپ Company
-  const companies: Company[] = apiCompanies.map(item => ({
+  // بررسی اینکه data آرایه است یا پیام
+  const apiCompanies: ApiCompany[] =
+    Array.isArray(apiResponse) ? apiResponse : [];
+
+  const emptyMessage: string | null =
+    !Array.isArray(apiResponse) && typeof apiResponse?.message === "string"
+      ? apiResponse.message
+      : null;
+
+  const companies: Company[] = apiCompanies.map((item) => ({
     id: item.id.toString(),
     name: item.company_name,
     category: item.category,
@@ -65,23 +67,15 @@ export default function CompaniesListPage() {
     createdAt: item.date_joined,
   }));
 
-  // ===========================
-  // دستورات view, edit, delete
-  // ===========================
-
   const handleView = (company: Company) => router.push(`/company/${company.id}/details`);
   const handleEdit = (company: Company) => router.push(`/company/${company.id}/edit`);
-
-  // باز کردن modal
   const handleDeleteClick = (company: Company) => {
     setSelectedCompany(company);
     setIsModalOpen(true);
   };
 
-  // تایید حذف
   const handleConfirmDelete = () => {
     if (!selectedCompany) return;
-
     deleteCompanyMutation.mutate(USERS.delete(Number(selectedCompany.id)), {
       onSuccess: () => {
         toast.success("شرکت با موفقیت حذف شد");
@@ -96,20 +90,12 @@ export default function CompaniesListPage() {
     });
   };
 
-  // بستن modal
   const handleCloseModal = () => {
     if (deleteCompanyMutation.status !== "pending") {
       setIsModalOpen(false);
       setSelectedCompany(null);
     }
   };
-
-  // ===========================
-  // رندر صفحه
-  // ===========================
-
-  if (isLoading) return <p>در حال بارگذاری...</p>;
-  if (error) return <p>خطا در دریافت داده‌ها: {error.message}</p>;
 
   return (
     <div className="w-full">
@@ -119,12 +105,22 @@ export default function CompaniesListPage() {
         showHomeIcon
       />
 
-      <CompanyTable
-        companies={companies}
-        onView={handleView}
-        onEdit={handleEdit}
-        onDelete={handleDeleteClick}
-      />
+      {isLoading ? (
+        <div className="flex w-full h-[300px] items-center justify-center">
+          <ContentLoader />
+        </div>
+      ) : error ? (
+        <p className="text-center text-red-500 mt-4">{error.message}</p>
+      ) : emptyMessage ? (
+        <EmptyData title={emptyMessage} />
+      ) : (
+        <CompanyTable
+          companies={companies}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+        />
+      )}
 
       <DeleteConfirmationModal
         isOpen={isModalOpen}

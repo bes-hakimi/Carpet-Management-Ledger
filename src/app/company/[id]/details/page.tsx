@@ -1,195 +1,156 @@
 "use client";
-import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useApiGet, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EditButton, DeleteButton } from "@/components/ui/Button";
-import { User, Phone, Building, Folder, Clock, Calendar, Image as ImageIcon, FileText, Download, Circle, RefreshCw, Mail  } from "lucide-react";
+import { CompanyGeneralInfoTab } from "./components/CompanyGeneralInfoTab";
+import { BranchesTab } from "./components/BranchesTab";
+import { StaffTab } from "./components/StaffTab";
+import { CompanyStatsTab } from "./components/CompanyStatsTab";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import {ApiError } from "@/types/api/api";
+import toast, { Toaster } from "react-hot-toast";
+import { ContentLoader } from "@/components/loading/DataLoading";
+import { IUser } from "@/types/user/user";
 
-export default function UserDetailsPage() {
+interface CompanyDetailsResponse {
+  details: IUser;
+  branches: IUser[];
+  staffs: IUser[];
+  stats: IUser;
+}
+
+export default function CompanyDetailsPage() {
   const router = useRouter();
   const params = useParams();
   const companyId = Number(params.id);
 
-  const { data, isLoading, error } = useApiGet<any>(`user-${companyId}`, USERS.details(companyId));
+  const { data, isLoading, error } = useApiGet<CompanyDetailsResponse>(
+    `user-${companyId}`,
+    USERS.details(companyId)
+  );
 
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  const handleEdit = () => router.push(`/compnay/${companyId}/edit`);
   const deleteCompanyMutation = useApiDeleteDynamic();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"general" | "branches" | "staff" | "stats">("general");
 
+  const handleEdit = () => router.push(`/company/${companyId}/edit`);
 
   const handleDeleteConfirm = async () => {
     if (!data) return;
     deleteCompanyMutation.mutate(USERS.delete(companyId), {
       onSuccess: () => {
         setIsDeleteOpen(false);
-        router.push("/compnay");
+        toast.success("شرکت با موفقیت حذف شد!");
+        router.push("/company/list");
       },
-      onError: (err) => {
-        console.error(err);
-        alert("حذف با خطا مواجه شد!");
-      }
+      onError: (error: unknown) => {
+        const apiError = error as ApiError;
+        console.error("Delete API Error:", apiError);
+
+        const message =
+          apiError.response?.data?.message ??
+          apiError.response?.data?.detail ??
+          apiError.message ??
+          "حذف با خطا مواجه شد!";
+
+        toast.error(message);
+      },
     });
   };
 
-
   const handleDownload = (fileType: "logo" | "contract") => {
     if (!data) return;
-    const url = fileType === "logo" ? data.company_logo : data.contract;
-    window.open(url, "_blank");
+    const url = fileType === "logo" ? data.details.company_logo : data.details.contract;
+    if (url) window.open(url, "_blank");
   };
 
-  const InfoCard = ({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) => (
-    <div className={cn("bg-gray-50 rounded-lg p-4 border border-gray-200", className)}>
-      <h3 className="text-sm font-medium text-gray-500 mb-2">{title}</h3>
-      <div className="text-gray-900">{children}</div>
-    </div>
-  );
+  if (isLoading)
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <ContentLoader />
+      </div>
+    );
 
-  const StatusBadge = ({ isActive }: { isActive: boolean }) => (
-    <span className={cn(
-      "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium",
-      isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-    )}>
-      <Circle className={cn("w-2 h-2 ml-2 fill-current", isActive ? "text-green-500" : "text-red-500")} />
-      {isActive ? "فعال" : "غیرفعال"}
-    </span>
-  );
-
-  if (isLoading) return <div>در حال بارگذاری...</div>;
-  if (error || !data) return <div>شرکت یافت نشد یا خطا در دریافت اطلاعات</div>;
+  if (error || !data)
+    return <div>شرکت یافت نشد یا خطا در دریافت اطلاعات</div>;
 
   return (
     <div className="w-full">
+      <Toaster position="top-right" />
+
       <PageHeader title="جزئیات شرکت" showHomeIcon description="مشاهده کامل اطلاعات شرکت" />
 
       <div className="flex justify-end gap-3 mb-6">
-        <DeleteButton size="md" onClick={() => setIsDeleteOpen(true)}>حذف شرکت</DeleteButton>
-        <EditButton size="md" onClick={handleEdit}>ویرایش شرکت</EditButton>
+        <DeleteButton size="md" onClick={() => setIsDeleteOpen(true)}>
+          حذف شرکت
+        </DeleteButton>
+        <EditButton size="md" onClick={handleEdit}>
+          ویرایش شرکت
+        </EditButton>
       </div>
 
-      <div className="space-y-6">
-        {/* اطلاعات شخصی */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">اطلاعات شخصی</h3>
-            <StatusBadge isActive={data.is_active} />
-          </div>
+      {/* تب‌ها */}
+      <div className="mb-6 border-b border-gray-200">
+        <nav className="-mb-px flex space-x-6" aria-label="Tabs">
+          <button
+            className={`py-2 px-4 text-sm font-medium ${
+              activeTab === "general"
+                ? "border-b-2 border-teal-600 text-teal-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("general")}
+          >
+            اطلاعات کلی
+          </button>
+          <button
+            className={`py-2 px-4 text-sm font-medium ${
+              activeTab === "branches"
+                ? "border-b-2 border-teal-600 text-teal-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("branches")}
+          >
+            شعبات
+          </button>
+          <button
+            className={`py-2 px-4 text-sm font-medium ${
+              activeTab === "staff"
+                ? "border-b-2 border-teal-600 text-teal-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("staff")}
+          >
+            کارمندان
+          </button>
+          <button
+            className={`py-2 px-4 text-sm font-medium ${
+              activeTab === "stats"
+                ? "border-b-2 border-teal-600 text-teal-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("stats")}
+          >
+            آمار
+          </button>
+        </nav>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <InfoCard title="نام">
-              <div className="flex items-center">
-                <User className="ml-2 w-4 h-4 text-gray-500" />
-                {data.first_name} {data.last_name}
-              </div>
-            </InfoCard>
-
-            <InfoCard title="شماره تماس">
-              <div className="flex items-center">
-                <Phone className="ml-2 w-4 h-4 text-gray-500" />
-                {data.phone}
-              </div>
-            </InfoCard>
-
-            <InfoCard title="نام شرکت">
-              <div className="flex items-center">
-                <Building className="ml-2 w-4 h-4 text-gray-500" />
-                {data.company_name}
-              </div>
-            </InfoCard>
-
-            <InfoCard title="کتگوری">
-              <div className="flex items-center">
-                <Folder className="ml-2 w-4 h-4 text-gray-500" />
-                {data.category}
-              </div>
-            </InfoCard>
-
-            <InfoCard title="مدت فعال بودن">
-              <div className="flex items-center">
-                <Clock className="ml-2 w-4 h-4 text-gray-500" />
-                {data.time_of_active ? `فعال برای ${data.time_of_active}` : "-"}
-              </div>
-            </InfoCard>
-            <InfoCard title="ایمل">
-              <div className="flex items-center">
-                <Mail  className="ml-2 w-4 h-4 text-gray-500" />
-                {data.email ? data.email : "نامشخص"}
-              </div>
-            </InfoCard>
-          </div>
-        </div>
-
-        {/* فایل‌ها */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">فایل‌ها و مدارک</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InfoCard title="لگوی شرکت">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <ImageIcon className="ml-2 w-4 h-4 text-gray-500" />
-                  <span>company-logo.png</span>
-                </div>
-                <button onClick={() => handleDownload("logo")} className="flex items-center text-teal-600 hover:text-teal-700 text-sm font-medium">
-                  <Download className="w-4 h-4 ml-1" /> دانلود
-                </button>
-              </div>
-            </InfoCard>
-
-            <InfoCard title="قرارداد">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <FileText className="ml-2 w-4 h-4 text-gray-500" />
-                  <span>contract.pdf</span>
-                </div>
-                <button onClick={() => handleDownload("contract")} className="flex items-center text-teal-600 hover:text-teal-700 text-sm font-medium">
-                  <Download className="w-4 h-4 ml-1" /> دانلود
-                </button>
-              </div>
-            </InfoCard>
-          </div>
-        </div>
-
-        {/* توضیحات */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">توضیحات</h3>
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <p className="text-gray-700 leading-relaxed">{data.description || "توضیحاتی ثبت نشده است."}</p>
-          </div>
-        </div>
-
-        {/* تاریخ‌ها */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">تاریخ‌ها</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InfoCard title="تاریخ ایجاد">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Calendar className="ml-2 w-4 h-4 text-gray-500" />
-                  {data.date_joined ? new Date(data.date_joined).toLocaleDateString("fa-IR") : "نامشخص"}
-                </div>
-                <span className="text-xs text-gray-500">
-                  {data.date_joined ? new Date(data.date_joined).toLocaleTimeString("fa-IR") : ""}
-                </span>
-              </div>
-            </InfoCard>
-
-            <InfoCard title="آخرین بروزرسانی">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <RefreshCw className="ml-2 w-4 h-4 text-gray-500" />
-                  {data.updated_at ? new Date(data.updated_at).toLocaleDateString("fa-IR") : "بروزرسانی صورت نگرفته"}
-                </div>
-                <span className="text-xs text-gray-500">
-                  {data.updated_at ? new Date(data.updated_at).toLocaleTimeString("fa-IR") : ""}
-                </span>
-              </div>
-            </InfoCard>
-          </div>
-        </div>
+      {/* محتوای تب فعال */}
+      <div>
+        {activeTab === "general" && (
+          <CompanyGeneralInfoTab
+            data={data.details}
+            onDownload={handleDownload}
+            isDeleting={deleteCompanyMutation.status === "pending"}
+          />
+        )}
+        {activeTab === "branches" && <BranchesTab data={data.branches} />}
+        {activeTab === "staff" && <StaffTab data={data.staffs} />}
+        {activeTab === "stats" && <CompanyStatsTab data={data.stats} />}
       </div>
 
       {/* مدال حذف */}
@@ -197,14 +158,9 @@ export default function UserDetailsPage() {
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDeleteConfirm}
-        itemName={`${data?.first_name} ${data?.last_name}`}
+        itemName={`${data.details.first_name} ${data.details.last_name}`}
         isLoading={deleteCompanyMutation.status === "pending"}
       />
-
     </div>
   );
-}
-
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
 }

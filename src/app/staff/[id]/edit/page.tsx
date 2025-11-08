@@ -4,41 +4,44 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { FileUpload } from "@/components/ui/FileUpload";
-import { ImageUpload } from "@/components/ui/ImageUpload";
 import { SaveButton, CancelButton, DeleteButton } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Switch } from "@/components/ui/Switch";
-import { categories, durations, warrantyPeriods } from "../../constants/userOptions";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
-
+import { ContentLoader } from "@/components/loading/DataLoading";
 import { useApiGet, useApiPut, useApiDeleteDynamic } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { IUser } from "@/types/user/user";
 
-export default function EditUserPage() {
+interface StaffDetailsResponse {
+  details: IUser;
+}
+
+export default function EditStaffPage() {
   const router = useRouter();
   const params = useParams();
-  const companyId = Number(params.id);
 
-  const { data: company, isLoading } = useApiGet<IUser>(
-    `company-${companyId}`,
-    USERS.details(companyId)
-  );
+  // ✅ همیشه نوع را string نگه می‌داریم
+  const staffId = params?.id ? String(params.id) : "";
 
-  const updateMutation = useApiPut<IUser, Partial<IUser>>(USERS.update(companyId));
+  const { data: staff, isLoading } = useApiGet<StaffDetailsResponse>(
+  `staff-${staffId}`,
+  USERS.details(Number(staffId))
+);
+
+
+  const updateMutation = useApiPut<IUser, Partial<IUser>>(USERS.update(Number(staffId)));
   const deleteMutation = useApiDeleteDynamic<{ message: string }>();
 
   const [formData, setFormData] = useState<Partial<IUser>>({});
-  const [companyLogo, setCompanyLogo] = useState<string | null>(null);
-  const [contractFileUrl, setContractFileUrl] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (company) setFormData(company);
-  }, [company]);
+    if (staff?.details) {
+      setFormData(staff.details);
+    }
+  }, [staff]);
 
   const handleInputChange = (field: keyof IUser, value: string | boolean) => {
     setFormData((prev) => ({
@@ -49,36 +52,29 @@ export default function EditUserPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
 
-    const body: Partial<IUser> = {
-      ...formData,
-      company_logo: companyLogo || formData.company_logo,
-      contract: contractFileUrl || formData.contract,
-    };
-
-    const toastId = toast.loading("در حال ذخیره تغییرات...");
-
-    await updateMutation.mutateAsync(body, {
+    await updateMutation.mutateAsync(formData, {
       onSuccess: () => {
-        toast.success("اطلاعات شرکت با موفقیت ذخیره شد!", { id: toastId });
-        router.push("/company/list");
+        toast.success("اطلاعات کارمند با موفقیت ذخیره شد!");
+        router.push("/staff/list");
       },
       onError: (error) => {
-        toast.error(`خطا در ویرایش: ${error.message}`, { id: toastId });
+        toast.error(`خطا در ویرایش: ${error.message}`);
       },
     });
   };
 
   const handleDeleteConfirm = async () => {
-    const toastId = toast.loading("در حال حذف شرکت...");
-    await deleteMutation.mutateAsync(USERS.delete(companyId), {
+    const toastId = toast.loading("در حال حذف کارمند...");
+    await deleteMutation.mutateAsync(USERS.delete(Number(staffId)), {
       onSuccess: () => {
-        toast.success("شرکت با موفقیت حذف شد!", { id: toastId });
+        toast.success("کارمند با موفقیت حذف شد!");
         setIsDeleteModalOpen(false);
-        router.push("/company/list");
+        router.push("/staff/list");
       },
       onError: (error) => {
-        toast.error(`خطا در حذف: ${error.message}`, { id: toastId });
+        toast.error(`خطا در حذف: ${error.message}`);
       },
     });
   };
@@ -87,17 +83,19 @@ export default function EditUserPage() {
     return (
       <div className="w-full">
         <PageHeader
-          title="ویرایش شرکت"
+          title="ویرایش کارمند"
           showHomeIcon
-          description="در حال بارگذاری اطلاعات شرکت..."
+          description="در حال بارگذاری اطلاعات کارمند..."
         />
-        <div className="animate-pulse space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
+        <ContentLoader />
+      </div>
+    );
+  }
+
+  if (!formData?.id) {
+    return (
+      <div className="text-center mt-10 text-gray-500">
+        اطلاعاتی برای این کارمند یافت نشد.
       </div>
     );
   }
@@ -105,9 +103,9 @@ export default function EditUserPage() {
   return (
     <div className="w-full">
       <PageHeader
-        title="ویرایش شرکت"
+        title="ویرایش کارمند"
         showHomeIcon
-        description="اطلاعات شرکت را ویرایش کنید"
+        description="اطلاعات کارمند را ویرایش کنید"
       />
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -138,55 +136,11 @@ export default function EditUserPage() {
               required
             />
             <Input
-              label="نام شرکت"
-              value={formData.company_name || ""}
-              onChange={(e) => handleInputChange("company_name", e.target.value)}
-              placeholder="نام شرکت"
+              label="آدرس"
+              value={formData.address || ""}
+              onChange={(e) => handleInputChange("address", e.target.value)}
+              placeholder="آدرس"
               required
-            />
-
-          </div>
-        </div>
-
-        {/* ✅ فایل‌ها */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold mb-6">فایل‌ها و مدارک</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-3 text-gray-700">لگوی شرکت</label>
-              <ImageUpload onImageSelect={setCompanyLogo} label="آپلود لگوی جدید" maxSize={2} defaultImageUrl={formData.company_logo} />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-3 text-gray-700">قرارداد</label>
-              <FileUpload onFileSelect={setContractFileUrl} accept=".pdf,.doc,.docx" label="آپلود قرارداد جدید" maxSize={10} initialFileUrl={formData.contract} />
-            </div>
-          </div>
-        </div>
-
-        {/* ✅ تنظیمات فروشگاه */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold mb-6">تنظیمات فروشگاه</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Select
-              label="کتگوری"
-              options={categories}
-              value={formData.category || ""}
-              onChange={(val) => handleInputChange("category", val)}
-            />
-            <Select
-              label="مدت فعال بودن"
-              options={durations}
-              value={formData.time_of_active || ""}
-              onChange={(val) => handleInputChange("time_of_active", val)}
-            />
-            <Select
-              label="مدت زمانت جنس"
-              options={warrantyPeriods}
-              value={formData.warranty || ""}
-              onChange={(val) => handleInputChange("warranty", val)}
             />
           </div>
         </div>
@@ -212,7 +166,6 @@ export default function EditUserPage() {
             />
           </div>
 
-        
           {!formData.status && (
             <div className="mt-4">
               <Textarea
@@ -227,7 +180,6 @@ export default function EditUserPage() {
           )}
         </div>
 
-
         {/* ✅ توضیحات */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <Textarea
@@ -241,15 +193,12 @@ export default function EditUserPage() {
         {/* ✅ دکمه‌ها */}
         <div className="flex flex-col sm:flex-row gap-4 justify-end items-center pt-6">
           <DeleteButton type="button" onClick={() => setIsDeleteModalOpen(true)}>
-            حذف شرکت
+            حذف کارمند
           </DeleteButton>
-          <CancelButton type="button" onClick={() => router.back()}>
-            انصراف
-          </CancelButton>
+          <CancelButton type="button" onClick={() => router.back()}>انصراف</CancelButton>
           <SaveButton type="submit" loading={updateMutation.isPending}>
             ذخیره تغییرات
           </SaveButton>
-
         </div>
       </form>
 
