@@ -11,7 +11,7 @@ import { BranchesTab } from "./components/BranchesTab";
 import { StaffTab } from "./components/StaffTab";
 import { CompanyStatsTab } from "./components/CompanyStatsTab";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
-import {ApiError } from "@/types/api/api";
+import { ApiError } from "@/types/api/api";
 import toast, { Toaster } from "react-hot-toast";
 import { ContentLoader } from "@/components/loading/DataLoading";
 import { IUser } from "@/types/user/user";
@@ -68,99 +68,87 @@ export default function CompanyDetailsPage() {
     if (url) window.open(url, "_blank");
   };
 
-  if (isLoading)
-    return (
-      <div className="flex w-full h-full items-center justify-center">
-        <ContentLoader />
-      </div>
-    );
-
-  if (error || !data)
-    return <div>شرکت یافت نشد یا خطا در دریافت اطلاعات</div>;
 
   return (
     <div className="w-full">
       <Toaster position="top-right" />
 
-      <PageHeader title="جزئیات شرکت" showHomeIcon description="مشاهده کامل اطلاعات شرکت" />
+      {/* Page Header همیشه نمایش داده شود */}
+      <PageHeader
+        title="جزئیات شرکت"
+        showHomeIcon
+        description="مشاهده کامل اطلاعات شرکت"
+      />
 
-      <div className="flex justify-end gap-3 mb-6">
-        <DeleteButton size="md" onClick={() => setIsDeleteOpen(true)}>
-          حذف شرکت
-        </DeleteButton>
-        <EditButton size="md" onClick={handleEdit}>
-          ویرایش شرکت
-        </EditButton>
-      </div>
+      {/* فقط وقتی داده‌ها لود شده و خطایی نیست دکمه‌ها نمایش داده شوند */}
+      {!isLoading && !error && data && (
+        <div className="flex justify-end gap-3 mb-6">
+          <DeleteButton size="md" onClick={() => setIsDeleteOpen(true)}>
+            حذف شرکت
+          </DeleteButton>
+          <EditButton size="md" onClick={handleEdit}>
+            ویرایش شرکت
+          </EditButton>
+        </div>
+      )}
 
-      {/* تب‌ها */}
-      <div className="mb-6 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-6" aria-label="Tabs">
-          <button
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "general"
-                ? "border-b-2 border-teal-600 text-teal-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("general")}
-          >
-            اطلاعات کلی
-          </button>
-          <button
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "branches"
-                ? "border-b-2 border-teal-600 text-teal-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("branches")}
-          >
-            شعبات
-          </button>
-          <button
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "staff"
-                ? "border-b-2 border-teal-600 text-teal-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("staff")}
-          >
-            کارمندان
-          </button>
-          <button
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "stats"
-                ? "border-b-2 border-teal-600 text-teal-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("stats")}
-          >
-            آمار
-          </button>
-        </nav>
-      </div>
+      {/* محتوای اصلی */}
+      {isLoading ? (
+        <div className="flex w-full h-full items-center justify-center">
+          <ContentLoader />
+        </div>
+      ) : error || !data ? (
+        <div>شرکت یافت نشد یا خطا در دریافت اطلاعات</div>
+      ) : (
+        <>
+          {/* تب‌ها */}
+          <div className="mb-6 border-b border-gray-200">
+            <nav className="-mb-px flex space-x-6" aria-label="Tabs">
+              {["general", "branches", "staff", "stats"].map((tab) => (
+                <button
+                  key={tab}
+                  className={`py-2 px-4 text-sm font-medium ${activeTab === tab
+                      ? "border-b-2 border-teal-600 text-teal-600"
+                      : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  onClick={() => setActiveTab(tab as typeof activeTab)}
+                >
+                  {{
+                    general: "اطلاعات کلی",
+                    branches: "شعبات",
+                    staff: "کارمندان",
+                    stats: "آمار",
+                  }[tab]}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-      {/* محتوای تب فعال */}
-      <div>
-        {activeTab === "general" && (
-          <CompanyGeneralInfoTab
-            data={data.details}
-            onDownload={handleDownload}
-            isDeleting={deleteCompanyMutation.status === "pending"}
-          />
-        )}
-        {activeTab === "branches" && <BranchesTab data={data.branches} />}
-        {activeTab === "staff" && <StaffTab data={data.staffs} />}
-        {activeTab === "stats" && <CompanyStatsTab data={data.stats} />}
-      </div>
+          {/* محتوای تب فعال */}
+          <div>
+            {activeTab === "general" && (
+              <CompanyGeneralInfoTab
+                data={data.details}
+                onDownload={handleDownload}
+                isDeleting={deleteCompanyMutation.status === "pending"}
+              />
+            )}
+            {activeTab === "branches" && <BranchesTab data={data.branches} />}
+            {activeTab === "staff" && <StaffTab data={data.staffs} />}
+            {activeTab === "stats" && <CompanyStatsTab data={data.stats ?? {}} />}
+          </div>
+        </>
+      )}
 
       {/* مدال حذف */}
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDeleteConfirm}
-        itemName={`${data.details.first_name} ${data.details.last_name}`}
+        itemName={`${data?.details.first_name ?? ""} ${data?.details.last_name ?? ""}`}
         isLoading={deleteCompanyMutation.status === "pending"}
       />
     </div>
+
   );
 }

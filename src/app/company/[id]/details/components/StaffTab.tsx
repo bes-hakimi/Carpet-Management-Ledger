@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/ui/DataTable";
-import { Eye, Edit, Trash2, Building } from "lucide-react";
+import { Eye, Edit, Trash2, User2 } from "lucide-react";
 import { IUser } from "@/types/user/user";
 
 interface StaffTabProps {
@@ -13,35 +13,38 @@ interface StaffTabProps {
 export function StaffTab({ data, onView, onEdit, onDelete }: StaffTabProps) {
   const columns = [
     {
-      key: "company_name" as keyof IUser,
-      label: "نام شرکت",
+      key: "first_name" as keyof IUser,
+      label: "کارمند",
       sortable: true,
-      render: (value: IUser[keyof IUser], row: IUser) => {
-        const companyName = (value as string) ?? "بدون نام";
-        return (
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
-              <Building size={20} className="text-white" />
-            </div>
-            <div>
-              <div className="font-medium text-gray-900">{companyName}</div>
-              <div className="text-xs text-gray-500">ID: {row.id}</div>
-            </div>
+      render: (_value: IUser[keyof IUser], row: IUser) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+            <User2 size={20} className="text-white" />
           </div>
-        );
-      },
+          <div>
+            <div className="font-medium text-gray-900">{row.first_name} {row.last_name}</div>
+            <div className="text-xs text-gray-500">ID: {row.id}</div>
+          </div>
+        </div>
+      ),
     },
     {
-      key: "category" as keyof IUser,
-      label: "دسته‌بندی",
-      sortable: true,
-      render: (value: IUser[keyof IUser]) => <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{value as string ?? ""}</span>,
-    },
-    {
-      key: "manager_name" as keyof IUser,
-      label: "مالک",
+      key: "phone" as keyof IUser,
+      label: "شماره تماس",
       sortable: true,
       render: (value: IUser[keyof IUser]) => (value as string) ?? "",
+    },
+    {
+      key: "email" as keyof IUser,
+      label: "ایمل",
+      sortable: true,
+      render: (value: IUser[keyof IUser]) => (value as string) ?? "",
+    },
+    {
+      key: "date_joined" as keyof IUser,
+      label: "تاریخ ایجاد",
+      sortable: true,
+      render: (value: IUser[keyof IUser]) => (value ? new Date(value as string).toLocaleDateString("fa-IR") : ""),
     },
     {
       key: "status" as keyof IUser,
@@ -61,12 +64,6 @@ export function StaffTab({ data, onView, onEdit, onDelete }: StaffTabProps) {
         );
       },
     },
-    {
-      key: "date_joined" as keyof IUser,
-      label: "تاریخ ایجاد",
-      sortable: true,
-      render: (value: IUser[keyof IUser]) => (value ? new Date(value as string).toLocaleDateString("fa-IR") : ""),
-    },
   ];
 
   const actions = (user: IUser) => [
@@ -79,7 +76,7 @@ export function StaffTab({ data, onView, onEdit, onDelete }: StaffTabProps) {
     <DataTable<IUser>
       data={data}
       columns={columns}
-      title="لیست شرکت‌ها"
+      title="لیست کارمندان"
       searchable={true}
       actions={actions}
       onRowClick={onView}

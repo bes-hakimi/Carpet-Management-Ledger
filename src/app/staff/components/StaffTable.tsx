@@ -12,7 +12,7 @@ interface StaffTableProps {
 export function StaffTable({ staff, onView, onEdit, onDelete }: StaffTableProps) {
     const columns = [
         {
-            key: "company_name" as const,
+            key: "first_name" as const,
             label: "نام کارمند",
             sortable: true,
             render: (value: IUser[keyof IUser], row: IUser) => (
