@@ -15,6 +15,7 @@ interface SelectProps {
   clearable?: boolean;
   required?: boolean;
   size?: "sm" | "md" | "lg";
+  dir?: "rtl" | "ltr",
   className?: string;
 }
 
@@ -30,6 +31,7 @@ export function Select({
   clearable = false,
   required = false,
   size = "md",
+  dir = "rtl",
   className
 }: SelectProps) {
   const [open, setOpen] = useState(false);
@@ -47,8 +49,8 @@ export function Select({
 
   const filteredOptions = searchable
     ? options.filter(option =>
-        option.label.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : options;
 
   useEffect(() => {
@@ -84,9 +86,8 @@ export function Select({
     <div ref={selectRef} className={`relative w-full ${className || ''}`}>
       {label && (
         <label
-          className={`text-sm font-medium mb-1 ${
-            error ? "text-red-600" : "text-gray-600"
-          }`}
+          className={`text-sm font-medium mb-1 ${error ? "text-red-600" : "text-gray-600"
+            }`}
         >
           {label}
           {required && <span className="text-red-500 mr-1">*</span>}
@@ -152,11 +153,11 @@ export function Select({
             ) : (
               filteredOptions.map((option) => (
                 <div
+                  dir={dir}
                   key={option.value}
                   onClick={() => handleSelect(option.value)}
-                  className={`flex items-center justify-between text-sm px-4 py-2 cursor-pointer hover:bg-teal-500 hover:text-white transition-all duration-150 ${
-                    value === option.value ? "bg-teal-500 text-white" : ""
-                  }`}
+                  className={`flex items-center justify-between text-sm px-4 py-2 cursor-pointer hover:bg-teal-500 hover:text-white transition-all duration-150 ${value === option.value ? "bg-teal-500 text-white" : ""
+                    }`}
                 >
                   <span>{option.label}</span>
                   {value === option.value && <Check size={16} />}

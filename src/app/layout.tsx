@@ -3,7 +3,8 @@ import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { SyncProvider } from "@/offline/SyncProvider";
 import ClientLayout from "@/components/layout/ClientLayout";
-import Providers from "./providers"; 
+import Providers from "./providers";
+import { AuthProvider } from "@/context/AuthContext";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -34,10 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className={`${vazirmatn.variable} font-sans antialiased bg-gray-50`}>
-        <Providers> 
-          <SyncProvider />
-          <ClientLayout>{children}</ClientLayout>
-        </Providers>
+        <AuthProvider >
+          <Providers>
+            <SyncProvider />
+            <ClientLayout>{children}</ClientLayout>
+          </Providers>
+        </AuthProvider>
       </body>
     </html>
   );
