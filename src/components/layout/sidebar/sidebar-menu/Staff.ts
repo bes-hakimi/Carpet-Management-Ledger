@@ -7,6 +7,7 @@ import {
   Wallet,
   PlusCircle,
   List,
+  Package,
 } from "lucide-react";
 
 export const sidebarMenuStaff = [
@@ -14,6 +15,14 @@ export const sidebarMenuStaff = [
     title: "داشبورد",
     icon: LayoutDashboard,
     link: "/dashboard",
+  },
+  {
+    title: "محصولات",
+    icon: Package,
+    submenu: [
+      { title: "اضافه نمودن محصول", icon: PlusCircle, link: "/products/add" },
+      { title: "لیست محصول", icon: List, link: "/products/list" },
+    ],
   },
   {
     title: "فروشات",

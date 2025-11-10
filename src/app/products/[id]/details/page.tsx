@@ -64,9 +64,9 @@ export default function ProductDetailPage() {
 
             {/* نمایش محتوا فقط وقتی دیتا آماده است */}
             {!isLoading && !isError && product && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* بخش تصاویر */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <div className="bg-white rounded-lg p-6 border border-gray-200">
                             <h3 className="font-semibold text-gray-900 mb-4">تصاویر محصول</h3>
                             <div className="mb-4">
@@ -108,7 +108,7 @@ export default function ProductDetailPage() {
                     </div>
 
                     {/* بخش اطلاعات اصلی و فنی */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <div className="bg-white rounded-lg p-6 border border-gray-200">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
@@ -164,6 +164,35 @@ export default function ProductDetailPage() {
 
                         </div>
                     </div>
+
+                    {/* بخش اطلاعات ایجادکننده محصول */}
+                    {product.created_by_info && (
+                        <div className="bg-white rounded-lg p-4 border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">اطلاعات ایجادکننده</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <InfoCard
+                                    icon={<Star size={20} />}
+                                    label="نام ایجادکننده"
+                                    value={product.created_by_info.first_name}
+                                />
+                                {product.created_by_info.branch_name && (
+                                    <InfoCard
+                                        icon={<MapPin size={20} />}
+                                        label="شعبه"
+                                        value={product.created_by_info.branch_name}
+                                    />
+                                )}
+                                {product.created_by_info.company_name && (
+                                    <InfoCard
+                                        icon={<TrendingUp size={20} />}
+                                        label="شرکت"
+                                        value={product.created_by_info.company_name}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             )}
 
