@@ -28,5 +28,11 @@ export interface ProductType {
     staff_name: string | null;
     company_name: string | null;
   },
-  // برای فیلدهای احتمالی آینده
+  created_by_info?: {
+    id: number;
+    first_name: string;     
+    branch_name: string | null;
+    company_name: string | null;
+  };
+ 
 }
