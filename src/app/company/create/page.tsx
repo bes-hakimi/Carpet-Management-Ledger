@@ -190,14 +190,6 @@ export default function CreateCompanyPage() {
             error={errors.companyName}
           />
 
-          <Select
-            label="مدت ضمانت اجناس"
-            options={warrantyPeriods}
-            value={warranty}
-            onChange={setWarranty}
-            placeholder="انتخاب مدت ضمانت"
-          />
-
           <div className="md:col-span-2">
             <Input
               label="آدرس"
@@ -229,23 +221,38 @@ export default function CreateCompanyPage() {
             />
           </div>
 
-          <Select
-            label="کتگوری"
-            options={categories}
-            value={category}
-            onChange={setCategory}
-            placeholder="انتخاب نوع فعالیت شرکت"
-            error={errors.category}
-          />
+          <div className="col-span-2 rounded-xl border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold mb-6">تنظیمات فروشگاه</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-          <Select
-            label="مدت فعال بودن"
-            options={durations}
-            value={duration}
-            onChange={setDuration}
-            placeholder="انتخاب مدت فعال بودن حساب"
-            error={errors.duration}
-          />
+
+              <Select
+                label="کتگوری"
+                options={categories}
+                value={category}
+                onChange={setCategory}
+                placeholder="انتخاب نوع فعالیت شرکت"
+                error={errors.category}
+              />
+
+              <Select
+                label="مدت فعال بودن"
+                options={durations}
+                value={duration}
+                onChange={setDuration}
+                placeholder="انتخاب مدت فعال بودن حساب"
+                error={errors.duration}
+              />
+
+              <Select
+                label="مدت ضمانت اجناس"
+                options={warrantyPeriods}
+                value={warranty}
+                onChange={setWarranty}
+                placeholder="انتخاب مدت ضمانت"
+              />
+            </div>
+          </div>
 
           <div className="md:col-span-2 bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div className="flex items-center justify-between">

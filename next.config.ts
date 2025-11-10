@@ -5,11 +5,15 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**.uploadthing.com", // ← برای لینک‌های uploadthing
+        hostname: "**.uploadthing.com",
       },
       {
         protocol: "https",
-        hostname: "**.ufs.sh", // ← گاهی uploadthing از زیر دامنه ufs.sh استفاده می‌کند
+        hostname: "**.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com", // ← اضافه کردن hostname تصویر خطا
       },
     ],
   },

@@ -10,14 +10,23 @@ export interface ProductType {
   stock_qty: number;
   main_price: string;       // قیمت اصلی به صورت رشته
   image: string;
-  gallery_image: string | null;
+  gallery_image: string[] | null;
   description: string;
   weight: string;           // مثلا "2.00"
   main_color: string;
   age: number;
   created_at: string;       // تاریخ ایجاد
   updated_at: string;       // تاریخ بروزرسانی
-  user: number;
   message: string
+  user: {
+    id: number;
+    first_name: string | null;
+    last_name: string | null;
+    email: string;
+    role: string | null;
+    branch_name: string | null;
+    staff_name: string | null;
+    company_name: string | null;
+  },
   // برای فیلدهای احتمالی آینده
 }

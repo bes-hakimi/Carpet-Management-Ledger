@@ -1,22 +1,65 @@
 "use client";
-import { DataTable } from "@/components/ui/DataTable";
+
+import { useState } from "react";
+import { DataTable, Column } from "@/components/ui/DataTable";
 import { Eye, Edit, Trash2, Building2 } from "lucide-react";
 import { IUser } from "@/types/user/user";
+import { useApiDeleteDynamic } from "@/hooks/useApi";
+import { USERS } from "@/endpoints/users";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import { toast } from "react-hot-toast";
+import { ApiError } from "@/types/api/api";
+import { useRouter } from "next/navigation";
 
-interface BranchesTabProps {
-  data: IUser[];
-  onView?: (branch: IUser) => void;
-  onEdit?: (branch: IUser) => void;
-  onDelete?: (branch: IUser) => void;
-}
+export function BranchesTab({ data }: { data: IUser[] }) {
+  // ✅ حذف API hook
+  const { mutateAsync: deleteBranch, isPending } = useApiDeleteDynamic<unknown>();
+  const router = useRouter();
 
-export function BranchesTab({ data, onView, onEdit, onDelete }: BranchesTabProps) {
-  const columns = [
+
+  // ✅ کنترل مودال حذف
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState<IUser | null>(null);
+
+  // ✅ هندل حذف
+  const handleDelete = async () => {
+    if (!selectedBranch) return;
+    try {
+      if (!selectedBranch?.id) return;
+      await deleteBranch(USERS.delete(selectedBranch.id));
+
+      toast.success(`شعبه "${selectedBranch.branch_name}" با موفقیت حذف شد`);
+    } catch (error) {
+      const err = error as ApiError;
+      toast.error(
+        err.response?.data?.message ||
+        err.response?.data?.detail ||
+        err.message ||
+        "خطا در حذف شعبه"
+      );
+    } finally {
+      setDeleteModalOpen(false);
+      setSelectedBranch(null);
+    }
+  };
+
+  // ✅ هندل مشاهده
+    const handleView = (branch: IUser) => { 
+    router.push(`/branch/${branch.id}/details`);
+  };
+
+  // ✅ هندل ویرایش
+  const handleEdit = (branch: IUser) => {
+     router.push(`/branch/${branch.id}/edit`);
+  };
+
+  // ✅ تعریف ستون‌ها
+  const columns: Column<IUser>[] = [
     {
-      key: "branch_name" as keyof IUser,
+      key: "branch_name",
       label: "نام شعبه",
       sortable: true,
-      render: (value: IUser[keyof IUser], row: IUser) => {
+      render: (value, row) => {
         const branchName = (value as string) ?? "بدون نام";
         return (
           <div className="flex items-center gap-3">
@@ -32,34 +75,35 @@ export function BranchesTab({ data, onView, onEdit, onDelete }: BranchesTabProps
       },
     },
     {
-      key: "first_name" as keyof IUser,
+      key: "first_name",
       label: "مدیر شعبه",
       sortable: true,
-      render: (value: IUser[keyof IUser]) => (value as string) ?? "",
+      render: (value) => (value as string) ?? "",
     },
     {
-      key: "phone" as keyof IUser,
+      key: "phone",
       label: "شماره تماس",
       sortable: true,
-      render: (value: IUser[keyof IUser]) => (value as string | number) ?? "",
+      render: (value) => (value as string | number) ?? "",
     },
     {
-      key: "email" as keyof IUser,
+      key: "email",
       label: "ایمیل",
       sortable: true,
-      render: (value: IUser[keyof IUser]) => (value as string) ?? "",
+      render: (value) => (value as string) ?? "",
     },
     {
-      key: "date_joined" as keyof IUser,
+      key: "date_joined",
       label: "تاریخ ایجاد",
       sortable: true,
-      render: (value: IUser[keyof IUser]) => (value ? new Date(value as string).toLocaleDateString("fa-IR") : ""),
+      render: (value) =>
+        value ? new Date(value as string).toLocaleDateString("fa-IR") : "",
     },
     {
-      key: "status" as keyof IUser,
+      key: "status",
       label: "وضعیت",
       sortable: true,
-      render: (value: IUser[keyof IUser]) => {
+      render: (value) => {
         const status = value as boolean | undefined;
         const statusConfig = {
           true: { color: "bg-green-100 text-green-800", label: "فعال" },
@@ -78,20 +122,42 @@ export function BranchesTab({ data, onView, onEdit, onDelete }: BranchesTabProps
     },
   ];
 
+  // ✅ اکشن‌ها
   const actions = (branch: IUser) => [
-    { label: "مشاهده", icon: <Eye size={16} />, onClick: () => onView?.(branch) },
-    { label: "ویرایش", icon: <Edit size={16} />, onClick: () => onEdit?.(branch) },
-    { label: "حذف", icon: <Trash2 size={16} />, onClick: () => onDelete?.(branch) },
+    { label: "مشاهده", icon: <Eye size={16} />, onClick: () => handleView(branch) },
+    { label: "ویرایش", icon: <Edit size={16} />, onClick: () => handleEdit(branch) },
+    {
+      label: "حذف",
+      icon: <Trash2 size={16} />,
+      onClick: () => {
+        setSelectedBranch(branch);
+        setDeleteModalOpen(true);
+      },
+    },
   ];
 
   return (
-    <DataTable<IUser>
-      data={data}
-      columns={columns}
-      title="لیست شعبات"
-      searchable={true}
-      actions={actions}
-      onRowClick={onView}
-    />
+    <>
+      <DataTable<IUser>
+        data={data}
+        columns={columns}
+        title="لیست شعبات"
+        searchable
+        actions={actions}
+      />
+
+      {/* ✅ مودال حذف */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        isLoading={isPending}
+        itemName={selectedBranch?.branch_name ?? undefined}
+        title="حذف شعبه"
+        message="آیا از حذف شعبه زیر اطمینان دارید؟"
+        confirmText="حذف شعبه"
+        cancelText="لغو"
+      />
+    </>
   );
 }

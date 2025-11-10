@@ -1,4 +1,3 @@
-// src/components/ui/DataTable.tsx
 "use client";
 
 import { useState } from "react";
@@ -7,20 +6,46 @@ import { Select } from "./Select";
 import { Pagination } from "./Pagination";
 import { ChevronDown, ChevronUp, Search as SearchIcon } from "lucide-react";
 
-interface Column<T> {
-  key: keyof T;
-  label: string;
-  sortable?: boolean;
-  render?: (value: T[keyof T], row: T) => React.ReactNode;
+// ✅ نوع کلیدهای تو در تو
+export type NestedKeyOf<ObjectType extends object> = {
+  [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
+  ? `${Key}.${NestedKeyOf<ObjectType[Key]>}` | Key
+  : Key;
+}[keyof ObjectType & (string | number)];
+
+// ✅ تابع کمکی برای گرفتن مقدار تو در تو به صورت type-safe
+function getNestedValue<T extends object>(
+  obj: T,
+  path: NestedKeyOf<T>
+): unknown {
+  return String(path)
+    .split(".")
+    .reduce<unknown>((acc, key) => {
+      if (typeof acc === "object" && acc !== null && key in acc) {
+        return (acc as Record<string, unknown>)[key];
+      }
+      return undefined;
+    }, obj);
 }
 
+
+// ✅ تعریف ستون‌ها
+export interface Column<T extends object> {
+  key: NestedKeyOf<T>;
+  label: string;
+  sortable?: boolean;
+  render?: (value: unknown, row: T) => React.ReactNode;
+}
+
+// ✅ تعریف اکشن‌ها
 interface Action<T> {
   label: string;
   icon: React.ReactNode;
   onClick: (row: T) => void;
 }
 
-interface DataTableProps<T> {
+// ✅ props جدول
+interface DataTableProps<T extends object> {
   data: T[];
   columns: Column<T>[];
   title?: string;
@@ -29,72 +54,69 @@ interface DataTableProps<T> {
   onRowClick?: (row: T) => void;
 }
 
-export function DataTable<T>({
+export function DataTable<T extends object>({
   data,
   columns,
   title,
   searchable = true,
   actions,
-  onRowClick
+  onRowClick,
 }: DataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState<{ key: keyof T; direction: 'asc' | 'desc' } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: NestedKeyOf<T>;
+    direction: "asc" | "desc";
+  } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Filter data based on search term
-  const filteredData = data.filter(row =>
-    columns.some(column => {
-      const value = row[column.key];
-      return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+  // 🔍 فیلتر بر اساس جستجو
+  const filteredData = data.filter((row) =>
+    columns.some((column) => {
+      const value = getNestedValue(row, column.key);
+      return String(value ?? "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     })
   );
 
-  // Sort data with proper type handling
+  // ↕️ مرتب‌سازی
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortConfig) return 0;
 
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
+    const aValue = getNestedValue(a, sortConfig.key);
+    const bValue = getNestedValue(b, sortConfig.key);
 
-    // Handle comparison safely
-    if (aValue === null || aValue === undefined) return sortConfig.direction === 'asc' ? -1 : 1;
-    if (bValue === null || bValue === undefined) return sortConfig.direction === 'asc' ? 1 : -1;
-    
-    // Convert to string for safe comparison
-    const aString = String(aValue).toLowerCase();
-    const bString = String(bValue).toLowerCase();
+    const aStr = String(aValue ?? "").toLowerCase();
+    const bStr = String(bValue ?? "").toLowerCase();
 
-    if (aString < bString) return sortConfig.direction === 'asc' ? -1 : 1;
-    if (aString > bString) return sortConfig.direction === 'asc' ? 1 : -1;
+    if (aStr < bStr) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aStr > bStr) return sortConfig.direction === "asc" ? 1 : -1;
     return 0;
   });
 
-  // Pagination
+  // 📄 صفحه‌بندی
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const handleSort = (key: keyof T) => {
-    setSortConfig(current =>
+  const handleSort = (key: NestedKeyOf<T>) => {
+    setSortConfig((current) =>
       current?.key === key
-        ? { key, direction: current.direction === 'asc' ? 'desc' : 'asc' }
-        : { key, direction: 'asc' }
+        ? { key, direction: current.direction === "asc" ? "desc" : "asc" }
+        : { key, direction: "asc" }
     );
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = (page: number) => setCurrentPage(page);
 
-  // Options for items per page select
   const itemsPerPageOptions = [
     { value: "5", label: "5 مورد در صفحه" },
     { value: "10", label: "10 مورد در صفحه" },
     { value: "25", label: "25 مورد در صفحه" },
-    { value: "50", label: "50 مورد در صفحه" }
+    { value: "50", label: "50 مورد در صفحه" },
   ];
 
   return (
@@ -103,7 +125,9 @@ export function DataTable<T>({
       <div className="p-6 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">{title || "Data Table"}</h2>
+            <h2 className="text-xl font-bold text-gray-900">
+              {title || "Data Table"}
+            </h2>
             <p className="text-sm text-gray-600 mt-1">
               {filteredData.length} مورد یافت شد
             </p>
@@ -117,7 +141,6 @@ export function DataTable<T>({
                 placeholder="جستجو..."
               />
             )}
-
             <div className="w-52">
               <Select
                 options={itemsPerPageOptions}
@@ -137,8 +160,8 @@ export function DataTable<T>({
             <tr className="bg-gray-50 border-b border-gray-200">
               {columns.map((column) => (
                 <th
-                  key={column.key as string}
-                  className={`px-6 py-4 text-right text-sm font-semibold text-gray-900 text-nowrap ${column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
+                  key={column.key}
+                  className={`px-6 py-4 text-right text-sm font-semibold text-gray-900 text-nowrap ${column.sortable ? "cursor-pointer hover:bg-gray-100" : ""
                     }`}
                   onClick={() => column.sortable && handleSort(column.key)}
                 >
@@ -148,16 +171,18 @@ export function DataTable<T>({
                       <div className="flex flex-col">
                         <ChevronUp
                           size={14}
-                          className={`${sortConfig?.key === column.key && sortConfig.direction === 'asc'
-                              ? 'text-teal-500'
-                              : 'text-gray-400'
+                          className={`${sortConfig?.key === column.key &&
+                              sortConfig.direction === "asc"
+                              ? "text-teal-500"
+                              : "text-gray-400"
                             }`}
                         />
                         <ChevronDown
                           size={14}
-                          className={`-mt-1 ${sortConfig?.key === column.key && sortConfig.direction === 'desc'
-                              ? 'text-teal-500'
-                              : 'text-gray-400'
+                          className={`-mt-1 ${sortConfig?.key === column.key &&
+                              sortConfig.direction === "desc"
+                              ? "text-teal-500"
+                              : "text-gray-400"
                             }`}
                         />
                       </div>
@@ -165,31 +190,42 @@ export function DataTable<T>({
                   </div>
                 </th>
               ))}
-              {actions && <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">عملیات</th>}
+              {actions && (
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">
+                  عملیات
+                </th>
+              )}
             </tr>
           </thead>
+
           <tbody className="divide-y divide-gray-200">
             {paginatedData.map((row, index) => (
               <tr
                 key={index}
-                className={`hover:bg-gray-50 transition-colors ${onRowClick ? 'cursor-pointer' : ''
+                className={`hover:bg-gray-50 transition-colors ${onRowClick ? "cursor-pointer" : ""
                   }`}
                 onClick={() => onRowClick?.(row)}
               >
-                {columns.map((column) => (
-                  <td key={column.key as string} className="px-6 py-4 text-sm text-gray-900 text-nowrap">
-                    {column.render 
-                      ? column.render(row[column.key], row) 
-                      : String(row[column.key])
-                    }
-                  </td>
-                ))}
+                {columns.map((column) => {
+                  const value = getNestedValue(row, column.key);
+                  return (
+                    <td
+                      key={column.key}
+                      className="px-6 py-4 text-sm text-gray-900 text-nowrap"
+                    >
+                      {column.render
+                        ? column.render(value, row)
+                        : String(value ?? "")}
+                    </td>
+                  );
+                })}
+
                 {actions && (
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      {actions(row).map((action, actionIndex) => (
+                      {actions(row).map((action, i) => (
                         <button
-                          key={actionIndex}
+                          key={i}
                           onClick={(e) => {
                             e.stopPropagation();
                             action.onClick(row);
@@ -216,7 +252,9 @@ export function DataTable<T>({
             </div>
             <p className="text-gray-500 text-lg">موردی یافت نشد</p>
             <p className="text-gray-400 text-sm mt-1">
-              {searchTerm ? "سعی کنید عبارت جستجو را تغییر دهید" : "هیچ داده‌ای موجود نیست"}
+              {searchTerm
+                ? "سعی کنید عبارت جستجو را تغییر دهید"
+                : "هیچ داده‌ای موجود نیست"}
             </p>
           </div>
         )}
@@ -227,9 +265,10 @@ export function DataTable<T>({
         <div className="px-6 py-4 border-t border-gray-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="text-sm text-gray-600">
-              نمایش {(currentPage - 1) * itemsPerPage + 1} تا {Math.min(currentPage * itemsPerPage, filteredData.length)} از {filteredData.length} مورد
+              نمایش {(currentPage - 1) * itemsPerPage + 1} تا{" "}
+              {Math.min(currentPage * itemsPerPage, filteredData.length)} از{" "}
+              {filteredData.length} مورد
             </div>
-
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

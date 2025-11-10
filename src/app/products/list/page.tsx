@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { DataTable } from "@/components/ui/DataTable";
+import { DataTable, Column, NestedKeyOf } from "@/components/ui/DataTable";
 import { AddButton } from "@/components/ui/Button";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { ProductType } from "@/types/product/product";
@@ -14,6 +14,7 @@ import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import { ContentLoader } from "@/components/loading/DataLoading";
 import { EmptyData } from "@/components/empty/EmptyData";
 import { ApiError } from "@/types/api/api";
+import { toast } from "react-hot-toast";
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -45,22 +46,44 @@ export default function ProductsPage() {
 
   const confirmDelete = async () => {
     if (!selectedProduct) return;
+
     try {
       await mutateAsync(PRODUCT.delete(selectedProduct.id));
       setDeleteModalOpen(false);
       refetch();
-    } catch (err) {
+      toast.success(`محصول "${selectedProduct.name}" با موفقیت حذف شد`);
+    } catch (error) {
+      const err = error as ApiError;
       console.error(err);
+
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.detail ||
+        err.message ||
+        "خطا در حذف محصول";
+
+      toast.error(errorMessage);
     }
   };
 
-  const columns = [
+
+  const showCompanyColumn = products.some(
+    (product) => product.user.company_name && product.user.company_name.trim() !== ""
+  );
+  const showBranchColumn = products.some(
+    (product) => product.user.branch_name && product.user.branch_name.trim() !== ""
+  );
+  const showStaffColumn = products.some(
+    (product) => product.user.staff_name && product.user.staff_name.trim() !== ""
+  );
+
+  const columns: Column<ProductType>[] = [
     {
-      key: "name" as keyof ProductType,
+      key: "name",
       label: "نام محصول",
       sortable: true,
-      render: (value: string | number | null, row: ProductType) => {
-        const displayValue = value ?? "-";
+      render: (value, row) => {
+        const displayValue = (typeof value === "string" || typeof value === "number") ? value : "-";
         return (
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 rounded-lg border-2 border-teal-500 overflow-hidden">
@@ -80,48 +103,51 @@ export default function ProductsPage() {
       },
     },
     {
-      key: "type" as keyof ProductType,
+      key: "type",
       label: "نوع",
       sortable: true,
-      render: (value: string | number | null) => (
+      render: (value) => (
         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-          {value ?? "-"}
+          {(typeof value === "string" || typeof value === "number") ? value : "-"}
         </span>
       ),
     },
     {
-      key: "size" as keyof ProductType,
+      key: "size",
       label: "سایز",
       sortable: true,
-      render: (value: string | number | null) => <span className="font-medium">{value ?? "-"}</span>,
+      render: (value) => (
+        <span className="font-medium">
+          {(typeof value === "string" || typeof value === "number") ? value : "-"}
+        </span>
+      ),
     },
     {
-      key: "main_price" as keyof ProductType,
+      key: "main_price",
       label: "قیمت خرید",
       sortable: true,
-      render: (value: string | number | null) => {
+      render: (value) => {
         const price = Number(value) || 0;
         return <span className="font-medium text-gray-900">{price.toLocaleString()} افغانی</span>;
       },
     },
     {
-      key: "stock_qty" as keyof ProductType,
+      key: "stock_qty",
       label: "موجودی",
       sortable: true,
-      render: (value: string | number | null) => {
+      render: (value) => {
         const numericValue = Number(value) || 0;
         const isOutOfStock = numericValue === 0;
         const isLowStock = numericValue > 0 && numericValue < 5;
         return (
           <div className="flex flex-col">
             <span
-              className={`font-medium ${
-                isOutOfStock
-                  ? "text-red-600"
-                  : isLowStock
+              className={`font-medium ${isOutOfStock
+                ? "text-red-600"
+                : isLowStock
                   ? "text-amber-600"
                   : "text-green-600"
-              }`}
+                }`}
             >
               {numericValue} عدد
             </span>
@@ -131,17 +157,54 @@ export default function ProductsPage() {
         );
       },
     },
-    {
-      key: "country" as keyof ProductType,
-      sortable: true,
-      label: "مبدأ",
-      render: (value: string | number | null) => (
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-          {value ?? "-"}
-        </span>
-      ),
-    },
+    ...(showCompanyColumn
+      ? [
+        {
+          key: "user.company_name" as NestedKeyOf<ProductType>,
+          label: "شرکت",
+          sortable: true,
+          render: (value: unknown, row: ProductType) => (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              {typeof value === "string" || typeof value === "number" ? value : "-"}
+            </span>
+          ),
+        },
+      ]
+      : []),
+
+    ...(showBranchColumn
+      ? [
+        {
+          key: "user.branch_name" as NestedKeyOf<ProductType>,
+          label: "شعبه",
+          sortable: true,
+          render: (value: unknown, row: ProductType) => (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              {typeof value === "string" || typeof value === "number" ? value : "-"}
+            </span>
+          ),
+        },
+      ]
+      : []),
+
+    ...(showStaffColumn
+      ? [
+        {
+          key: "user.staff_name" as NestedKeyOf<ProductType>,
+          label: "کارمند",
+          sortable: true,
+          render: (value: unknown, row: ProductType) => (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              {typeof value === "string" || typeof value === "number" ? value : "-"}
+            </span>
+          ),
+        },
+      ]
+      : []),
   ];
+
+
+
 
   const actions = (product: ProductType) => [
     { label: "مشاهده", icon: <Eye size={16} />, onClick: () => handleView(product) },

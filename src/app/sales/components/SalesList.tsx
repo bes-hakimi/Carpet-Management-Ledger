@@ -2,7 +2,7 @@
 "use client";
 
 import { Eye, Edit, Trash2, FileText } from "lucide-react";
-import { DataTable } from "@/components/ui/DataTable";
+import { DataTable, Column } from "@/components/ui/DataTable";
 
 interface Sale {
   id: string;
@@ -44,66 +44,55 @@ export function SalesList({ sales, onViewDetails, onEdit, onDelete }: SalesListP
     );
   };
 
-  const columns = [
+  const columns: Column<Sale>[] = [
     {
-      key: "invoiceNumber" as const,
+      key: "invoiceNumber",
       label: "شماره بل",
-      sortable: true
+      sortable: true,
+      render: (_value: unknown, row: Sale) => <span>{row.invoiceNumber}</span>
     },
     {
-      key: "customerName" as const,
+      key: "customerName",
       label: "مشتری",
-      sortable: true
+      sortable: true,
+      render: (_value: unknown, row: Sale) => <span>{row.customerName}</span>
     },
     {
-      key: "productName" as const,
+      key: "productName",
       label: "محصول",
-      sortable: true
+      sortable: true,
+      render: (_value: unknown, row: Sale) => <span>{row.productName}</span>
     },
     {
-      key: "quantity" as const,
+      key: "quantity",
       label: "تعداد",
       sortable: true,
-      render: (value: string | number) => (
-        <div className="text-center">{value as number}</div>
-      )
+      render: (_value: unknown, row: Sale) => <div className="text-center">{row.quantity}</div>
     },
     {
-      key: "totalPrice" as const,
+      key: "totalPrice",
       label: "مبلغ",
       sortable: true,
-      render: (value: string | number) => `${(value as number).toLocaleString()} افغانی`
+      render: (_value: unknown, row: Sale) => <span>{row.totalPrice.toLocaleString()} افغانی</span>
     },
     {
-      key: "saleDate" as const,
+      key: "saleDate",
       label: "تاریخ",
       sortable: true,
-      render: (value: string | number) => new Date(value as string).toLocaleDateString('fa-IR')
+      render: (_value: unknown, row: Sale) => new Date(row.saleDate).toLocaleDateString('fa-IR')
     },
     {
-      key: "status" as const,
+      key: "status",
       label: "وضعیت",
       sortable: true,
-      render: (value: string | number) => getStatusBadge(value as "completed" | "pending" | "cancelled")
+      render: (_value: unknown, row: Sale) => getStatusBadge(row.status)
     }
   ];
 
   const getActions = (sale: Sale) => [
-    {
-      label: "مشاهده",
-      icon: <Eye className="w-4 h-4" />,
-      onClick: () => onViewDetails(sale)
-    },
-    {
-      label: "ویرایش",
-      icon: <Edit className="w-4 h-4" />,
-      onClick: () => onEdit(sale)
-    },
-    {
-      label: "حذف",
-      icon: <Trash2 className="w-4 h-4" />,
-      onClick: () => onDelete(sale)
-    }
+    { label: "مشاهده", icon: <Eye className="w-4 h-4" />, onClick: () => onViewDetails(sale) },
+    { label: "ویرایش", icon: <Edit className="w-4 h-4" />, onClick: () => onEdit(sale) },
+    { label: "حذف", icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(sale) }
   ];
 
   if (sales.length === 0) {
