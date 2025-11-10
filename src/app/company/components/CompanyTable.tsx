@@ -1,5 +1,4 @@
-// src/components/CompanyTable.tsx
-import { DataTable } from "@/components/ui/DataTable";
+import { DataTable, Column } from "@/components/ui/DataTable";
 import { Eye, Edit, Trash2, Building } from "lucide-react";
 
 interface Company {
@@ -21,103 +20,84 @@ interface CompanyTableProps {
 }
 
 export function CompanyTable({ companies, onView, onEdit, onDelete }: CompanyTableProps) {
-  console.log("Rendering CompanyTable with companies:", companies);
-
-  const columns = [
+  const columns: Column<Company>[] = [
     {
-      key: "name" as const,
+      key: "name",
       label: "نام شرکت",
       sortable: true,
-      render: (value: string | number, row: Company) => (
+      render: (_value: unknown, row: Company) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
             <Building size={20} className="text-white" />
           </div>
           <div>
-            <div className="font-medium text-gray-900">{value as string}</div>
+            <div className="font-medium text-gray-900">{row.name}</div>
             <div className="text-xs text-gray-500">ID: {row.id}</div>
           </div>
         </div>
       ),
     },
     {
-      key: "category" as const,
+      key: "category",
       label: "دسته‌بندی",
       sortable: true,
-      render: (value: string | number) => (
+      render: (_value: unknown, row: Company) => (
         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          {value as string}
+          {row.category}
         </span>
       ),
     },
     {
-      key: "owner" as const,
+      key: "owner",
       label: "مالک",
       sortable: true,
+      render: (_value: unknown, row: Company) => row.owner,
     },
     {
-      key: "email" as const,
+      key: "email",
       label: "ایمیل",
       sortable: true,
-      render: (value: string | number) => (
-        <span className="text-gray-700 text-sm">{value || "-"}</span>
-      ),
+      render: (_value: unknown, row: Company) => <span className="text-gray-700 text-sm">{row.email || "-"}</span>,
     },
     {
-      key: "phone" as const,
+      key: "phone",
       label: "شماره تماس",
       sortable: true,
-      render: (value: string | number) => (
-        <span className="text-gray-700 text-sm ltr">{value || "-"}</span>
-      ),
+      render: (_value: unknown, row: Company) => <span className="text-gray-700 text-sm ltr">{row.phone || "-"}</span>,
     },
     {
-      key: "status" as const,
+      key: "status",
       label: "وضعیت",
       sortable: true,
-      render: (value: string | number) => {
+      render: (_value: unknown, row: Company) => {
         const statusConfig = {
           active: { color: "bg-green-100 text-green-800", label: "فعال" },
           inactive: { color: "bg-red-100 text-red-800", label: "غیرفعال" },
         };
-
-        const config = statusConfig[value as keyof typeof statusConfig];
+        const config = statusConfig[row.status];
         return (
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-              config?.color || "bg-gray-100 text-gray-800"
+              config?.color ?? "bg-gray-100 text-gray-800"
             }`}
           >
-            {config?.label || (value as string)}
+            {config?.label ?? row.status}
           </span>
         );
       },
     },
     {
-      key: "createdAt" as const,
+      key: "createdAt",
       label: "تاریخ ایجاد",
       sortable: true,
-      render: (value: string | number) =>
-        new Date(value as string).toLocaleDateString("fa-IR"),
+      render: (_value: unknown, row: Company) => new Date(row.createdAt).toLocaleDateString("fa-IR"),
     },
   ];
 
-  const actions = (company: Company) => [
-    {
-      label: "مشاهده",
-      icon: <Eye size={16} />,
-      onClick: () => onView(company),
-    },
-    {
-      label: "ویرایش",
-      icon: <Edit size={16} />,
-      onClick: () => onEdit(company),
-    },
-    {
-      label: "حذف",
-      icon: <Trash2 size={16} />,
-      onClick: () => onDelete(company),
-    },
+  const actions = (row: Company) => [
+    { label: "مشاهده", icon: <Eye size={16} />, onClick: () => onView(row) },
+    { label: "ویرایش", icon: <Edit size={16} />, onClick: () => onEdit(row) },
+    { label: "حذف", icon: <Trash2 size={16} />, onClick: () => onDelete(row) },
   ];
 
   return (

@@ -6,19 +6,35 @@ import { Select } from "./Select";
 import { Pagination } from "./Pagination";
 import { ChevronDown, ChevronUp, Search as SearchIcon } from "lucide-react";
 
-// ✅ نوع NestedKeyOf برای پشتیبانی از کلیدهای تو در تو
+// ✅ نوع کلیدهای تو در تو
 export type NestedKeyOf<ObjectType extends object> = {
   [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
-    ? `${Key}.${NestedKeyOf<ObjectType[Key]>}` | Key
-    : Key;
+  ? `${Key}.${NestedKeyOf<ObjectType[Key]>}` | Key
+  : Key;
 }[keyof ObjectType & (string | number)];
+
+// ✅ تابع کمکی برای گرفتن مقدار تو در تو به صورت type-safe
+function getNestedValue<T extends object>(
+  obj: T,
+  path: NestedKeyOf<T>
+): unknown {
+  return String(path)
+    .split(".")
+    .reduce<unknown>((acc, key) => {
+      if (typeof acc === "object" && acc !== null && key in acc) {
+        return (acc as Record<string, unknown>)[key];
+      }
+      return undefined;
+    }, obj);
+}
+
 
 // ✅ تعریف ستون‌ها
 export interface Column<T extends object> {
   key: NestedKeyOf<T>;
   label: string;
   sortable?: boolean;
-  render?: (value: any, row: T) => React.ReactNode;
+  render?: (value: unknown, row: T) => React.ReactNode;
 }
 
 // ✅ تعریف اکشن‌ها
@@ -38,19 +54,13 @@ interface DataTableProps<T extends object> {
   onRowClick?: (row: T) => void;
 }
 
-// ✅ تابع کمکی برای دستیابی به مقادیر تو در تو (مثل user.first_name)
-function getNestedValue(obj: any, path: string): any {
-  return path.split(".").reduce((acc, key) => acc?.[key], obj);
-}
-
-// ✅ کامپوننت اصلی DataTable
 export function DataTable<T extends object>({
   data,
   columns,
   title,
   searchable = true,
   actions,
-  onRowClick
+  onRowClick,
 }: DataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<{
@@ -60,11 +70,13 @@ export function DataTable<T extends object>({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // 🔍 فیلتر بر اساس عبارت جستجو
+  // 🔍 فیلتر بر اساس جستجو
   const filteredData = data.filter((row) =>
     columns.some((column) => {
-      const value = getNestedValue(row, column.key as string);
-      return String(value ?? "").toLowerCase().includes(searchTerm.toLowerCase());
+      const value = getNestedValue(row, column.key);
+      return String(value ?? "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     })
   );
 
@@ -72,8 +84,8 @@ export function DataTable<T extends object>({
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortConfig) return 0;
 
-    const aValue = getNestedValue(a, sortConfig.key as string);
-    const bValue = getNestedValue(b, sortConfig.key as string);
+    const aValue = getNestedValue(a, sortConfig.key);
+    const bValue = getNestedValue(b, sortConfig.key);
 
     const aStr = String(aValue ?? "").toLowerCase();
     const bStr = String(bValue ?? "").toLowerCase();
@@ -148,10 +160,9 @@ export function DataTable<T extends object>({
             <tr className="bg-gray-50 border-b border-gray-200">
               {columns.map((column) => (
                 <th
-                  key={column.key as string}
-                  className={`px-6 py-4 text-right text-sm font-semibold text-gray-900 text-nowrap ${
-                    column.sortable ? "cursor-pointer hover:bg-gray-100" : ""
-                  }`}
+                  key={column.key}
+                  className={`px-6 py-4 text-right text-sm font-semibold text-gray-900 text-nowrap ${column.sortable ? "cursor-pointer hover:bg-gray-100" : ""
+                    }`}
                   onClick={() => column.sortable && handleSort(column.key)}
                 >
                   <div className="flex items-center justify-start gap-2">
@@ -160,21 +171,19 @@ export function DataTable<T extends object>({
                       <div className="flex flex-col">
                         <ChevronUp
                           size={14}
-                          className={`${
-                            sortConfig?.key === column.key &&
-                            sortConfig.direction === "asc"
+                          className={`${sortConfig?.key === column.key &&
+                              sortConfig.direction === "asc"
                               ? "text-teal-500"
                               : "text-gray-400"
-                          }`}
+                            }`}
                         />
                         <ChevronDown
                           size={14}
-                          className={`-mt-1 ${
-                            sortConfig?.key === column.key &&
-                            sortConfig.direction === "desc"
+                          className={`-mt-1 ${sortConfig?.key === column.key &&
+                              sortConfig.direction === "desc"
                               ? "text-teal-500"
                               : "text-gray-400"
-                          }`}
+                            }`}
                         />
                       </div>
                     )}
@@ -193,16 +202,15 @@ export function DataTable<T extends object>({
             {paginatedData.map((row, index) => (
               <tr
                 key={index}
-                className={`hover:bg-gray-50 transition-colors ${
-                  onRowClick ? "cursor-pointer" : ""
-                }`}
+                className={`hover:bg-gray-50 transition-colors ${onRowClick ? "cursor-pointer" : ""
+                  }`}
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map((column) => {
-                  const value = getNestedValue(row, column.key as string);
+                  const value = getNestedValue(row, column.key);
                   return (
                     <td
-                      key={column.key as string}
+                      key={column.key}
                       className="px-6 py-4 text-sm text-gray-900 text-nowrap"
                     >
                       {column.render

@@ -52,11 +52,20 @@ export default function ProductsPage() {
       setDeleteModalOpen(false);
       refetch();
       toast.success(`محصول "${selectedProduct.name}" با موفقیت حذف شد`);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as ApiError;
       console.error(err);
-      toast.error(err?.message || "خطا در حذف محصول");
+
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.detail ||
+        err.message ||
+        "خطا در حذف محصول";
+
+      toast.error(errorMessage);
     }
   };
+
 
   const showCompanyColumn = products.some(
     (product) => product.user.company_name && product.user.company_name.trim() !== ""
@@ -154,9 +163,9 @@ export default function ProductsPage() {
           key: "user.company_name" as NestedKeyOf<ProductType>,
           label: "شرکت",
           sortable: true,
-          render: (value: string | number | null) => (
+          render: (value: unknown, row: ProductType) => (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              {value ?? "-"}
+              {typeof value === "string" || typeof value === "number" ? value : "-"}
             </span>
           ),
         },
@@ -169,9 +178,9 @@ export default function ProductsPage() {
           key: "user.branch_name" as NestedKeyOf<ProductType>,
           label: "شعبه",
           sortable: true,
-          render: (value: string | number | null) => (
+          render: (value: unknown, row: ProductType) => (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              {value ?? "شرکت"}
+              {typeof value === "string" || typeof value === "number" ? value : "-"}
             </span>
           ),
         },
@@ -184,16 +193,14 @@ export default function ProductsPage() {
           key: "user.staff_name" as NestedKeyOf<ProductType>,
           label: "کارمند",
           sortable: true,
-          render: (value: string | number | null) => (
+          render: (value: unknown, row: ProductType) => (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              {value ?? "شرکت"}
+              {typeof value === "string" || typeof value === "number" ? value : "-"}
             </span>
           ),
         },
       ]
       : []),
-
-
   ];
 
 

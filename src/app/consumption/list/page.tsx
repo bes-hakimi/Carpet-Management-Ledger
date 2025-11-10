@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { DataTable } from "@/components/ui/DataTable";
+import { DataTable, Column } from "@/components/ui/DataTable";
 import { AddButton } from "@/components/ui/Button";
 import { Search } from "@/components/ui/Search";
 import { Select } from "@/components/ui/Select";
@@ -59,30 +59,30 @@ export default function ConsumptionListPage() {
     { value: "cancelled", label: "لغو شده" }
   ];
 
-  const columns = [
+  const columns: Column<Consumption>[] = [
     {
-      key: "title" as keyof Consumption,
+      key: "title",
       label: "عنوان",
       sortable: true,
-      render: (value: string | number | undefined, row: Consumption) => (
-        <span className="font-medium text-gray-900">{String(value)}</span>
-      )
+      render: (_value: unknown, row: Consumption) => (
+        <span className="font-medium text-gray-900">{row.title}</span>
+      ),
     },
     {
-      key: "amount" as keyof Consumption,
+      key: "amount",
       label: "مبلغ (افغانی)",
       sortable: true,
-      render: (value: string | number | undefined, row: Consumption) => (
+      render: (_value: unknown, row: Consumption) => (
         <span className="font-bold text-teal-600">
-          {Number(value).toLocaleString()} افغانی
+          {Number(row.amount).toLocaleString()} افغانی
         </span>
-      )
+      ),
     },
     {
-      key: "category" as keyof Consumption,
+      key: "category",
       label: "کتگوری",
       sortable: true,
-      render: (value: string | number | undefined, row: Consumption) => {
+      render: (_value: unknown, row: Consumption) => {
         const categoryLabels: { [key: string]: string } = {
           food: "خوراکی",
           transport: "حمل و نقل",
@@ -95,49 +95,49 @@ export default function ConsumptionListPage() {
         };
         return (
           <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
-            {categoryLabels[String(value)] || String(value)}
+            {categoryLabels[row.category] || row.category}
           </span>
         );
-      }
+      },
     },
     {
-      key: "date" as keyof Consumption,
+      key: "date",
       label: "تاریخ",
       sortable: true,
-      render: (value: string | number | undefined, row: Consumption) =>
-        new Date(String(value)).toLocaleDateString('fa-AF')
+      render: (_value: unknown, row: Consumption) => new Date(row.date).toLocaleDateString('fa-AF'),
     },
     {
-      key: "paymentMethod" as keyof Consumption,
+      key: "paymentMethod",
       label: "طریقه پرداخت",
-      render: (value: string | number | undefined, row: Consumption) => {
+      render: (_value: unknown, row: Consumption) => {
         const methodLabels: { [key: string]: string } = {
           cash: "نقد",
           card: "کارت",
           digital: "دیجیتال",
           transfer: "حواله"
         };
-        return methodLabels[String(value)] || String(value);
-      }
+        return methodLabels[row.paymentMethod] || row.paymentMethod;
+      },
     },
     {
-      key: "status" as keyof Consumption,
+      key: "status",
       label: "وضعیت",
-      render: (value: string | number | undefined, row: Consumption) => {
+      render: (_value: unknown, row: Consumption) => {
         const statusConfig: { [key: string]: { color: string; label: string } } = {
           pending: { color: "bg-yellow-100 text-yellow-800", label: "در انتظار" },
           completed: { color: "bg-green-100 text-green-800", label: "تکمیل شده" },
           cancelled: { color: "bg-red-100 text-red-800", label: "لغو شده" }
         };
-        const config = statusConfig[String(value)] || { color: "bg-gray-100 text-gray-800", label: String(value) };
+        const config = statusConfig[row.status] || { color: "bg-gray-100 text-gray-800", label: row.status };
         return (
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${config.color}`}>
             {config.label}
           </span>
         );
-      }
-    }
+      },
+    },
   ];
+
 
   const getRowActions = (row: Consumption) => [
     {
