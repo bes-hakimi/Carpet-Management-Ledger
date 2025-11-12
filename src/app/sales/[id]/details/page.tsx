@@ -1,101 +1,37 @@
-// src/app/sales/[id]/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SaleDetails } from "@/app/sales/components/SaleDetails";
 import { SaleActions } from "@/app/sales/components/SaleActions";
 import { InvoicePreview } from "@/app/sales/components/InvoicePreview";
-import { useParams, useRouter } from "next/navigation";
-import { SaleDataType, ProductItemType, convertToSaleDataType, SaleSubmitData } from "@/types/sales/sales";
-
-// داده نمونه منطبق با ساختار واقعی
-const mockSaleDetails: SaleSubmitData = {
-  id: "1",
-  invoiceNumber: "INV-001",
-  customerName: "احمد محمدی",
-  customerPhone: "0793123456",
-  customerAddress: "کابل، کارته سخی، شهرک عبدالرحمن خان",
-  saleDate: "2024-03-20",
-  paymentMethod: "نقدی",
-  deliveryMethod: "تحویل در فروشگاه",
-  notes: "قالین با کیفیت عالی و رنگ‌بندی سنتی",
-  finalPrice: 25000000,
-  customerId: "cust-1",
-  products: [
-    {
-      id: "1",
-      productId: "prod-1",
-      name: "قالین دستباف اصفهان 6 متری",
-      quantity: 1,
-      salePrice: 25000000,
-      purchasePrice: 20000000,
-      stock: 5,
-      size: "6x4 متر",
-      color: "قرمز و آبی",
-      quality: "درجه یک",
-      material: "پشم مرینوس",
-      code: "CARP-001"
-    },
-    {
-      id: "2", 
-      productId: "prod-2",
-      name: "قالین ماشینی ترک 4 متری",
-      quantity: 2,
-      salePrice: 8000000,
-      purchasePrice: 6000000,
-      stock: 10,
-      size: "4x3 متر",
-      color: "کرم",
-      quality: "درجه دو",
-      material: "اکریلیک",
-      code: "CARP-002"
-    }
-  ]
-};
+import { useParams } from "next/navigation";
+import { useApiGet } from "@/hooks/useApi";
+import { SALES } from "@/endpoints/sales";
+import { USERS } from "@/endpoints/users";
+import { SaleDetailsType } from "@/types/sales/details";
+import { SaleInitialData, SelectedSaleProduct } from "@/types/sales/sales";
+import { useAuth } from "@/hooks/useAuth";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
 export default function SaleDetailsPage() {
   const params = useParams();
-  const router = useRouter();
-  const saleId = params.id as string;
-  
-  const [saleData, setSaleData] = useState<SaleSubmitData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const saleId = Number(params.id);
+  const { userData } = useAuth();
+  const userId = userData?.user.id;
 
-  useEffect(() => {
-    // شبیه‌سازی دریافت داده از API
-    const fetchSaleDetails = async () => {
-      setIsLoading(true);
-      try {
-        // در حالت واقعی، اینجا API call می‌زنید
-        setTimeout(() => {
-          setSaleData(mockSaleDetails);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error("Error fetching sale details:", error);
-        setIsLoading(false);
-      }
-    };
+  const { data: sale, isLoading, isError } = useApiGet<SaleDetailsType>(
+    `sale-details-${saleId}`,
+    SALES.details(saleId),
+    { enabled: !!saleId }
+  );
 
-    fetchSaleDetails();
-  }, [saleId]);
+  const { data: companyData } = useApiGet<{ details: any }>(
+    "user-company",
+    userId ? USERS.details(userId) : "",
+    { enabled: !!userId }
+  );
 
-  const handleEdit = () => {
-    router.push(`/sales/${saleId}/edit`);
-  };
-
-  const handleDelete = () => {
-    if (confirm("آیا از حذف این بل مطمئن هستید؟")) {
-      console.log("Deleting sale:", saleId);
-      alert("بل با موفقیت حذف شد!");
-      router.push("/sales");
-    }
-  };
-
-  const handlePrintInvoice = () => {
-    window.print();
-  };
+  const handlePrintInvoice = () => window.print();
 
   if (isLoading) {
     return (
@@ -105,18 +41,12 @@ export default function SaleDetailsPage() {
           showHomeIcon={true}
           description="در حال بارگذاری اطلاعات..."
         />
-        <div className="animate-pulse space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
+        <ContentLoader />
       </div>
     );
   }
 
-  if (!saleData) {
+  if (isError || !sale) {
     return (
       <div className="w-full">
         <PageHeader
@@ -131,35 +61,49 @@ export default function SaleDetailsPage() {
     );
   }
 
-  // تبدیل SaleSubmitData به SaleDataType برای کامپوننت‌ها
-  const saleDataForDisplay = convertToSaleDataType(saleData);
+  // آماده‌سازی داده برای InvoicePreview
+  const saleDataForInvoice: SaleInitialData = {
+    // invoiceNumber: `INV-${sale.id}`,
+    payment_method: sale.payment_method,
+    delivery_method: sale.delivery_method,
+    description: sale.description,
+    customer: {
+      ...sale.customer,
+      id: String(sale.customer.id), // تبدیل number -> string
+    },
+    products: sale.items.map((item): SelectedSaleProduct => ({
+      quantity: item.qty,
+      salePrice: parseFloat(item.main_price),
+      product: item.product
+    })),
+    company_info: companyData?.details || {}
+  };
+
 
   return (
     <div className="w-full">
       <PageHeader
         title="جزئیات فروش"
         showHomeIcon={true}
-        description={`شماره بل: ${saleData.invoiceNumber}`}
+        description={`شماره بل: INV-${sale.id}`}
       />
 
       <div className="space-y-6">
         <SaleActions
-          onEdit={handleEdit}
-          onDelete={handleDelete}
           onPrint={handlePrintInvoice}
           saleStatus="completed"
         />
-        
-        {/* نمایش جزئیات فروش در حالت عادی */}
+
+        {/* نمایش جزئیات */}
         <div className="no-print">
-          <SaleDetails saleData={saleDataForDisplay} />
+          <SaleDetails saleData={sale} />
         </div>
 
-        {/* نمایش InvoicePreview فقط در حالت چاپ */}
+        {/* برای چاپ */}
         <div className="hidden print:block">
-          <InvoicePreview 
-            saleData={saleDataForDisplay}
-            onBack={() => {}} // تابع خالی چون در حالت چاپ نیازی نیست
+          <InvoicePreview
+            saleData={saleDataForInvoice}
+            onBack={() => { }}
           />
         </div>
       </div>
