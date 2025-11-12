@@ -7,14 +7,17 @@ import TopBar from "@/components/layout/topbar/TopBar";
 import MobileBottomBar from "@/components/layout/sidebar/MobileBottomBar";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "@/hooks/useAuth";
+import PageLoading from "@/components/loading/PageLoading";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isAuthLoading } = useAuth();
+
+  // 🔹 تا وقتی وضعیت auth مشخص نشده، فقط صفحه لودینگ نشان بده
+  if (isAuthLoading) return <PageLoading />;
 
   // مسیرهایی که نباید نوار بالا نمایش داده شود
-  // فقط اگر کاربر لاگین نیست، "/" را مخفی کن
   const hidePaths = ["/login", "/forgot-password"];
   if (!isLoggedIn) hidePaths.push("/"); 
 
