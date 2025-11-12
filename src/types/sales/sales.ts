@@ -1,118 +1,52 @@
-// src/types/sales.ts
+export type FormField = "customer_name" | "customer_phone" | "customer_address" | "payment_method" | "delivery_method" | "notes";
 
-// تایپ پایه برای محصول
-export interface ProductItemType {
-  id: string;
-  productId: string;
+export interface ProductType {
+  id: number;
   name: string;
+  slug: string;
+  main_price: string;
+  stock_qty: number;
+  size?: string;
+  main_color?: string;
+  quality?: string;
+  type?: string;
+}
+
+export interface SelectedSaleProduct {
+  product: ProductType;
   quantity: number;
   salePrice: number;
-  purchasePrice: number;
-  stock: number;
-  size: string;
-  color: string;
-  quality: string;
-  material: string;
-  code: string;
 }
 
-// تایپ پایه برای مشتری
 export interface CustomerType {
-  name: string;
-  phone: string;
-  address?: string;
-}
-
-// تایپ پایه برای اطلاعات فروش
-export interface SaleInfoType {
-  quantity: number;
-  totalPrice: number;
-  discount?: number;
-  finalPrice: number;
-  paymentMethod?: string;
-  deliveryMethod?: string;
-  saleDate: string;
-  notes?: string;
-  unitPrice?: number;
-}
-
-// تایپ اصلی برای داده‌های فروش - برای نمایش و گزارشات
-export interface SaleDataType {
-  invoiceNumber?: string;
-  customer: CustomerType;
-  products: ProductItemType[];
-  saleInfo: SaleInfoType;
-}
-
-// تایپ برای داده‌های فرم - برای ارسال
-export interface SaleFormData {
-  customerId: string;
-  customerName: string;
-  customerPhone: string;
-  customerAddress: string;
-  paymentMethod: string;
-  deliveryMethod: string;
-  notes: string;
-  saleDate: string;
-}
-
-// تایپ برای داده‌های ارسالی از فرم
-export interface SaleSubmitData extends SaleFormData {
   id?: string;
-  products: ProductItemType[];
-  finalPrice: number;
-  invoiceNumber: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
 }
 
-export type SaleData = SaleDataType | LegacySaleData;
 
-// تایپ union برای داده‌های قدیمی
-export interface LegacySaleData {
-  customerName: string;
-  customerPhone: string;
-  customerAddress?: string;
-  products?: ProductItemType[];
-  finalPrice?: number;
-  paymentMethod?: string;
-  deliveryMethod?: string;
-  saleDate: string;
-  notes?: string;
-  invoiceNumber?: string;
+
+export interface SaleInitialData {
+  customer?: CustomerType;
+  payment_method?: string;
+  delivery_method?: string;
+  description?: string;
+  products?: SelectedSaleProduct[];
+  company_info?: CompanyInfo;
 }
 
-// تابع helper برای تبدیل SaleSubmitData به SaleDataType
-export const convertToSaleDataType = (submitData: SaleSubmitData): SaleDataType => {
-  return {
-    invoiceNumber: submitData.invoiceNumber,
-    customer: {
-      name: submitData.customerName,
-      phone: submitData.customerPhone,
-      address: submitData.customerAddress
-    },
-    products: submitData.products,
-    saleInfo: {
-      quantity: submitData.products.reduce((total, product) => total + product.quantity, 0),
-      totalPrice: submitData.finalPrice,
-      finalPrice: submitData.finalPrice,
-      paymentMethod: submitData.paymentMethod,
-      deliveryMethod: submitData.deliveryMethod,
-      saleDate: submitData.saleDate,
-      notes: submitData.notes
-    }
-  };
-};
-
-// تایپ برای props کامپوننت‌ها
 export interface SaleFormProps {
-  onSubmit: (data: SaleSubmitData) => void;
   onCancel: () => void;
-  initialData?: SaleSubmitData;
+  onShowInvoice: (data: SaleInitialData) => void;
+  initialData?: SaleInitialData;
 }
 
-export interface InvoicePreviewProps {
-  saleData: SaleDataType;
-  onBack: () => void;
+export interface CompanyInfo {
+  company_logo: string;
+  company_name: string;
+  phone: string;
+  address: string;
+  email: string;
+  warranty: string; // مثلا "دو ساله"
 }
-
-// تایپ برای handleInputChange
-export type FormField = keyof SaleFormData;

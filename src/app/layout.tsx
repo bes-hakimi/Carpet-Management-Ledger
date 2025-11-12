@@ -35,12 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className={`${vazirmatn.variable} font-sans antialiased bg-gray-50`}>
-        <AuthProvider >
+        {/* <AuthProvider > */}
           <Providers>
             <SyncProvider />
             <ClientLayout>{children}</ClientLayout>
           </Providers>
-        </AuthProvider>
+        {/* </AuthProvider> */}
       </body>
     </html>
   );

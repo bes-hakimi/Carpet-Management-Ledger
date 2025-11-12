@@ -90,11 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkAccess();
     }, [pathname, isLoggedIn, isExpired, role, userData]);
 
-    if (isLoading || (userData === null && !isLoggedIn && !isExpired)) {
-        return (
-            <PageLoading />
-        );
-    }
+    // if (isLoading || (userData === null && !isLoggedIn && !isExpired)) {
+    //     return (
+    //         <PageLoading />
+    //     );
+    // }
 
     if (!canAccess && pathname !== '/unauthorized') return null;
 

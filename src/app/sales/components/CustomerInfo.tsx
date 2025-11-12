@@ -1,107 +1,117 @@
-// src/components/sales/CustomerInfo.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Select } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
 import { User } from "lucide-react";
 import { OutlineButton } from "@/components/ui/Button";
-import { CustomerType, CustomerInfoProps } from "@/types/customer/customer";
-const mockCustomers: CustomerType[] = [
-  { id: "1", name: "احمد حسینی", phone: "0793123456", address: "کابل، کارته سخی، شهرک عبدالرحمن خان" },
-  { id: "2", name: "مریم احمدزی", phone: "0700123456", address: "کابل، مکرویان، جاده میوند" },
-  { id: "3", name: "رحمان کریمی", phone: "0780987654", address: "کابل، دشت برچی، شهرک طلایی" },
-  { id: "4", name: "زهرا محمدی", phone: "0775123456", address: "کابل، شهر نو، چهار راهی انصاری" },
-  { id: "5", name: "جمیل احمدی", phone: "0744123456", address: "کابل، پل محمود، جاده قندهار" },
-];
+import { CustomerType } from "@/types/sales/sales";
+import { useApiGet } from "@/hooks/useApi";
+import { SALES } from "@/endpoints/sales";
 
-export function CustomerInfo({ formData, onFormDataChange }: CustomerInfoProps) {
-  const [isNewCustomer, setIsNewCustomer] = useState(false);
+interface CustomerInfoProps {
+  customer: CustomerType | null;
+  onChange: (customer: CustomerType) => void;
+}
+
+export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
+  const [isNewCustomer, setIsNewCustomer] = useState(false); // پیش‌فرض مشتری موجود
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerType | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { data: customers = [] } = useApiGet<CustomerType[]>("customers", SALES.customer_list);
 
 
-  // همگام‌سازی stateها با formData
   useEffect(() => {
-    if (formData.customerId && formData.customerName) {
-      // اگر مشتری از قبل انتخاب شده
-      const customer = mockCustomers.find(c => c.id === formData.customerId);
-      if (customer) {
-        setSelectedCustomer(customer);
-        setIsNewCustomer(false);
-      } else {
-        // اگر مشتری جدید است
-        setIsNewCustomer(true);
-      }
-    } else if (formData.customerName) {
-      // اگر نام مشتری پر شده اما customerId ندارد (مشتری جدید)
+    if (!customers.length) return;
+
+    if (customer?.id) {
+      const existing = customers.find(c => c.id === customer.id);
+      setSelectedCustomer(existing || customer);
+      setIsNewCustomer(!existing);
+    } else if (customer) {
+      setSelectedCustomer(customer);
       setIsNewCustomer(true);
-    }
-  }, [formData]);
-
-  const handleCustomerSelect = (customerId: string) => {
-    const customer = mockCustomers.find(c => c.id === customerId);
-    setSelectedCustomer(customer || null);
-
-    if (customer) {
-      onFormDataChange('customerId', customer.id);
-      onFormDataChange('customerName', customer.name);
-      onFormDataChange('customerPhone', customer.phone);
-      onFormDataChange('customerAddress', customer.address);
     } else {
-      // اگر مشتری پاک شد
-      onFormDataChange('customerId', "");
-      onFormDataChange('customerName', "");
-      onFormDataChange('customerPhone', "");
-      onFormDataChange('customerAddress', "");
+      setSelectedCustomer(null);
+      setIsNewCustomer(false);
+    }
+  }, [customer, customers]);
+
+  // انتخاب مشتری موجود
+  const handleCustomerSelect = (customerId: string) => {
+    const cust = customers.find(c => c.id?.toString() === customerId) || null;
+    setSelectedCustomer(cust);
+    if (cust) {
+      setIsNewCustomer(false);
+      onChange(cust);
     }
   };
 
+
+  const handleInputChange = (field: keyof CustomerType, value: string) => {
+    let newErrors = { ...errors };
+
+    if (field === "customer_name") {
+      // فقط حروف و فاصله اجازه داده شود
+      if (!/^[A-Za-z\u0600-\u06FF\s]*$/.test(value)) {
+        // کاراکتر غیرمجاز را قبول نکن
+        return;
+      }
+      if (value === "") delete newErrors.customer_name;
+    }
+
+    if (field === "customer_phone") {
+      // فقط اعداد و + مجاز
+      if (!/^[0-9+]*$/.test(value)) {
+        return;
+      }
+      if (value !== "" && !/^(?:\+93|0)?7\d{0,8}$/.test(value)) {
+        newErrors.customer_phone = "شماره معتبر افغانستان وارد کنید";
+      } else {
+        delete newErrors.customer_phone;
+      }
+    }
+
+    setErrors(newErrors);
+
+    const updated = selectedCustomer
+      ? { ...selectedCustomer, [field]: value }
+      : { id: "", customer_name: "", customer_phone: "", customer_address: "", [field]: value };
+
+    setSelectedCustomer(updated);
+    onChange(updated);
+  };
+
+
+
+  // تغییر بین تب‌ها
   const handleNewCustomerToggle = (isNew: boolean) => {
     setIsNewCustomer(isNew);
 
     if (isNew) {
-      // وقتی به حالت مشتری جدید می‌رویم، customerId را پاک می‌کنیم
-      onFormDataChange('customerId', "");
-      setSelectedCustomer(null);
+      // مشتری جدید
+      const newCust: CustomerType = { id: "", customer_name: "", customer_phone: "", customer_address: "" };
+      setSelectedCustomer(newCust);
+      onChange(newCust);
     } else {
-      // وقتی به حالت مشتری موجود می‌رویم، فرم را پاک می‌کنیم
-      onFormDataChange('customerName', "");
-      onFormDataChange('customerPhone', "");
-      onFormDataChange('customerAddress', "");
+      // مشتری موجود
+      // اگر قبلاً مشتری موجود انتخاب شده بود، همان را نگه دار
+      const existingCustomer =
+        selectedCustomer?.id
+          ? customers.find(c => c.id === selectedCustomer.id) || null
+          : customers[0] || null; // اگر هیچ انتخابی نبود، اولین مشتری موجود
+
+      setSelectedCustomer(existingCustomer);
+      if (existingCustomer) onChange(existingCustomer);
     }
   };
 
-  // بررسی اینکه آیا مشتری فعلی در لیست mockCustomers وجود دارد
-  const getCurrentCustomerOption = () => {
-    if (formData.customerId && formData.customerName) {
-      const existingCustomer = mockCustomers.find(c => c.id === formData.customerId);
-      if (existingCustomer) {
-        return existingCustomer.id;
-      }
 
-      // اگر مشتری در لیست نیست اما داده دارد، یک گزینه موقت ایجاد می‌کنیم
-      return formData.customerId;
-    }
-    return "";
-  };
-
-  // ایجاد لیست گزینه‌ها شامل مشتری فعلی اگر در لیست نیست
-  const getCustomerOptions = () => {
-    const options = mockCustomers.map(c => ({
-      value: c.id,
-      label: `${c.name} - ${c.phone}`
+  const getCustomerOptions = () =>
+    customers.map(c => ({
+      value: c.id?.toString() ?? "",
+      label: `${c.customer_name} - ${c.customer_phone}`,
     }));
-
-    // اگر مشتری فعلی در لیست mockCustomers نیست اما داده دارد، آن را اضافه می‌کنیم
-    if (formData.customerId && formData.customerName && !mockCustomers.find(c => c.id === formData.customerId)) {
-      options.unshift({
-        value: formData.customerId,
-        label: `${formData.customerName} - ${formData.customerPhone} (موقت)`
-      });
-    }
-
-    return options;
-  };
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -110,13 +120,14 @@ export function CustomerInfo({ formData, onFormDataChange }: CustomerInfoProps) 
         معلومات مشتری
       </h3>
 
+      {/* دکمه‌ها */}
       <div className="flex gap-4 mb-4">
         <OutlineButton
           type="button"
           onClick={() => handleNewCustomerToggle(false)}
           className={`${!isNewCustomer
             ? "bg-teal-500 text-white border-teal-500"
-            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
+            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
         >
           مشتری موجود
@@ -126,69 +137,82 @@ export function CustomerInfo({ formData, onFormDataChange }: CustomerInfoProps) 
           onClick={() => handleNewCustomerToggle(true)}
           className={`${isNewCustomer
             ? "bg-teal-500 text-white border-teal-500"
-            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
+            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
         >
           مشتری جدید
         </OutlineButton>
       </div>
 
+      {/* مشتری موجود */}
       {!isNewCustomer ? (
-        <Select
-          label="انتخاب مشتری"
-          options={getCustomerOptions()}
-          value={getCurrentCustomerOption()}
-          onChange={handleCustomerSelect}
-          placeholder="مشتری را انتخاب کنید"
-          searchable
-          clearable
-        />
+        <>
+          <Select
+            label="انتخاب مشتری"
+            options={getCustomerOptions()}
+            value={selectedCustomer?.id?.toString() || ""}
+            onChange={handleCustomerSelect}
+            placeholder="مشتری را انتخاب کنید"
+            searchable
+            clearable
+          />
+
+          <div className="mt-4">
+            <Input
+              label="آدرس مشتری"
+              value={selectedCustomer?.customer_address || ""}
+              readOnly
+              disabled
+              placeholder="آدرس مشتری در اینجا نمایش داده می‌شود"
+            />
+          </div>
+
+          {selectedCustomer && selectedCustomer.id && (
+            <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+              <p className="text-sm text-green-700">
+                <strong>مشتری انتخاب شده:</strong>{" "}
+                {selectedCustomer.customer_name} - {selectedCustomer.customer_phone}
+              </p>
+              <p className="text-sm text-green-600 mt-1">{selectedCustomer.customer_address}</p>
+            </div>
+          )}
+        </>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="نام مشتری"
-            value={formData.customerName}
-            onChange={(e) => onFormDataChange('customerName', e.target.value)}
-            placeholder="نام کامل مشتری"
-            required
-          />
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="نام مشتری"
+              value={selectedCustomer?.customer_name || ""}
+              onChange={(e) => handleInputChange("customer_name", e.target.value)}
+              placeholder="نام کامل مشتری"
+              required
+              error={errors.customer_name}
+            />
+            <Input
+              label="شماره تماس"
+              value={selectedCustomer?.customer_phone || ""}
+              onChange={(e) => handleInputChange("customer_phone", e.target.value)}
+              placeholder="لطفا شماره تماس را وارد کنید"
+              required
+              error={errors.customer_phone}
+            />
+          </div>
 
-          <Input
-            label="شماره تماس"
-            value={formData.customerPhone}
-            onChange={(e) => onFormDataChange('customerPhone', e.target.value)}
-            placeholder="07xxxxxxxx"
-            required
-          />
-        </div>
-      )}
+          <div className="mt-4">
+            <Input
+              label="آدرس"
+              value={selectedCustomer?.customer_address || ""}
+              onChange={(e) => handleInputChange("customer_address", e.target.value)}
+              placeholder="آدرس کامل"
+            />
+          </div>
 
-      <div className="mt-4">
-        <Input
-          label="آدرس"
-          value={formData.customerAddress}
-          onChange={(e) => onFormDataChange('customerAddress', e.target.value)}
-          placeholder="آدرس کامل"
-        />
-      </div>
-
-      {/* نمایش اطلاعات مشتری انتخاب شده */}
-      {!isNewCustomer && selectedCustomer && (
-        <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-          <p className="text-sm text-green-700">
-            <strong>مشتری انتخاب شده:</strong> {selectedCustomer.name} - {selectedCustomer.phone}
-          </p>
-          <p className="text-sm text-green-600 mt-1">{selectedCustomer.address}</p>
-        </div>
-      )}
-
-      {/* راهنمای شماره تماس */}
-      {isNewCustomer && (
-        <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-700">
-            <strong>راهنما:</strong> شماره تماس باید با 07 شروع شود (مثال: 0793123456)
-          </p>
-        </div>
+          <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-sm text-blue-700">
+              <strong>راهنما:</strong> شماره تماس باید با 07 شروع شود (مثال: 0793123456)
+            </p>
+          </div>
+        </>
       )}
     </div>
   );
