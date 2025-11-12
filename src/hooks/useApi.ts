@@ -5,16 +5,22 @@ import apiClient from "@/hooks/apiClient";
 import { ApiError } from "@/types/api/api";
 
 // ✅ Generic GET hook
-export function useApiGet<T>(key: string, url: string) {
+export function useApiGet<T>(
+  key: string,
+  url: string,
+  options?: { enabled?: boolean }
+) {
   return useQuery<T, ApiError>({
     queryKey: [key],
     queryFn: async () => {
       const res = await apiClient.get<T>(url);
       return res.data;
     },
-    retry: 1, // تعداد تلاش مجدد در صورت خطا
+    retry: 1,
+    enabled: options?.enabled ?? true,
   });
 }
+
 
 // ✅ Generic POST hook
 export function useApiPost<T, U>(url: string) {

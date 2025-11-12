@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
-        if (userData === null && !isLoggedIn && !isExpired) return;
+        // if (userData === null && !isLoggedIn && !isExpired) return;
 
         const checkAccess = () => {
             setIsLoading(true);

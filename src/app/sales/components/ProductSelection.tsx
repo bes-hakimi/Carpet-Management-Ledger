@@ -6,163 +6,85 @@ import { Input } from "@/components/ui/Input";
 import { Package, DollarSign, Ruler, Palette, Layers, Hash, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { AddButton } from "@/components/ui/Button";
+import { toast } from "react-hot-toast";
 
-const mockProducts = [
-  {
-    id: "1",
-    name: "قالین هراتی دست‌باف",
-    purchasePrice: 18000000,
-    stock: 4,
-    size: "۳×۴ متر",
-    color: "سرخ و کرم",
-    quality: "عالی",
-    material: "پشم طبیعی و پنبه",
-    code: "AFG001"
-  },
-  {
-    id: "2",
-    name: "قالین بلخی",
-    purchasePrice: 9500000,
-    stock: 8,
-    size: "۲×۳ متر",
-    color: "زرد و آبی",
-    quality: "خوب",
-    material: "پشم خالص",
-    code: "AFG002"
-  },
-  {
-    id: "3",
-    name: "قالین ترکمنی",
-    purchasePrice: 12500000,
-    stock: 5,
-    size: "۳×۵ متر",
-    color: "سرخ تیره با طرح سنتی",
-    quality: "عالی",
-    material: "پشم و رنگ طبیعی",
-    code: "AFG003"
-  },
-  {
-    id: "4",
-    name: "قالین قندهاری",
-    purchasePrice: 11000000,
-    stock: 6,
-    size: "۲.۵×۳.۵ متر",
-    color: "عنابی و مشکی",
-    quality: "درجه یک",
-    material: "پشم گوسفند",
-    code: "AFG004"
-  },
-  {
-    id: "5",
-    name: "قالین مزاری",
-    purchasePrice: 10000000,
-    stock: 3,
-    size: "۲×۲.۵ متر",
-    color: "آبی لاجوردی و سفید",
-    quality: "خوب",
-    material: "پشم نرم",
-    code: "AFG005"
-  },
-];
+import { useApiGet } from "@/hooks/useApi";
+import { PRODUCT } from "@/endpoints/products";
+import { ProductType } from "@/types/sales/sales";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
-interface SaleProduct {
-  id: string;
-  productId: string;
-  name: string;
+interface SelectedSaleProduct {
+  product: ProductType;
   quantity: number;
   salePrice: number;
-  purchasePrice: number;
-  stock: number;
-  size: string;
-  color: string;
-  quality: string;
-  material: string;
-  code: string;
 }
 
 interface ProductSelectionProps {
-  saleProducts: SaleProduct[];
-  onSaleProductsChange: (products: SaleProduct[]) => void;
+  saleProducts: SelectedSaleProduct[];
+  onSaleProductsChange: (products: SelectedSaleProduct[]) => void;
 }
 
 export function ProductSelection({
   saleProducts,
   onSaleProductsChange
 }: ProductSelectionProps) {
-  const [selectedProduct, setSelectedProduct] = useState<typeof mockProducts[number] | null>(null);
-  const [quantity, setQuantity] = useState<number>(1);
-  const [salePrice, setSalePrice] = useState<number>(0);
+  const { data: products, isLoading, error } = useApiGet<ProductType[]>("products", PRODUCT.list);
+
+  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
+  const [quantity, setQuantity] = useState<string>("");
+  const [salePrice, setSalePrice] = useState<string>("");
 
   const handleProductSelect = (productId: string) => {
-    const product = mockProducts.find(p => p.id === productId) || null;
+    const product = products?.find(p => p.id.toString() === productId) || null;
     setSelectedProduct(product);
-    setSalePrice(0);
-    setQuantity(1);
+    setQuantity("");
+    setSalePrice("");
   };
 
-
-  const handleQuantityChange = (value: string) => {
-    const numValue = parseInt(value) || 0;
-    setQuantity(numValue);
-  };
-
-  const handleSalePriceChange = (value: string) => {
-    const numValue = parseInt(value) || 0;
-    setSalePrice(numValue);
-  };
+  const handleQuantityChange = (value: string) => setQuantity(value);
+  const handleSalePriceChange = (value: string) => setSalePrice(value);
 
   const handleAddProduct = () => {
-    if (!selectedProduct || quantity <= 0 || salePrice <= 0) {
-      alert("لطفاً تمام فیلدها را به درستی پر کنید");
+    if (!selectedProduct || !quantity || !salePrice) {
+      toast.error("لطفاً تمام فیلدها را پر کنید");
       return;
     }
 
-    // بررسی موجودی کافی
-    if (quantity > selectedProduct.stock) {
-      alert(`موجودی کافی نیست! فقط ${selectedProduct.stock} عدد موجود است.`);
+    const quantityNum = parseInt(quantity);
+    const salePriceNum = parseInt(salePrice);
+
+    if (isNaN(quantityNum) || isNaN(salePriceNum) || quantityNum <= 0 || salePriceNum <= 0) {
+      toast.error("مقادیر نامعتبر هستند");
       return;
     }
 
-    // بررسی تکراری نبودن محصول
-    const existingProductIndex = saleProducts.findIndex(
-      p => p.productId === selectedProduct.id
-    );
+    if (quantityNum > selectedProduct.stock_qty) {
+      toast.error(`موجودی کافی نیست! فقط ${selectedProduct.stock_qty} عدد موجود است.`);
+      return;
+    }
 
-    if (existingProductIndex >= 0) {
-      // اگر محصول قبلاً اضافه شده، تعداد را آپدیت کن
-      const updatedProducts = [...saleProducts];
-      updatedProducts[existingProductIndex].quantity += quantity;
-      updatedProducts[existingProductIndex].salePrice = salePrice;
-      onSaleProductsChange(updatedProducts);
+    const existingIndex = saleProducts.findIndex(p => p.product.id === selectedProduct.id);
+    const updatedProducts = [...saleProducts];
+
+    if (existingIndex >= 0) {
+      updatedProducts[existingIndex].quantity = quantityNum; // جایگزینی تعداد جدید
+      updatedProducts[existingIndex].salePrice = salePriceNum; // جایگزینی قیمت جدید
+      toast.success("محصول به‌روزرسانی شد");
     } else {
-      // محصول جدید
-      const newSaleProduct: SaleProduct = {
-        id: Date.now().toString(),
-        productId: selectedProduct.id,
-        name: selectedProduct.name,
-        quantity: quantity,
-        salePrice: salePrice,
-        purchasePrice: selectedProduct.purchasePrice,
-        stock: selectedProduct.stock,
-        size: selectedProduct.size,
-        color: selectedProduct.color,
-        quality: selectedProduct.quality,
-        material: selectedProduct.material,
-        code: selectedProduct.code
-      };
-
-      onSaleProductsChange([...saleProducts, newSaleProduct]);
+      updatedProducts.push({ product: selectedProduct, quantity: quantityNum, salePrice: salePriceNum });
+      toast.success(`${selectedProduct.name} به لیست اضافه شد`);
     }
 
-    // ریست فیلدها
+
+    onSaleProductsChange(updatedProducts);
     setSelectedProduct(null);
-    setQuantity(1);
-    setSalePrice(0);
+    setQuantity("");
+    setSalePrice("");
   };
 
-  const handleRemoveProduct = (productId: string) => {
-    const updatedProducts = saleProducts.filter(p => p.id !== productId);
-    onSaleProductsChange(updatedProducts);
+  const handleRemoveProduct = (productId: number) => {
+    onSaleProductsChange(saleProducts.filter(p => p.product.id !== productId));
+    toast.success("محصول از لیست حذف شد");
   };
 
   const InfoCard = ({ title, children, icon }: { title: string; children: React.ReactNode; icon?: React.ReactNode }) => (
@@ -175,11 +97,24 @@ export function ProductSelection({
     </div>
   );
 
-  const calculateTotal = () => {
-    return saleProducts.reduce((total, product) => {
-      return total + (product.salePrice * product.quantity);
-    }, 0);
-  };
+  const calculateTotal = () => saleProducts.reduce((sum, p) => sum + p.salePrice * p.quantity, 0);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center">
+       <ContentLoader text="در حال بارگیری محصول"/>
+      </div>
+    );
+  }
+
+  if (error) {
+    toast.error("خطا در دریافت محصولات از سرور");
+    return (
+      <div className="text-center py-8 text-red-500">
+        خطا در بارگذاری محصولات
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -192,11 +127,8 @@ export function ProductSelection({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Select
           label="جنس"
-          options={mockProducts.map(p => ({
-            value: p.id,
-            label: `${p.name} (موجودی: ${p.stock})`
-          }))}
-          value={selectedProduct?.id || ""}
+          options={products?.map(p => ({ value: p.id.toString(), label: `${p.name} (موجودی: ${p.stock_qty})` })) || []}
+          value={selectedProduct?.id.toString() || ""}
           onChange={handleProductSelect}
           placeholder="محصول را انتخاب کنید"
           searchable
@@ -210,7 +142,8 @@ export function ProductSelection({
           value={quantity}
           onChange={(e) => handleQuantityChange(e.target.value)}
           min="1"
-          max={selectedProduct?.stock?.toString()}
+          placeholder="لطفا تعداد را وارد کنید"
+          max={selectedProduct?.stock_qty?.toString()}
           required
           disabled={!selectedProduct}
         />
@@ -231,19 +164,19 @@ export function ProductSelection({
           <AddButton
             type="button"
             onClick={handleAddProduct}
-            disabled={!selectedProduct || quantity <= 0 || salePrice <= 0}
+            disabled={!selectedProduct || !quantity.trim() || !salePrice.trim()}
           >
             اضافه کردن
           </AddButton>
         </div>
       </div>
 
-      {/* لیست محصولات اضافه شده */}
+      {/* لیست محصولات انتخاب شده */}
       {saleProducts.length > 0 && (
         <div className="border-t pt-6 mb-6">
           <h4 className="text-base font-semibold text-gray-900 mb-4">جنس‌های انتخاب شده برای فروش:</h4>
           <div className="space-y-3">
-            {saleProducts.map((product) => (
+            {saleProducts.map(({ product, quantity, salePrice }) => (
               <div key={product.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -260,21 +193,19 @@ export function ProductSelection({
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500">تعداد:</span>{" "}
-                        <span className="font-medium">{product.quantity} عدد</span>
+                        <span className="font-medium">{quantity} عدد</span>
                       </div>
                       <div>
                         <span className="text-gray-500">قیمت فروش:</span>{" "}
-                        <span className="font-medium">{product.salePrice.toLocaleString()} افغانی</span>
+                        <span className="font-medium">{salePrice.toLocaleString()} افغانی</span>
                       </div>
                       <div>
                         <span className="text-gray-500">مجموع:</span>{" "}
-                        <span className="font-medium text-green-600">
-                          {(product.salePrice * product.quantity).toLocaleString()} افغانی
-                        </span>
+                        <span className="font-medium text-green-600">{(salePrice * quantity).toLocaleString()} افغانی</span>
                       </div>
                       <div>
                         <span className="text-gray-500">کد:</span>{" "}
-                        <span className="font-medium">{product.code}</span>
+                        <span className="font-medium">{product.slug}</span>
                       </div>
                     </div>
                   </div>
@@ -287,9 +218,7 @@ export function ProductSelection({
           <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex justify-between items-center">
               <span className="text-base font-semibold text-blue-900">مجموع کل اجناس:</span>
-              <span className="text-base font-bold text-blue-900">
-                {calculateTotal().toLocaleString()} افغانی
-              </span>
+              <span className="text-base font-bold text-blue-900">{calculateTotal().toLocaleString()} افغانی</span>
             </div>
           </div>
         </div>
@@ -301,51 +230,36 @@ export function ProductSelection({
           <h4 className="text-md font-semibold text-gray-900 mb-4">مشخصات محصول انتخاب شده:</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <InfoCard title="قیمت خرید" icon={<DollarSign className="ml-2 w-4 h-4 text-blue-600" />}>
-              <div className="flex items-center text-blue-600 font-medium">
-                {selectedProduct.purchasePrice.toLocaleString()} افغانی
-              </div>
+              <div className="flex items-center text-blue-600 font-medium">{parseFloat(selectedProduct.main_price).toLocaleString()} افغانی</div>
             </InfoCard>
 
             <InfoCard title="موجودی" icon={<Package className="ml-2 w-4 h-4 text-green-600" />}>
-              <div className="flex items-center">
-                {selectedProduct.stock} عدد
-              </div>
+              {selectedProduct.stock_qty} عدد
             </InfoCard>
 
             <InfoCard title="کد محصول" icon={<Hash className="ml-2 w-4 h-4 text-gray-600" />}>
-              <div className="flex items-center">
-                {selectedProduct.code}
-              </div>
+              {selectedProduct.slug}
             </InfoCard>
 
             <InfoCard title="اندازه" icon={<Ruler className="ml-2 w-4 h-4 text-orange-600" />}>
-              <div className="flex items-center">
-                {selectedProduct.size}
-              </div>
+              {selectedProduct.size}
             </InfoCard>
 
             <InfoCard title="رنگ" icon={<Palette className="ml-2 w-4 h-4 text-purple-600" />}>
-              <div className="flex items-center">
-                {selectedProduct.color}
-              </div>
+              {selectedProduct.main_color}
             </InfoCard>
 
             <InfoCard title="کیفیت" icon={<Layers className="ml-2 w-4 h-4 text-red-600" />}>
-              <div className="flex items-center">
-                {selectedProduct.quality}
-              </div>
+              {selectedProduct.quality}
             </InfoCard>
 
             <InfoCard title="جنس" icon={<Package className="ml-2 w-4 h-4 text-gray-600" />}>
-              <div className="flex items-center">
-                {selectedProduct.material}
-              </div>
+              {selectedProduct.type}
             </InfoCard>
           </div>
         </div>
       )}
 
-      {/* پیام راهنما */}
       {!selectedProduct && saleProducts.length === 0 && (
         <div className="text-center py-8 text-gray-500 rounded-lg border border-gray-300">
           <Package className="w-12 h-12 mx-auto mb-4 text-gray-300" />

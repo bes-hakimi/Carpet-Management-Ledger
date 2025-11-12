@@ -5,13 +5,11 @@ import { EditButton, DeleteButton, PrintButton } from "@/components/ui/Button";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 interface SaleActionsProps {
-  onEdit: () => void;
-  onDelete: () => void;
   onPrint: () => void;
   saleStatus: string;
 }
 
-export function SaleActions({ onEdit, onDelete, onPrint, saleStatus }: SaleActionsProps) {
+export function SaleActions({onPrint, saleStatus }: SaleActionsProps) {
   const getStatusInfo = (status: string) => {
     const statusConfig = {
       completed: {
@@ -48,9 +46,9 @@ export function SaleActions({ onEdit, onDelete, onPrint, saleStatus }: SaleActio
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-3 md:p-6">
+      <div className="flex justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <span className="text-sm font-medium text-gray-700">وضعیت بل:</span>
           {getStatusInfo(saleStatus)}
         </div>
@@ -62,23 +60,6 @@ export function SaleActions({ onEdit, onDelete, onPrint, saleStatus }: SaleActio
           >
             چاپ بل
           </PrintButton>
-          
-          {saleStatus !== 'cancelled' && (
-            <EditButton
-              size="md"
-              onClick={onEdit}
-            >
-              ویرایش بل
-            </EditButton>
-          )}
-          
-          <DeleteButton
-            size="md"
-            onClick={onDelete}
-            variant="destructive"
-          >
-            حذف بل
-          </DeleteButton>
         </div>
       </div>
     </div>

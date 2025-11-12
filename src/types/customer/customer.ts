@@ -2,19 +2,8 @@
 
 export interface CustomerType {
   id: string;
-  name: string;
-  phone: string;
-  address: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
 }
 
-export interface CustomerInfoForm {
-  customerId?: string;
-  customerName: string;
-  customerPhone: string;
-  customerAddress: string;
-}
-
-export interface CustomerInfoProps {
-  formData: CustomerInfoForm;
-  onFormDataChange: (field: keyof CustomerInfoForm, value: string) => void;
-}
