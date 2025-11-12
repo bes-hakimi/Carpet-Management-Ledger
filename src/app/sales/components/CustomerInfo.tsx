@@ -49,7 +49,7 @@ export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
 
 
   const handleInputChange = (field: keyof CustomerType, value: string) => {
-    let newErrors = { ...errors };
+    const newErrors = { ...errors };
 
     if (field === "customer_name") {
       // فقط حروف و فاصله اجازه داده شود

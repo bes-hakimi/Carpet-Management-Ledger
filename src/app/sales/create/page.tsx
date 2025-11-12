@@ -3,13 +3,12 @@
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SaleForm } from "../components/SaleForm";
-import { InvoicePreview } from "../components/InvoicePreview";
+import { InvoicePreview } from "../components/invoice/InvoicePreview";
 import { useRouter } from "next/navigation";
 import { SaleInitialData, CompanyInfo } from "@/types/sales/sales";
 import { useAuth } from "@/hooks/useAuth";
 import { useApiGet } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
-import { ContentLoader } from "@/components/loading/DataLoading";
 
 export default function CreateSalePage() {
   const router = useRouter();

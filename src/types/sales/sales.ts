@@ -45,6 +45,7 @@ export interface SaleFormProps {
 export interface CompanyInfo {
   company_logo: string;
   company_name: string;
+  branch_name:string;
   phone: string;
   address: string;
   email: string;

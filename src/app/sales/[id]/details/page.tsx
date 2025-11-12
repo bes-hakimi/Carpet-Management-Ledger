@@ -3,13 +3,13 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SaleDetails } from "@/app/sales/components/SaleDetails";
 import { SaleActions } from "@/app/sales/components/SaleActions";
-import { InvoicePreview } from "@/app/sales/components/InvoicePreview";
+import { InvoicePreview } from "@/app/sales/components/invoice/InvoicePreview";
 import { useParams } from "next/navigation";
 import { useApiGet } from "@/hooks/useApi";
 import { SALES } from "@/endpoints/sales";
 import { USERS } from "@/endpoints/users";
 import { SaleDetailsType } from "@/types/sales/details";
-import { SaleInitialData, SelectedSaleProduct } from "@/types/sales/sales";
+import { SaleInitialData, SelectedSaleProduct, CompanyInfo } from "@/types/sales/sales";
 import { useAuth } from "@/hooks/useAuth";
 import { ContentLoader } from "@/components/loading/DataLoading";
 
@@ -25,7 +25,7 @@ export default function SaleDetailsPage() {
     { enabled: !!saleId }
   );
 
-  const { data: companyData } = useApiGet<{ details: any }>(
+  const { data: companyData } = useApiGet<{ details: CompanyInfo }>(
     "user-company",
     userId ? USERS.details(userId) : "",
     { enabled: !!userId }
@@ -76,7 +76,7 @@ export default function SaleDetailsPage() {
       salePrice: parseFloat(item.main_price),
       product: item.product
     })),
-    company_info: companyData?.details || {}
+    company_info: companyData?.details,
   };
 
 
