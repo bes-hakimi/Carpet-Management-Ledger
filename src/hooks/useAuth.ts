@@ -28,25 +28,33 @@ interface StoredUserData {
 export function useAuth() {
   const [userData, setUserData] = useState<StoredUserData | null>(null);
   const [isExpired, setIsExpired] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
 
   // بارگذاری داده‌ها از localStorage و بررسی انقضا
   useEffect(() => {
     const stored = localStorage.getItem("management-ledger");
-    if (!stored) return;
+
+    if (!stored) {
+      setIsAuthLoading(false); // ✅ حتی وقتی چیزی نبود
+      return;
+    }
 
     try {
       const parsed: StoredUserData = JSON.parse(stored);
       const expired = new Date().getTime() > parsed.expiresAt;
       setIsExpired(expired);
-
-      setUserData(parsed); 
+      setUserData(parsed);
     } catch (error) {
       console.error("Failed to parse stored user data:", error);
       localStorage.removeItem("management-ledger");
       setUserData(null);
       setIsExpired(false);
+    } finally {
+      setIsAuthLoading(false); // ✅ پایان عملیات لود
     }
   }, []);
+
 
   // ذخیره یا بروزرسانی داده‌ها
   const setUser = (data: Omit<StoredUserData, "expiresAt">, daysValid = 30) => {
@@ -78,5 +86,6 @@ export function useAuth() {
     isLoggedIn,
     isExpired,
     token,
+    isAuthLoading,
   };
 }

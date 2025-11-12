@@ -7,106 +7,106 @@ import { toast } from 'react-hot-toast';
 import PageLoading from '@/components/loading/PageLoading';
 
 interface AuthContextType {
-    canAccess: boolean;
-    isLoading: boolean;
+  canAccess: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const router = useRouter();
-    const pathname = usePathname();
+  const router = useRouter();
+  const pathname = usePathname();
 
-    const { userData, isLoggedIn, isExpired, logout } = useAuth();
+  const { userData, isLoggedIn, isExpired, logout, isAuthLoading } = useAuth();
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [canAccess, setCanAccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [canAccess, setCanAccess] = useState(false);
 
-    const role = userData?.user?.role || null;
+  const role = userData?.user?.role || null;
 
-    // مسیرهای ثابت عمومی
-    const publicRoutes = ['/login', '/forgot-password', '/unauthorized'];
+  // مسیرهای عمومی
+  const publicRoutes = ['/login', '/forgot-password', '/unauthorized'];
 
-    // مسیرهای ممنوعه برای هر نقش
-    const forbiddenRoutes: Record<string, string[]> = {
-        superadmin: [], // superadmin همه مسیرها را می‌تواند ببیند
-        admin: ['/company'], // admin به مسیرهای company دسترسی ندارد
-        staff: ['/company', '/staff', '/branch'], // staff به مسیرهای company, staff و branch دسترسی ندارد
+  // مسیرهای ممنوعه بر اساس نقش
+  const forbiddenRoutes: Record<string, string[]> = {
+    superadmin: [],
+    admin: ['/company'],
+    staff: ['/company', '/staff', '/branch'],
+  };
+
+  useEffect(() => {
+    // ✅ اگر هنوز auth در حال لود شدن است، کاری نکن
+    if (isAuthLoading) return;
+
+    const checkAccess = () => {
+      setIsLoading(true);
+
+      // مسیرهای عمومی
+      if (publicRoutes.some(route => pathname.startsWith(route))) {
+        setCanAccess(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // منقضی شدن
+      if (isExpired) {
+        toast.error('دسترسی شما منقضی شده است');
+        logout();
+        router.replace('/login');
+        setCanAccess(false);
+        setIsLoading(false);
+        return;
+      }
+
+      // لاگین نکرده
+      if (!isLoggedIn) {
+        toast.error('لطفاً ابتدا وارد حساب خود شوید.');
+        router.replace('/login');
+        setCanAccess(false);
+        setIsLoading(false);
+        return;
+      }
+
+      // بررسی دسترسی نقش
+      if (role) {
+        const forbidden = forbiddenRoutes[role] || [];
+        const isForbidden = forbidden.some(forbiddenPath =>
+          pathname.startsWith(forbiddenPath)
+        );
+
+        if (isForbidden) {
+          toast.error('شما به این صفحه دسترسی ندارید');
+          router.replace('/unauthorized');
+          setCanAccess(false);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // ✅ دسترسی مجاز
+      setCanAccess(true);
+      setIsLoading(false);
     };
 
-    useEffect(() => {
-        // if (userData === null && !isLoggedIn && !isExpired) return;
+    checkAccess();
+  }, [pathname, isLoggedIn, isExpired, role, isAuthLoading]);
 
-        const checkAccess = () => {
-            setIsLoading(true);
+  // ✅ تا وقتی useAuth در حال لود شدنه
+  if (isAuthLoading || isLoading) {
+    return <PageLoading />;
+  }
 
-            // مسیر عمومی
-            if (publicRoutes.some(route => pathname.startsWith(route))) {
-                setCanAccess(true);
-                setIsLoading(false);
-                return;
-            }
+  if (!canAccess && pathname !== '/unauthorized') return null;
 
-            // توکن منقضی شده
-            if (isExpired) {
-                toast.error('دسترسی شما منقضی شده است');
-                logout();
-                router.replace('/login');
-                setCanAccess(false);
-                setIsLoading(false);
-                return;
-            }
-
-            // کاربر لاگین نکرده
-            if (!isLoggedIn) {
-                toast.error('لطفاً ابتدا وارد حساب خود شوید.');
-                router.replace('/login');
-                setCanAccess(false);
-                setIsLoading(false);
-                return;
-            }
-
-            // بررسی دسترسی بر اساس مسیرهای ممنوعه
-            if (role) {
-                const forbidden = forbiddenRoutes[role] || [];
-                const isForbidden = forbidden.some(forbiddenPath =>
-                    pathname.startsWith(forbiddenPath)
-                );
-
-                if (isForbidden) {
-                    toast.error('شما به این صفحه دسترسی ندارید');
-                    router.replace('/unauthorized');
-                    setCanAccess(false);
-                    setIsLoading(false);
-                    return;
-                }
-            }
-
-            // همه چیز اوکی
-            setCanAccess(true);
-            setIsLoading(false);
-        };
-
-        checkAccess();
-    }, [pathname, isLoggedIn, isExpired, role, userData]);
-
-    if (isLoading || (userData === null && !isLoggedIn && !isExpired)) {
-        return (
-            <PageLoading />
-        );
-    }
-
-    if (!canAccess && pathname !== '/unauthorized') return null;
-
-    return (
-        <AuthContext.Provider value={{ canAccess, isLoading }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ canAccess, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuthContext() {
-    const ctx = useContext(AuthContext);
-    if (!ctx) throw new Error('useAuthContext must be used inside AuthProvider');
-    return ctx;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuthContext must be used inside AuthProvider');
+  return ctx;
 }

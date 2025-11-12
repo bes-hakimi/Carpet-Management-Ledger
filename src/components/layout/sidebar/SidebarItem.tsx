@@ -21,10 +21,12 @@ const SidebarItem = ({ title, icon: Icon, link, submenu, collapsed }: SidebarIte
         <button
           onClick={() => setOpen(!open)}
           className={clsx(
-            'flex items-center justify-between w-full p-2 rounded-lg text-gray-700 hover:bg-teal-100 hover:text-teal-700 transition',
-            open && 'bg-teal-100 text-teal-700'
+            `flex items-center justify-between p-2 rounded-lg text-gray-700 hover:bg-teal-100 hover:text-teal-700 transition ${collapsed ? "w-fit" : "w-full"
+            }`,
+            open && "bg-teal-100 text-teal-700"
           )}
         >
+
           <div className="flex items-center space-x-2">
             <Icon size={20} />
             {!collapsed && <span>{title}</span>}
@@ -49,7 +51,7 @@ const SidebarItem = ({ title, icon: Icon, link, submenu, collapsed }: SidebarIte
   return (
     <Link
       href={link!}
-      className="flex items-center space-x-2 p-2 rounded-lg text-gray-700 hover:bg-teal-100 hover:text-teal-700 transition"
+      className={` ${collapsed?'w-fit':'w-full'} flex items-center space-x-2 p-2 rounded-lg text-gray-700 hover:bg-teal-100 hover:text-teal-700 transition`}
     >
       <Icon size={20} />
       {!collapsed && <span>{title}</span>}
