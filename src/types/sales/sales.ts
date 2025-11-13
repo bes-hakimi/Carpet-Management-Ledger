@@ -28,7 +28,8 @@ export interface CustomerType {
 
 
 export interface SaleInitialData {
-  slug?: string;
+  slug?: string; // برای استفاد در نمایش جزئیات
+  created_at?: string;  // برای استفاده در نمایش جزئیات
   customer?: CustomerType;
   payment_method?: string;
   delivery_method?: string;

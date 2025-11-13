@@ -2,7 +2,7 @@
 
 export interface SaleDetailsType {
   id: number;
-  slug:number;
+  slug:string;
   invoiceNumber: string; // اگر در API نیست، در کامپوننت تولید می‌شود
   payment_method: string;
   delivery_method: string;

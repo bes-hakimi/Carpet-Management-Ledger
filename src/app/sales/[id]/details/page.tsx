@@ -3,7 +3,6 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SaleDetails } from "@/app/sales/components/SaleDetails";
 import { SaleActions } from "@/app/sales/components/SaleActions";
-import { InvoicePreview } from "@/app/sales/components/invoice/InvoicePreview";
 import { useParams } from "next/navigation";
 import { useApiGet } from "@/hooks/useApi";
 import { SALES } from "@/endpoints/sales";
@@ -12,6 +11,7 @@ import { SaleDetailsType } from "@/types/sales/details";
 import { SaleInitialData, SelectedSaleProduct, CompanyInfo } from "@/types/sales/sales";
 import { useAuth } from "@/hooks/useAuth";
 import { ContentLoader } from "@/components/loading/DataLoading";
+import { InvoiceSummary } from "../../components/invoice/InvoiceSummary";
 
 export default function SaleDetailsPage() {
   const params = useParams();
@@ -64,6 +64,8 @@ export default function SaleDetailsPage() {
   // آماده‌سازی داده برای InvoicePreview
   const saleDataForInvoice: SaleInitialData = {
     // invoiceNumber: `INV-${sale.id}`,
+    slug:sale.slug,
+    created_at: sale.created_at,
     payment_method: sale.payment_method,
     delivery_method: sale.delivery_method,
     description: sale.description,
@@ -85,7 +87,7 @@ export default function SaleDetailsPage() {
       <PageHeader
         title="جزئیات فروش"
         showHomeIcon={true}
-        description={`شماره بل: INV-${sale.slug | sale.id}`}
+        description={`شماره بل: INV-${sale.slug}`}
       />
 
       <div className="space-y-6">
@@ -101,7 +103,7 @@ export default function SaleDetailsPage() {
 
         {/* برای چاپ */}
         <div className="hidden print:block">
-          <InvoicePreview
+          <InvoiceSummary
             saleData={saleDataForInvoice}
             onBack={() => { }}
           />

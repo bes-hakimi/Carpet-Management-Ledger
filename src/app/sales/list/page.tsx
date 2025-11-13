@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useApiGet } from "@/hooks/useApi";
 import { SaleList } from "@/types/sales/list";
 import { SALES } from "@/endpoints/sales";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
 export default function SalesPage() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function SalesPage() {
       />
 
       {isLoading ? (
-        <div>در حال بارگذاری...</div>
+       <ContentLoader />
       ) : (
         <SalesList
           sales={filteredSales}
