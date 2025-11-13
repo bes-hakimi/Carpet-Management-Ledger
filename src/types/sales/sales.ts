@@ -28,6 +28,8 @@ export interface CustomerType {
 
 
 export interface SaleInitialData {
+  slug?: string; // برای استفاد در نمایش جزئیات
+  created_at?: string;  // برای استفاده در نمایش جزئیات
   customer?: CustomerType;
   payment_method?: string;
   delivery_method?: string;
@@ -45,7 +47,7 @@ export interface SaleFormProps {
 export interface CompanyInfo {
   company_logo: string;
   company_name: string;
-  branch_name:string;
+  branch_name: string;
   phone: string;
   address: string;
   email: string;

@@ -1,98 +1,68 @@
 // src/app/sales/components/SalesList.tsx
 "use client";
 
-import { Eye, Edit, Trash2, FileText } from "lucide-react";
+import { Eye, FileText } from "lucide-react";
 import { DataTable, Column } from "@/components/ui/DataTable";
-
-interface Sale {
-  id: string;
-  invoiceNumber: string;
-  customerName: string;
-  productName: string;
-  quantity: number;
-  totalPrice: number;
-  saleDate: string;
-  status: "completed" | "pending" | "cancelled";
-  paymentMethod: string;
-}
+import { SaleList } from "@/types/sales/list";
+import { useRouter } from "next/navigation";
 
 interface SalesListProps {
-  sales: Sale[];
-  onViewDetails: (sale: Sale) => void;
-  onEdit: (sale: Sale) => void;
-  onDelete: (sale: Sale) => void;
+  sales: SaleList[];
+  onViewDetails: (sale: SaleList) => void;
 }
 
-export function SalesList({ sales, onViewDetails, onEdit, onDelete }: SalesListProps) {
-  const getStatusBadge = (status: "completed" | "pending" | "cancelled") => {
-    const styles = {
-      completed: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      cancelled: "bg-red-100 text-red-800"
-    };
-
-    const labels = {
-      completed: "تکمیل شده",
-      pending: "در انتظار",
-      cancelled: "لغو شده"
-    };
-
-    return (
-      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${styles[status]}`}>
-        {labels[status]}
-      </span>
-    );
-  };
-
-  const columns: Column<Sale>[] = [
+export function SalesList({ sales, onViewDetails }: SalesListProps) {
+  const router = useRouter();
+  const columns: Column<SaleList>[] = [
     {
-      key: "invoiceNumber",
-      label: "شماره بل",
-      sortable: true,
-      render: (_value: unknown, row: Sale) => <span>{row.invoiceNumber}</span>
-    },
-    {
-      key: "customerName",
+      key: "customer.customer_name",
       label: "مشتری",
       sortable: true,
-      render: (_value: unknown, row: Sale) => <span>{row.customerName}</span>
+      render: (_value, row) => {
+        const firstLetter = row.customer.customer_name?.[0]?.toUpperCase() || "?";
+        return (
+          <div className="flex items-center gap-3">
+            {/* مربع با حرف اول */}
+            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold">{firstLetter}</span>
+            </div>
+            {/* نام کامل مشتری */}
+            <span className="text-gray-800 font-medium">
+              {row.customer.customer_name}
+            </span>
+          </div>
+        );
+      }
     },
+
     {
-      key: "productName",
-      label: "محصول",
+      key: "slug",
+      label: "شماره بل",
       sortable: true,
-      render: (_value: unknown, row: Sale) => <span>{row.productName}</span>
+      render: (_value, row) => <span>{row.slug || row.id}</span>
     },
     {
-      key: "quantity",
-      label: "تعداد",
+      key: "delivery_method",
+      label: "رویش تحویل",
       sortable: true,
-      render: (_value: unknown, row: Sale) => <div className="text-center">{row.quantity}</div>
+      render: (_value, row) => <span>{row.delivery_method}</span>
     },
     {
-      key: "totalPrice",
-      label: "مبلغ",
+      key: "payment_method",
+      label: "رویش پرداخت",
       sortable: true,
-      render: (_value: unknown, row: Sale) => <span>{row.totalPrice.toLocaleString()} افغانی</span>
+      render: (_value, row) => <span>{row.payment_method}</span>
     },
     {
-      key: "saleDate",
+      key: "created_at",
       label: "تاریخ",
       sortable: true,
-      render: (_value: unknown, row: Sale) => new Date(row.saleDate).toLocaleDateString('fa-IR')
+      render: (_value, row) => new Date(row.created_at).toLocaleDateString('fa-IR')
     },
-    {
-      key: "status",
-      label: "وضعیت",
-      sortable: true,
-      render: (_value: unknown, row: Sale) => getStatusBadge(row.status)
-    }
   ];
 
-  const getActions = (sale: Sale) => [
+  const getActions = (sale: SaleList) => [
     { label: "مشاهده", icon: <Eye className="w-4 h-4" />, onClick: () => onViewDetails(sale) },
-    { label: "ویرایش", icon: <Edit className="w-4 h-4" />, onClick: () => onEdit(sale) },
-    { label: "حذف", icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(sale) }
   ];
 
   if (sales.length === 0) {
@@ -106,11 +76,12 @@ export function SalesList({ sales, onViewDetails, onEdit, onDelete }: SalesListP
   }
 
   return (
-    <DataTable<Sale>
+    <DataTable<SaleList>
       data={sales}
       columns={columns}
       title="لیست فروش‌ها"
       searchable={true}
+      onRowClick={(row) => router.push(`/sales/${row.id}/details`)}
       actions={getActions}
     />
   );
