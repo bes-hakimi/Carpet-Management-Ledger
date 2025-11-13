@@ -4,6 +4,7 @@
 import { Eye, FileText } from "lucide-react";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { SaleList } from "@/types/sales/list";
+import { useRouter } from "next/navigation";
 
 interface SalesListProps {
   sales: SaleList[];
@@ -11,7 +12,7 @@ interface SalesListProps {
 }
 
 export function SalesList({ sales, onViewDetails }: SalesListProps) {
-
+  const router = useRouter();
   const columns: Column<SaleList>[] = [
     {
       key: "customer.customer_name",
@@ -80,6 +81,7 @@ export function SalesList({ sales, onViewDetails }: SalesListProps) {
       columns={columns}
       title="لیست فروش‌ها"
       searchable={true}
+      onRowClick={(row) => router.push(`/sales/${row.id}/details`)}
       actions={getActions}
     />
   );

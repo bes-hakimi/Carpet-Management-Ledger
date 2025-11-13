@@ -42,8 +42,8 @@ export const sidebarMenuSuperAdmin = [
     title: "مصارف",
     icon: Wallet,
     submenu: [
-      { title: "ثبت مصرف", icon: FilePlus, link: "/consumption/create" },
-      { title: "لیست مصارف", icon: ReceiptText, link: "/consumption/list" },
+      { title: "ثبت مصرف", icon: FilePlus, link: "/expense/create" },
+      { title: "لیست مصارف", icon: ReceiptText, link: "/expense/list" },
     ],
   },
   {

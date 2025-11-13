@@ -3,6 +3,5 @@ export const SALES = {
   list: "/list-sales/",
   customer_list: "/list-customer/",
   details: (id: number) => `/details-sales/${id}/`,
-  delete: (id: number) => `/delete-sale/${id}/`,
 };
 
