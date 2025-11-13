@@ -28,6 +28,7 @@ export interface CustomerType {
 
 
 export interface SaleInitialData {
+  slug?: string;
   customer?: CustomerType;
   payment_method?: string;
   delivery_method?: string;
@@ -45,7 +46,7 @@ export interface SaleFormProps {
 export interface CompanyInfo {
   company_logo: string;
   company_name: string;
-  branch_name:string;
+  branch_name: string;
   phone: string;
   address: string;
   email: string;

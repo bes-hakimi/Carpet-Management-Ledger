@@ -69,7 +69,7 @@ export default function SaleDetailsPage() {
     description: sale.description,
     customer: {
       ...sale.customer,
-      id: String(sale.customer.id), // تبدیل number -> string
+      id: String(sale.customer.id),
     },
     products: sale.items.map((item): SelectedSaleProduct => ({
       quantity: item.qty,
@@ -85,7 +85,7 @@ export default function SaleDetailsPage() {
       <PageHeader
         title="جزئیات فروش"
         showHomeIcon={true}
-        description={`شماره بل: INV-${sale.id}`}
+        description={`شماره بل: INV-${sale.slug | sale.id}`}
       />
 
       <div className="space-y-6">

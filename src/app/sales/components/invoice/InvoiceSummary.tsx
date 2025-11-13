@@ -35,7 +35,7 @@ export function InvoicePreview({ saleData, onBack }: InvoicePreviewProps) {
 
   // شماره بل اتوماتیک
   const invoiceNumber = `بل-${String(invoiceCounter).padStart(2, "0")}`;
-  invoiceCounter++; // افزایش برای بار بعد
+  invoiceCounter++;
 
   return (
     <div className="space-y-6">
