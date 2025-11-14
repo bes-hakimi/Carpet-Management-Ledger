@@ -4,7 +4,7 @@ export interface IUser {
   first_name: string;
   last_name: string;
   password?: string;
-  role: "superadmin" | "admin" | "seller" | "staff" | string;
+  role: "superadmin" | "admin" | "branch" | "staff" | string;
   phone?: number | string;
   category?: string;
 

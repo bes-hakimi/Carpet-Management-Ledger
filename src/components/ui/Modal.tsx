@@ -38,7 +38,7 @@ export const Modal = ({ open, onClose, title, children, size = "md" }: ModalProp
           >
             <div className="flex justify-between items-center mb-4">
               {title && <h2 className="text-lg font-semibold text-primary">{title}</h2>}
-              <button onClick={onClose} className="text-secondary hover:text-teal-500 hover:cursor-pointer transition-colors duration-100">
+              <button type="button" onClick={onClose} className="text-secondary hover:text-teal-500 hover:cursor-pointer transition-colors duration-100">
                 <X size={18} />
               </button>
             </div>
