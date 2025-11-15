@@ -35,19 +35,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (isAuthLoading) return;
+    if (isAuthLoading) return; 
 
     const checkAccess = () => {
       setIsLoading(true);
 
-      // مسیرهای عمومی
       if (publicRoutes.some(route => pathname.startsWith(route))) {
         setCanAccess(true);
         setIsLoading(false);
         return;
       }
 
-      // منقضی شدن
       if (isExpired) {
         toast.error('دسترسی شما منقضی شده است');
         logout();
@@ -57,21 +55,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // لاگین نکرده
-      if (!isLoggedIn && !isAuthLoading && !isExpired) {
+      if (!isLoggedIn) {
         if (!publicRoutes.some(route => pathname.startsWith(route))) {
+          sessionStorage.setItem("redirectAfterLogin", pathname);
           router.replace('/login');
+          setCanAccess(false);
+          setIsLoading(false);
           return;
         }
       }
 
-      // بررسی نقش
+
       if (role) {
         const forbidden = forbiddenRoutes[role] || [];
         const isForbidden = forbidden.some(forbiddenPath =>
           pathname.startsWith(forbiddenPath)
         );
-
         if (isForbidden) {
           toast.error('شما به این صفحه دسترسی ندارید');
           router.replace('/unauthorized');
@@ -85,18 +84,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     };
 
-    // اجرا در ابتدا
     checkAccess();
-
-    // 🔥 اضافه کردن event listener
     window.addEventListener("auth-changed", checkAccess);
-
     return () => {
       window.removeEventListener("auth-changed", checkAccess);
     };
   }, [pathname, isLoggedIn, isExpired, role, isAuthLoading]);
 
-  // ✅ تا وقتی useAuth در حال لود شدنه
   if (isAuthLoading || isLoading) {
     return <PageLoading />;
   }
