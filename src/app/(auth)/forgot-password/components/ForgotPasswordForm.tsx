@@ -1,51 +1,63 @@
 "use client";
 
 import { motion } from "framer-motion";
-import PhoneStep from "./PhoneStep";
+import EmailStep from "./EmailStep";
 import VerificationStep from "./VerificationStep";
 import NewPasswordStep from "./NewPasswordStep";
 import SuccessStep from "./SuccessStep";
 
 interface ForgotPasswordFormProps {
-  step: "phone" | "verification" | "new-password" | "success";
-  onSendCode: (phoneNumber: string) => void;
+  step: "email" | "verification" | "new-password" | "success";
+  onSendCode: (email: string) => void;
   onVerifyCode: (code: string) => void;
-  onResetPassword: (newPassword: string) => void;
-  isLoading: boolean;
+  onResetPassword: (newPassword: string, confirmPassword: string) => void;
+  onResendCode: () => void;
+  isSendCodeLoading: boolean;
+  isVerifyCodeLoading: boolean;
+  isResetPasswordLoading: boolean;
 }
+
 
 export default function ForgotPasswordForm({
   step,
   onSendCode,
   onVerifyCode,
   onResetPassword,
-  isLoading
+  onResendCode,
+  isSendCodeLoading,
+  isVerifyCodeLoading,
+  isResetPasswordLoading
 }: ForgotPasswordFormProps) {
   const renderStep = () => {
     switch (step) {
-      case "phone":
+      case "email":
         return (
-          <PhoneStep
+          <EmailStep
             onSubmit={onSendCode}
-            isLoading={isLoading}
+            isLoading={isSendCodeLoading} // ← لودینگ مخصوص این مرحله
           />
         );
+
       case "verification":
         return (
           <VerificationStep
             onSubmit={onVerifyCode}
-            isLoading={isLoading}
+            onResendCode={onResendCode}
+            isLoading={isVerifyCodeLoading} // ← لودینگ مخصوص این مرحله
           />
         );
+
       case "new-password":
         return (
           <NewPasswordStep
             onSubmit={onResetPassword}
-            isLoading={isLoading}
+            isLoading={isResetPasswordLoading} // ← لودینگ مخصوص این مرحله
           />
         );
+
       case "success":
         return <SuccessStep />;
+
       default:
         return null;
     }
@@ -62,3 +74,4 @@ export default function ForgotPasswordForm({
     </motion.div>
   );
 }
+
