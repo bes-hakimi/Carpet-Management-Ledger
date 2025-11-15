@@ -35,7 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // ✅ اگر هنوز auth در حال لود شدن است، کاری نکن
     if (isAuthLoading) return;
 
     const checkAccess = () => {
@@ -59,15 +58,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // لاگین نکرده
-      if (!isLoggedIn) {
-        toast.error('لطفاً ابتدا وارد حساب خود شوید.');
-        router.replace('/login');
-        setCanAccess(false);
-        setIsLoading(false);
-        return;
+      if (!isLoggedIn && !isAuthLoading && !isExpired) {
+        if (!publicRoutes.some(route => pathname.startsWith(route))) {
+          router.replace('/login');
+          return;
+        }
       }
 
-      // بررسی دسترسی نقش
+      // بررسی نقش
       if (role) {
         const forbidden = forbiddenRoutes[role] || [];
         const isForbidden = forbidden.some(forbiddenPath =>
@@ -83,12 +81,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // ✅ دسترسی مجاز
       setCanAccess(true);
       setIsLoading(false);
     };
 
+    // اجرا در ابتدا
     checkAccess();
+
+    // 🔥 اضافه کردن event listener
+    window.addEventListener("auth-changed", checkAccess);
+
+    return () => {
+      window.removeEventListener("auth-changed", checkAccess);
+    };
   }, [pathname, isLoggedIn, isExpired, role, isAuthLoading]);
 
   // ✅ تا وقتی useAuth در حال لود شدنه
