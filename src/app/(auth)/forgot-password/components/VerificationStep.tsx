@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/Button";
 interface VerificationStepProps {
   onSubmit: (code: string) => void;
   isLoading: boolean;
+  onResendCode: () => void;
 }
 
-export default function VerificationStep({ onSubmit, isLoading }: VerificationStepProps) {
-  const [code, setCode] = useState(["", "", "", ""]);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 دقیقه
+
+export default function VerificationStep({ onSubmit, isLoading, onResendCode }: VerificationStepProps) {
+  const CODE_LENGTH = 6;
+  const [code, setCode] = useState(Array(CODE_LENGTH).fill(""));
+  const [timeLeft, setTimeLeft] = useState(20); // 2 دقیقه
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   // تایمر برای ارسال مجدد کد
@@ -36,14 +39,13 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
     newCode[index] = value;
     setCode(newCode);
 
-    // حرکت به فیلد بعدی (از چپ به راست)
-    if (value && index < 3) {
-      // برای RTL: فیلد بعدی در واقع index + 1 است
+    // حرکت به فیلد بعدی
+    if (value && index < CODE_LENGTH - 1) {
       inputsRef.current[index + 1]?.focus();
     }
 
     // اگر همه فیلدها پر شدند، ارسال کن
-    if (newCode.every(digit => digit !== "") && index === 3) {
+    if (newCode.every(digit => digit !== "") && index === CODE_LENGTH - 1) {
       handleSubmit(newCode.join(""));
     }
   };
@@ -51,19 +53,15 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === "Backspace") {
       if (!code[index] && index > 0) {
-        // اگر فیلد خالی است، به فیلد قبلی برو (سمت راست در RTL)
         inputsRef.current[index - 1]?.focus();
       } else if (code[index]) {
-        // اگر فیلد پر است، آن را خالی کن
         const newCode = [...code];
         newCode[index] = "";
         setCode(newCode);
       }
     } else if (e.key === "ArrowRight" && index > 0) {
-      // در RTL، ArrowRight به معنی حرکت به فیلد قبلی (سمت راست) است
       inputsRef.current[index - 1]?.focus();
-    } else if (e.key === "ArrowLeft" && index < 3) {
-      // در RTL، ArrowLeft به معنی حرکت به فیلد بعدی (سمت چپ) است
+    } else if (e.key === "ArrowLeft" && index < CODE_LENGTH - 1) {
       inputsRef.current[index + 1]?.focus();
     }
   };
@@ -71,32 +69,40 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text');
-    const digits = pastedData.replace(/\D/g, '').split('').slice(0, 4);
-    
-    if (digits.length === 4) {
+    const digits = pastedData.replace(/\D/g, '').split('').slice(0, CODE_LENGTH);
+
+    if (digits.length === CODE_LENGTH) {
       const newCode = [...code];
       digits.forEach((digit, index) => {
         newCode[index] = digit;
       });
       setCode(newCode);
-      inputsRef.current[3]?.focus();
+      inputsRef.current[CODE_LENGTH - 1]?.focus();
       handleSubmit(newCode.join(""));
     }
   };
 
-  const handleResendCode = () => {
-    if (timeLeft > 0) return;
-    
-    // ریست تایمر به 2 دقیقه
-    setTimeLeft(120);
-    
-    // در اینجا تابع ارسال مجدد کد را فراخوانی کنید
-    console.log("ارسال مجدد کد");
+  const [isResendLoading, setIsResendLoading] = useState(false);
+
+  const handleResendCode = async () => {
+    if (timeLeft > 0 || isResendLoading) return; // جلوگیری از چند کلیک همزمان
+
+    setIsResendLoading(true);
+    try {
+      setTimeLeft(20); // ریست تایمر
+      await onResendCode(); // فراخوانی تابع ارسال واقعی
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsResendLoading(false);
+    }
   };
+
+
 
   const handleSubmit = (verificationCode?: string) => {
     const finalCode = verificationCode || code.join("");
-    if (finalCode.length === 4) {
+    if (finalCode.length === CODE_LENGTH) {
       onSubmit(finalCode);
     }
   };
@@ -114,15 +120,13 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
         transition={{ delay: 0.2 }}
       >
         <label className="text-sm font-medium text-gray-600 block mb-3 text-center">
-          کد ۴ رقمی ارسال شده
+          کد {CODE_LENGTH} رقمی ارسال شده
         </label>
-        <div className="flex justify-center gap-3" dir="ltr">
+        <div className="flex justify-center gap-1.5 md:gap-3" dir="ltr">
           {code.map((digit, index) => (
             <input
               key={index}
-              ref={(el) => {
-                inputsRef.current[index] = el;
-              }}
+              ref={(el) => { inputsRef.current[index] = el; }}
               type="text"
               inputMode="numeric"
               maxLength={1}
@@ -130,8 +134,8 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={index === 0 ? handlePaste : undefined}
-              className="w-10 h-10 text-center text-base font-semibold border-2 border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-              style={{ direction: "ltr" }} // اضافه کردن style برای اطمینان
+              className="w-8 h-8 md:w-10 md:h-10 text-center text-base font-semibold border-2 border-gray-300 rounded-md md:rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+              style={{ direction: "ltr" }}
             />
           ))}
         </div>
@@ -147,7 +151,7 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
           loading={isLoading}
           loadingText="در حال تایید..."
           fullWidth
-          disabled={code.join("").length !== 4}
+          disabled={code.join("").length !== CODE_LENGTH}
         >
           تایید کد
         </Button>
@@ -162,19 +166,19 @@ export default function VerificationStep({ onSubmit, isLoading }: VerificationSt
         <button
           type="button"
           onClick={handleResendCode}
-          disabled={timeLeft > 0}
-          className={`text-sm transition-colors ${
-            timeLeft > 0 
-              ? "text-gray-400 cursor-not-allowed" 
+          disabled={timeLeft > 0 || isResendLoading}
+          className={`text-sm transition-colors ${timeLeft > 0 || isResendLoading
+              ? "text-gray-400 cursor-not-allowed"
               : "text-teal-600 hover:text-teal-800"
-          }`}
+            }`}
         >
-          {timeLeft > 0 ? (
-            `ارسال مجدد کد (${formatTime(timeLeft)})`
-          ) : (
-            "ارسال مجدد کد"
-          )}
+          {isResendLoading
+            ? "در حال ارسال..."
+            : timeLeft > 0
+              ? `ارسال مجدد کد (${formatTime(timeLeft)})`
+              : "ارسال مجدد کد"}
         </button>
+
       </motion.div>
     </form>
   );

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import PasswordInput from "@/components/ui/PasswordInput";
 
 interface NewPasswordStepProps {
-  onSubmit: (newPassword: string) => void;
+  onSubmit: (newPassword: string, confirmPassword: string) => void;
   isLoading: boolean;
 }
 
@@ -45,7 +45,8 @@ export default function NewPasswordStep({ onSubmit, isLoading }: NewPasswordStep
     if (!validateForm()) return;
     
     // فقط رمز عبور را ارسال کن و اجازه بده صفحه اصلی مرحله success را مدیریت کند
-    onSubmit(password);
+   onSubmit(password, confirmPassword);
+
   };
 
   return (

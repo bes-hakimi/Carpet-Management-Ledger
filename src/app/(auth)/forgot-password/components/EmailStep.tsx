@@ -1,44 +1,41 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-interface PhoneStepProps {
-  onSubmit: (phoneNumber: string) => void;
+interface EmailStepProps {
+  onSubmit: (email: string) => void;
   isLoading: boolean;
 }
 
-export default function PhoneStep({ onSubmit, isLoading }: PhoneStepProps) {
-  const [phoneNumber, setPhoneNumber] = useState("");
+export default function EmailStep({ onSubmit, isLoading }: EmailStepProps) {
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  const validatePhone = (phone: string) => {
-    if (!phone.trim()) {
-      return "شماره تماس الزامی است";
-    }
-    if (!/^07\d{8}$/.test(phone)) {
-      return "شماره تماس معتبر نیست";
-    }
+  const validateEmail = (email: string) => {
+    if (!email.trim()) return "ایمیل الزامی است";
+    // اعتبارسنجی ساده ایمیل
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return "ایمیل معتبر نیست";
     return "";
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const validationError = validatePhone(phoneNumber);
+    const validationError = validateEmail(email);
     if (validationError) {
       setError(validationError);
       return;
     }
     
     setError("");
-    onSubmit(phoneNumber);
+    onSubmit(email);
   };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = e.target.value.replace(/\D/g, '');
-    setPhoneNumber(numericValue);
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
     if (error) setError("");
   };
 
@@ -50,15 +47,14 @@ export default function PhoneStep({ onSubmit, isLoading }: PhoneStepProps) {
         transition={{ delay: 0.2 }}
       >
         <Input
-          label="شماره تماس"
-          type="tel"
-          placeholder="09123456789"
-          value={phoneNumber}
-          onChange={handlePhoneChange}
+          label="ایمیل"
+          type="email"
+          placeholder="example@mail.com"
+          value={email}
+          onChange={handleEmailChange}
           error={error}
-          icon={<Phone className="w-4 h-4" />}
+          icon={<Mail className="w-4 h-4" />}
           dir="ltr"
-          maxLength={11}
         />
       </motion.div>
 
@@ -84,7 +80,7 @@ export default function PhoneStep({ onSubmit, isLoading }: PhoneStepProps) {
         className="text-center"
       >
         <p className="text-xs text-gray-500">
-          کد تایید به شماره تماس شما ارسال خواهد شد
+          کد تایید به ایمیل شما ارسال خواهد شد
         </p>
       </motion.div>
     </form>
