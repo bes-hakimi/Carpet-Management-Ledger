@@ -65,6 +65,8 @@ export function useAuth() {
     localStorage.setItem("management-ledger", JSON.stringify(storageData));
     setUserData(storageData);
     setIsExpired(false);
+    window.dispatchEvent(new Event("auth-changed"));
+
   };
 
   // حذف داده‌ها (Logout) و نمایش پیام موفقیت

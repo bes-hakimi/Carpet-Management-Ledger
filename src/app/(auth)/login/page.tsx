@@ -5,10 +5,14 @@ import LoginForm from "./components/LoginForm";
 import LoginHeader from "./components/LoginHeader";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setUser } = useAuth();
+
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
@@ -25,24 +29,20 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        // اگر خطا باشد
         toast.error(data.detail || "خطا در ورود. لطفاً دوباره تلاش کنید.");
       } else {
-        // ذخیره همه اطلاعات در یک کلید
-        const storageData = {
+        // ✅ به جای localStorage مستقیم، از setUser استفاده می‌کنیم
+        setUser({
           access: data.access,
           refresh: data.refresh,
           token: data.token,
           user: data.user,
-          expiresAt: new Date().getTime() + 30 * 24 * 60 * 60 * 1000, // ۳۰ روز آینده
-        };
-
-        localStorage.setItem("management-ledger", JSON.stringify(storageData));
+        });
 
         toast.success("ورود با موفقیت انجام شد!");
         console.log("User data:", data.user);
 
-
+        // ✅ بعد از setUser ریدایرکت
         router.push("/dashboard");
       }
     } catch (error) {
@@ -52,7 +52,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="h-full max-h-screen flex items-center justify-center p-4">
