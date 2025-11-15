@@ -67,7 +67,12 @@ export function useAuth() {
     setIsExpired(false);
     window.dispatchEvent(new Event("auth-changed"));
 
+    // هدایت بعد از لاگین
+    const next = sessionStorage.getItem("redirectAfterLogin") || "/dashboard";
+    sessionStorage.removeItem("redirectAfterLogin");
+    window.location.href = next; // یا router.replace اگر توی کامپوننت باشی
   };
+
 
   // حذف داده‌ها (Logout) و نمایش پیام موفقیت
   const logout = () => {
