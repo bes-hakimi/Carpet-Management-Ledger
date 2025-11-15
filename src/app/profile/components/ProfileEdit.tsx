@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/Input";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 import { PrimaryButton, CancelButton } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
+import { Select } from "@/components/ui/Select";
+import { warrantyPeriods } from "@/app/company/constants/userOptions";
 
 interface ProfileEditProps {
     profile: IUser;
-    onInputChange: (field: keyof IUser, value: IUser[keyof IUser]) => void; 
+    onInputChange: (field: keyof IUser, value: IUser[keyof IUser]) => void;
     onSave: () => void;
     onCancel: () => void;
     isSaving: boolean;
@@ -87,18 +89,15 @@ export default function ProfileEdit({
                             onChange={(e) => onInputChange("company_name", e.target.value)}
                             placeholder="مثلاً: شرکت سپهر تجارت"
                         />
-                        <Input
+                        <Select
                             label="مدت ضمانت"
+                            options={warrantyPeriods}
                             value={profile.warranty ?? ""}
-                            onChange={(e) => onInputChange("warranty", e.target.value)}
+                            onChange={(value) => onInputChange("warranty", value)}
                             placeholder="مدت ضمانت اجناس"
                         />
-                        <Input
-                            label="آدرس"
-                            value={profile.address ?? ""}
-                            onChange={(e) => onInputChange("address", e.target.value)}
-                            placeholder="آدرس دقیق شرکت"
-                        />
+
+
                     </>
                 )}
 
@@ -110,14 +109,15 @@ export default function ProfileEdit({
                             onChange={(e) => onInputChange("branch_name", e.target.value)}
                             placeholder="نام شعبه"
                         />
-                        <Input
-                            label="آدرس"
-                            value={profile.address ?? ""}
-                            onChange={(e) => onInputChange("address", e.target.value)}
-                            placeholder="آدرس دقیق شرکت"
-                        />
                     </>
                 )}
+
+                <Input
+                    label="آدرس"
+                    value={profile.address ?? ""}
+                    onChange={(e) => onInputChange("address", e.target.value)}
+                    placeholder="آدرس دقیق شرکت"
+                />
 
             </div>
 

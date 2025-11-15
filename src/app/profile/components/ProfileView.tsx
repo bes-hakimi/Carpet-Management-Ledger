@@ -58,7 +58,7 @@ export default function ProfileView({ profile }: ProfileViewProps) {
             {/* ---------- لوگوی شرکت برای admin و branch ---------- */}
             {profile.company_logo && (
                 <div className="flex flex-col space-y-2">
-                    <span className="text-gray-600 font-medium">لوگوی شرکت</span>
+                    <span className="text-gray-500 text-sm font-medium">لوگوی شرکت</span>
                     <div className="relative group w-32 h-24 cursor-pointer">
                         <Image
                             src={profile.company_logo}
