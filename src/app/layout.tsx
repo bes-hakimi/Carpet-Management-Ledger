@@ -5,6 +5,7 @@ import { SyncProvider } from "@/offline/SyncProvider";
 import ClientLayout from "@/components/layout/ClientLayout";
 import Providers from "./providers";
 import { AuthProvider } from "@/context/AuthContext";
+import PushRegister from "@/components/push-register/PushRegister";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider >
           <Providers>
             <SyncProvider />
+            <PushRegister />
             <ClientLayout>{children}</ClientLayout>
           </Providers>
         </AuthProvider>
