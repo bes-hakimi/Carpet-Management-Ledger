@@ -84,10 +84,10 @@ export default function NotificationItem({
 
   return (
     <div
-      className={`group bg-white rounded-lg shadow-xs border-2 transition-all duration-300 hover:shadow-md ${
+      className={`group rounded-lg shadow-xs border-2 transition-all duration-300 hover:shadow-md ${
         notification.is_read
-          ? "border-gray-200/60 opacity-90"
-          : "border-blue-200 bg-blue-50/50"
+          ? "border-gray-200/60 bg-white opacity-90"
+          : "border-teal-200 bg-teal-50"
       }`}
     >
       <div className="p-6">
