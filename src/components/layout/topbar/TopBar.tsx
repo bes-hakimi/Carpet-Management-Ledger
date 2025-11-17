@@ -30,7 +30,7 @@ export default function TopBar() {
 
         <div className="flex items-center gap-6">
           <Fullscreen />
-          <NotificationBell count={5} />
+          <NotificationBell />
         </div>
         <div className="flex items-center gap-5">
           <ProfileMenu

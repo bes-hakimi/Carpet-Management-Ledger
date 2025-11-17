@@ -60,6 +60,8 @@ export function useApiPut<T, U>(url: string) {
   });
 }
 
+
+
 // src/hooks/useApi.ts
 export function useApiDeleteDynamic<T>() {
   const queryClient = useQueryClient();

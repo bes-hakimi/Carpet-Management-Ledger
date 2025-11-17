@@ -29,5 +29,6 @@ export interface ApiNotification {
 export interface NotificationListResponse {
   status: boolean;
   count: number;
+  un_read: number;
   data: ApiNotification[];
 }
