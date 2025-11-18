@@ -99,8 +99,8 @@ export default function NotificationBell() {
           <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-2 bg-teal-100 rounded-md">
-                  <Bell size={18} className="text-teal-600" />
+                <div className="p-2 bg-teal-600 rounded-md">
+                  <Bell size={18} className="text-white" />
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-gray-900">اعلان‌ها</h4>
