@@ -10,6 +10,7 @@ import type { ApiNotification, NotificationListResponse } from "@/types/notifica
 import type { ApiError } from "@/types/api/api";
 import { Button, OutlineButton } from "@/components/ui/Button";
 import apiClient from "@/hooks/apiClient";
+import { ContentLoader } from "@/components/loading/DataLoading";
 
 export default function NotificationBell() {
   const router = useRouter();
@@ -121,12 +122,11 @@ export default function NotificationBell() {
           <div className="max-h-80 overflow-y-auto">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mb-2"></div>
-                <p className="text-sm text-gray-500">در حال بارگذاری...</p>
+                <ContentLoader />
               </div>
             ) : unreadNotifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <CheckCircle2 size={48} className="text-green-400 mb-3" />
+                <CheckCircle2 size={48} className="text-teal-400 mb-3" />
                 <p className="text-sm font-medium text-gray-900">همه اعلان‌ها خوانده شدند</p>
                 <p className="text-xs text-gray-500 mt-1">هیچ اعلان جدیدی ندارید</p>
               </div>
