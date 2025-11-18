@@ -5,7 +5,7 @@ const f = createUploadthing();
 
 // تعریف فایل روت
 const ourFileRouter = {
-  anyFile: f({ blob: { maxFileSize: "64MB" } }) // <-- blob برای هر نوع فایل
+  anyFile: f({ blob: { maxFileSize: "64MB" } })
     .onUploadComplete(({ file }) => {
       return { fileUrl: file.ufsUrl };
     }),

@@ -84,11 +84,10 @@ export default function NotificationItem({
 
   return (
     <div
-      className={`group bg-white rounded-lg shadow-xs border-2 transition-all duration-300 hover:shadow-md ${
-        notification.is_read
-          ? "border-gray-200/60 opacity-90"
-          : "border-blue-200 bg-blue-50/50"
-      }`}
+      className={`group rounded-lg shadow-xs border-2 transition-all duration-300 hover:shadow-md ${notification.is_read
+          ? "border-gray-200/60 bg-white opacity-90"
+          : "border-teal-200 bg-teal-50 shadow-teal-100"
+        }`}
     >
       <div className="p-6">
         <div className="flex gap-4">
@@ -106,9 +105,8 @@ export default function NotificationItem({
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 mb-3">
               <div className="flex items-center gap-3 flex-wrap">
                 <h3
-                  className={`text-lg font-semibold ${
-                    notification.is_read ? "text-gray-700" : "text-gray-900"
-                  }`}
+                  className={`text-lg font-semibold ${notification.is_read ? "text-gray-700" : "text-gray-900"
+                    }`}
                 >
                   {notification.title}
                 </h3>
@@ -150,7 +148,7 @@ export default function NotificationItem({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-4 mt-4 pt-4 border-t border-gray-200/60">
+        <div className={`flex justify-end gap-4 mt-4 pt-4 border-t  ${notification.is_read ? 'border-gray-200/60' : ' border-teal-300'}`}>
           {!notification.is_read && (
             <OutlineButton
               icon={<Check className="w-4 h-4" />}

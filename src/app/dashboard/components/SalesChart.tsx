@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import {
   AreaChart,
@@ -10,74 +11,137 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { useApiGet } from "@/hooks/useApi";
+import { DASHBOARD } from "@/endpoints/report/dashboard/dashboard";
+import { Select } from "@/components/ui/Select";
 
-// نمونه داده‌ها بر اساس روزهای یک هفته
-const salesData = [
-  { day: "شنبه", sales: 500 },
-  { day: "یک‌‌ شنبه", sales: 1200 },
-  { day: "دو شنبه", sales: 900 },
-  { day: "سه شنبه", sales: 1500 },
-  { day: "چهار شنبه", sales: 2000 },
-  { day: "پنج شنبه", sales: 1800 },
-  { day: "جمعه", sales: 2200 },
+
+// import تایپ‌ها
+import {
+  SalesChartResponse,
+  SalesChartDayItem,
+  SalesChartWeekItem,
+  SalesChartMonthItem,
+  SalesChartYearItem,
+} from "@/types/report/dashboard/sales-chart";
+import { TableLoader } from "@/components/loading/DataLoading";
+
+
+const periodOptions = [
+  { value: "day", label: "روزانه" },
+  { value: "week", label: "هفتگی" },
+  { value: "month", label: "ماهانه" },
+  { value: "year", label: "سالانه" },
 ];
 
 export default function SalesChart() {
+  const [period, setPeriod] = useState("day");
+
+  const { data, isLoading } = useApiGet<SalesChartResponse>(
+    ["sales-chart", period].join("-"),
+    DASHBOARD.sales_chart(period)
+  );
+
+  const chartData = data?.data?.map((item) => {
+    let label: string;
+
+    switch (period) {
+      case "day":
+        label = (item as SalesChartDayItem).weekday;
+        break;
+      case "week":
+        label = (item as SalesChartWeekItem).week_start;
+        break;
+      case "month":
+        label = (item as SalesChartMonthItem).month;
+        break;
+      case "year":
+        label = String((item as SalesChartYearItem).year);
+        break;
+      default:
+        label = "";
+    }
+
+    return {
+      day: label,
+      sales: item.total ?? 0,
+    };
+  }) ?? [];
+
+
   return (
     <Card className="p-6 border-gray-200/60 shadow-none">
-      {/* Title */}
+
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-teal-600">فروشات روزانه</h2>
+        <h2 className="text-lg font-semibold text-teal-600">
+          فروشات {periodOptions.find(p => p.value === period)?.label}
+        </h2>
+
+        <div className="w-40">
+          <Select
+            options={periodOptions}
+            value={period}
+            onChange={setPeriod}
+            placeholder="انتخاب دوره"
+            size="sm"
+          />
+        </div>
       </div>
 
-      {/* Chart */}
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={salesData}
-            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
-          >
-            <defs>
-              <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="10%" stopColor="#0f766e" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#0f766e" stopOpacity={0.05} />
-              </linearGradient>
-            </defs>
+      {isLoading && <TableLoader />}
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis
-              dataKey="day"
-              tick={{ fill: "#64748b", fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              tick={{ fill: "#64748b", fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              formatter={(value: number) => [`${value.toLocaleString()} افغانی`, "فروش"]}
-              contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-              }}
-              labelStyle={{ color: "#475569", fontWeight: "600" }}
-            />
-            <Area
-              type="monotone"
-              dataKey="sales"
-              stroke="#0f766e"
-              strokeWidth={2.5}
-              fill="url(#colorSales)"
-              dot={{ r: 3, fill: "#0f766e", strokeWidth: 0 }}
-              activeDot={{ r: 6, fill: "#0f766e" }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+      {!isLoading && (
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+            >
+              <defs>
+                <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="10%" stopColor="#0f766e" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#0f766e" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
+
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis
+                dataKey="day"
+                tick={{ fill: "#64748b", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#64748b", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                formatter={(value: number) => [
+                  `${value.toLocaleString()} افغانی`,
+                  "فروش",
+                ]}
+                contentStyle={{
+                  backgroundColor: "white",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+                }}
+                labelStyle={{ color: "#475569", fontWeight: "600" }}
+              />
+              <Area
+                type="monotone"
+                dataKey="sales"
+                stroke="#0f766e"
+                strokeWidth={2.5}
+                fill="url(#colorSales)"
+                dot={{ r: 3, fill: "#0f766e", strokeWidth: 0 }}
+                activeDot={{ r: 6, fill: "#0f766e" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </Card>
   );
 }
