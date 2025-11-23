@@ -13,7 +13,7 @@ interface ImageUploadProps {
   label?: string;
   maxSize?: number;
   error?: string | null;
-  defaultImageUrl?: string; // 👈 عکس پیش‌فرض از API (اختیاری)
+  defaultImageUrl?: string; 
 }
 
 export function ImageUpload({
@@ -89,6 +89,13 @@ export function ImageUpload({
     const droppedFile = e.dataTransfer.files[0];
     handleImageChange(droppedFile);
   };
+
+  console.log("Uploaded URL:", uploadedUrl);
+  console.log("Image File:", image);
+  console.log("Upload Progress:", uploadProgress);
+  console.log("Error:", error);
+  console.log("fils", fileInputRef.current?.files);
+
 
   const removeImage = () => {
     setImage(null);
