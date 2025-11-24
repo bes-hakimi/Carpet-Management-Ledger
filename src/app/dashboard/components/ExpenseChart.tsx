@@ -7,7 +7,7 @@ import { DASHBOARD } from "@/endpoints/report/dashboard/dashboard";
 
 // تایپ‌ها
 import { ExpenseResponse, ExpenseMonthItem } from "@/types/report/dashboard/expense";
-import { TableLoader } from "@/components/loading/DataLoading";
+import { CardLoader } from "@/components/loading/DataLoading";
 
 export default function ExpenseDonutChart() {
   const { data, isLoading } = useApiGet<ExpenseResponse>(
@@ -35,7 +35,7 @@ export default function ExpenseDonutChart() {
         <h2 className="text-lg font-bold text-teal-600 mb-4">مصارف شش ماه اخیر</h2>
 
         {isLoading ? (
-          <TableLoader />
+          <CardLoader />
         ) : (
           <>
             {/* آمار کلی */}

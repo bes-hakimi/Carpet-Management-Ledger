@@ -8,4 +8,6 @@ export const DASHBOARD = {
     `/dash-net-income-chart-report/?period=${period}`,
 
   expense_chart: "/dash-expense-chart-report/",
+  resent_transaction: "/dash-tran-report/",
+  inventory_summary: "/dash-stock-report/",
 };

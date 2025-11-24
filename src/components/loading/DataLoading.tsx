@@ -185,13 +185,7 @@ export const ButtonLoader: React.FC<{ variant?: LoadingVariant }> = ({ variant =
   <Loading variant={variant} size="sm" />
 );
 
-export const CardLoader: React.FC<{ variant?: LoadingVariant }> = ({ variant = 'pulse' }) => (
-  <div className="flex justify-center py-4">
-    <Loading variant={variant} size="md" />
-  </div>
-);
-
-export const TableLoader: React.FC<{ variant?: LoadingVariant }> = ({ variant = 'wave' }) => (
+export const CardLoader: React.FC<{ variant?: LoadingVariant }> = ({ variant = 'wave' }) => (
   <div className="flex justify-center py-3">
     <Loading variant={variant} size="md" text="در حال بارگذاری داده ها..." />
   </div>

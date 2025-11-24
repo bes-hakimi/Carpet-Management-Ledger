@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useApiGet } from "@/hooks/useApi";
 import { DASHBOARD } from "@/endpoints/report/dashboard/dashboard";
 import { SummaryCardType } from "@/types/report/dashboard/summary_card";
-import { TableLoader } from "@/components/loading/DataLoading";
+import { CardLoader } from "@/components/loading/DataLoading";
 
 export default function SummaryCards() {
   const { data, isLoading } = useApiGet<SummaryCardType>(
@@ -15,7 +15,7 @@ export default function SummaryCards() {
   );
 
   if (isLoading) {
-    return <TableLoader />;
+    return <CardLoader />;
   }
 
   if (!data?.report) {

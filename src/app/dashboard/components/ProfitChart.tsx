@@ -25,7 +25,7 @@ import {
   NetIncomeYearItem,
   NetIncomeItem,
 } from "@/types/report/dashboard/net-income";
-import { TableLoader } from "@/components/loading/DataLoading";
+import { CardLoader } from "@/components/loading/DataLoading";
 
 const periodOptions = [
   { value: "day", label: "روزانه" },
@@ -86,7 +86,7 @@ export default function ProfitChart() {
       </div>
 
       {isLoading ? (
-        <TableLoader />
+        <CardLoader />
       ) : (
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart
