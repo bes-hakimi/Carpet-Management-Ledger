@@ -47,7 +47,7 @@ export default function SummaryCards() {
       update: data.last_update ?? "--:--",
     },
     {
-      title: "فاید این ماه",
+      title: "مفاد این ماه",
       value: `${r.net_income ?? 0} افغانی`,
       icon: TrendingUp,
       gradient: "from-green-500 to-emerald-600",

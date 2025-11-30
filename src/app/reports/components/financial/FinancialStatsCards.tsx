@@ -1,0 +1,108 @@
+import { Card } from "@/components/ui/Card";
+import { DollarSign, Receipt, BarChart3, Archive } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { IFinancialMainReport } from "@/types/report/financial";
+
+interface FinancialStatsCardsProps {
+  stats: IFinancialMainReport;
+}
+
+const StatCard = ({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  trend,
+  color = "blue",
+}: {
+  title: string;
+  value: string;
+  subtitle?: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  trend?: number;
+  color?: "blue" | "green" | "purple" | "orange";
+}) => {
+  const colorClasses = {
+    blue: "from-blue-500 to-cyan-500",
+    green: "from-emerald-500 to-green-500",
+    purple: "from-purple-500 to-pink-500",
+    orange: "from-orange-500 to-red-500",
+  };
+
+  const isPositive = trend && trend >= 0;
+
+  return (
+    <Card className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 p-6 border-0 bg-gradient-to-br from-white to-gray-50/50">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+        <div className={`p-3 rounded-xl bg-gradient-to-br ${colorClasses[color]} text-white shadow-lg`}>
+          <Icon className="w-5 h-5" />
+        </div>
+      </div>
+
+      <div>
+        <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
+        {subtitle && <p className="text-sm text-gray-600 mb-2">{subtitle}</p>}
+        {trend !== undefined && (
+          <div className={`flex items-center text-sm font-medium ${isPositive ? "text-emerald-600" : "text-red-600"}`}>
+            {isPositive ? <ArrowUpRight className="w-4 h-4 ml-1" /> : <ArrowDownRight className="w-4 h-4 ml-1" />}
+            {Math.abs(trend).toFixed(1)}% نسبت به دوره قبل
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r ${colorClasses[color]} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}
+      ></div>
+    </Card>
+  );
+};
+
+export default function FinancialStatsCards({ stats }: FinancialStatsCardsProps) {
+  const report = stats.report;
+
+  // می‌توان trend را براساس نیاز حساب کرد، فعلاً مقدار نمونه گذاشته شده
+  const trends = {
+    totalSalesPrice: 5.2,
+    productCost: -2.1,
+    totalExpense: 1.5,
+    netIncome: 3.8,
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <StatCard
+        title="فروش کل"
+        value={report.total_sales_price.toLocaleString()}
+        subtitle="افغانی"
+        icon={DollarSign}
+        trend={trends.totalSalesPrice}
+        color="green"
+      />
+      <StatCard
+        title="هزینه محصول"
+        value={report.product_cost.toLocaleString()}
+        subtitle="افغانی"
+        icon={Archive}
+        trend={trends.productCost}
+        color="orange"
+      />
+      <StatCard
+        title="هزینه کل"
+        value={report.total_expense.toLocaleString()}
+        subtitle="افغانی"
+        icon={BarChart3}
+        trend={trends.totalExpense}
+        color="purple"
+      />
+      <StatCard
+        title="سود خالص"
+        value={report.net_income.toLocaleString()}
+        subtitle="افغانی"
+        icon={Receipt}
+        trend={trends.netIncome}
+        color="blue"
+      />
+    </div>
+  );
+}
