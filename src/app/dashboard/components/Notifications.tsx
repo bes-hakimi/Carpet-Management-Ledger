@@ -6,7 +6,7 @@ import { useApiGet } from "@/hooks/useApi";
 import { NOTIFICATION } from "@/endpoints/notification";
 import { NotificationListResponse, ApiNotification } from "@/types/notification/notifications";
 import { useRouter } from "next/navigation";
-import { TableLoader } from "@/components/loading/DataLoading";
+import { CardLoader } from "@/components/loading/DataLoading";
 
 export default function Notifications() {
   const router = useRouter();
@@ -69,12 +69,12 @@ export default function Notifications() {
       <div className="p-6">
         {/* سربرگ */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-md shadow-lg">
+          <div className="w-full flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg">
               <Bell className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">آخرین اعلان‌ها</h2>
+            <div className="w-full flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-teal-600">آخرین اعلان‌ها</h2>
               <p className="text-sm text-gray-600 mt-1">
                 نمایش {latestNotifications.length} اعلان از {totalCount}
               </p>
@@ -85,16 +85,23 @@ export default function Notifications() {
         {/* لیست آگاه‌سازی‌ها */}
         <div className="space-y-3">
           {isLoading ? (
-           <TableLoader />
+            <CardLoader />
           ) : latestNotifications.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">آگاه‌سازی‌ای وجود ندارد</div>
+            <div className="rounded-lg shadow-xs border border-gray-200/60 p-12 text-center">
+              <Bell className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+              <h3 className="font-semibold text-gray-700">
+                اعلانی یافت نشد
+              </h3>
+              <p className="text-sm text-gray-500">
+                هیچ اعلانی وجود ندارد.
+              </p>
+            </div>
           ) : (
             latestNotifications.map((note) => (
               <div
                 key={note.id}
-                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-sm group ${
-                  !note.is_read ? "border-teal-200 bg-teal-50/50" : "border-gray-200/60 bg-white"
-                }`}
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-sm group ${!note.is_read ? "border-teal-200 bg-teal-50/50" : "border-gray-200/60 bg-white"
+                  }`}
               >
                 {/* آیکون */}
                 <div
@@ -107,9 +114,8 @@ export default function Notifications() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <p
-                      className={`text-sm font-medium leading-relaxed ${
-                        !note.is_read ? "text-gray-900" : "text-gray-700"
-                      }`}
+                      className={`text-sm font-medium leading-relaxed ${!note.is_read ? "text-gray-900" : "text-gray-700"
+                        }`}
                     >
                       {note.message}
                     </p>

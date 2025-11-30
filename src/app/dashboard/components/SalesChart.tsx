@@ -24,7 +24,7 @@ import {
   SalesChartMonthItem,
   SalesChartYearItem,
 } from "@/types/report/dashboard/sales-chart";
-import { TableLoader } from "@/components/loading/DataLoading";
+import { CardLoader } from "@/components/loading/DataLoading";
 
 
 const periodOptions = [
@@ -88,7 +88,7 @@ export default function SalesChart() {
         </div>
       </div>
 
-      {isLoading && <TableLoader />}
+      {isLoading && <CardLoader />}
 
       {!isLoading && (
         <div className="h-64">
