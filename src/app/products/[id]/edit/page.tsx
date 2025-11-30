@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { ImageUpload } from "@/components/ui/ImageUpload";
-import { DollarSign, Package, Weight, Palette, X } from "lucide-react";
+import { DollarSign, Package, Weight, Palette } from "lucide-react";
 import { CancelButton, SaveButton, DeleteButton } from "@/components/ui/Button";
 import { carpetTypes, carpetSizes, qualityLevels, carpetOrigins } from "../../constants/productOptions";
 import { useApiGet, useApiPut, useApiDeleteDynamic } from "@/hooks/useApi";

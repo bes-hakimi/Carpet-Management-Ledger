@@ -1,7 +1,6 @@
 "use client";
 
 import { DollarSign } from "lucide-react";
-import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { FormField } from "@/types/sales/sales";
 

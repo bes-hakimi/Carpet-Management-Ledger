@@ -2,7 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { AddButton, PrintButton } from "@/components/ui/Button";
+import { AddButton} from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Tag, CreditCard, FileText, Clock, CheckCircle } from "lucide-react";
 import { useApiGet } from "@/hooks/useApi";

@@ -66,7 +66,6 @@ export default function EditStaffPage() {
   };
 
   const handleDeleteConfirm = async () => {
-    const toastId = toast.loading("در حال حذف کارمند...");
     await deleteMutation.mutateAsync(USERS.delete(Number(staffId)), {
       onSuccess: () => {
         toast.success("کارمند با موفقیت حذف شد!");

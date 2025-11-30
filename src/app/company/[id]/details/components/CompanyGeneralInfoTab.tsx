@@ -1,7 +1,7 @@
 // components/user/tabs/CompanyGeneralInfoTab.tsx
 "use client";
 
-import { User, Phone, Building, Folder, Clock, Calendar, Image as ImageIcon, FileText, Download, Circle, RefreshCw, Mail } from "lucide-react";
+import { User, Phone, Building, Folder, Clock, Calendar, FileText, Download, Circle, RefreshCw, Mail } from "lucide-react";
 import Image from "next/image";
 import { IUser } from "@/types/user/user";
 
@@ -11,7 +11,7 @@ interface Props {
     isDeleting?: boolean;
 }
 
-export function CompanyGeneralInfoTab({ data, onDownload, isDeleting }: Props) {
+export function CompanyGeneralInfoTab({ data, onDownload }: Props) {
 
     console.log("details data", data)
     const InfoCard = ({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) => (

@@ -1,7 +1,7 @@
 // src/components/sales/SaleActions.tsx
 "use client";
 
-import { EditButton, DeleteButton, PrintButton } from "@/components/ui/Button";
+import { PrintButton } from "@/components/ui/Button";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 interface SaleActionsProps {

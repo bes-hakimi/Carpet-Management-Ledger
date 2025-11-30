@@ -38,6 +38,7 @@ import OverviewTopProducts from "./components/overview/OverviewTopProducts";
 import SalesTopProducts from "./components/sales/SalesTopProducts";
 import OverviewDailySalesReport from "./components/overview/OverviewDailySalesReport";
 import SalesDailySalesReport from "./components/sales/SalesDailySalesReport";
+import { CardLoader } from "@/components/loading/DataLoading";
 
 export default function ReportsPage() {
   const [activeView, setActiveView] = useState<"overview" | "sales" | "financial" | "branches">("overview");
@@ -128,48 +129,73 @@ export default function ReportsPage() {
       />
 
       {activeView === "branches" && <BranchList />}
-
       {/* Stats Cards */}
-      {activeView === "overview" && publicMain.data && (
-        <OverviewStatsCards stats={publicMain.data} />
+      {activeView === "overview" && (
+        publicMain.isLoading
+          ? <CardLoader />
+          : publicMain.data && <OverviewStatsCards stats={publicMain.data} />
       )}
-      {activeView === "sales" && salesMain.data && (
-        <SalesStatsCards stats={salesMain.data} />
+
+      {activeView === "sales" && (
+        salesMain.isLoading
+          ? <CardLoader />
+          : salesMain.data && <SalesStatsCards stats={salesMain.data} />
       )}
-      {activeView === "financial" && financialMain.data && (
-        <FinancialStatsCards stats={financialMain.data} />
+
+      {activeView === "financial" && (
+        financialMain.isLoading
+          ? <CardLoader />
+          : financialMain.data && <FinancialStatsCards stats={financialMain.data} />
       )}
+
 
       {/* Daily / Top Products */}
       {activeView !== "branches" && (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           <div className="xl:col-span-2">
-            {activeView === "overview" && publicDaily.data && (
-              <OverviewDailySalesReport data={publicDaily.data} />
+            {activeView === "overview" && (
+              publicDaily.isLoading
+                ? <CardLoader />
+                : publicDaily.data && <OverviewDailySalesReport data={publicDaily.data} />
             )}
 
-            {activeView === "sales" && salesDaily.data && (
-              <SalesDailySalesReport data={salesDaily.data} />
+            {activeView === "sales" && (
+              salesDaily.isLoading
+                ? <CardLoader />
+                : salesDaily.data && <SalesDailySalesReport data={salesDaily.data} />
             )}
 
-            {activeView === "financial" && financialDaily.data && (
-              <DailyExpenseList data={financialTop.data ?? []} />
+            {activeView === "financial" && (
+              financialDaily.isLoading
+                ? <CardLoader />
+                : financialDaily.data && (
+                  <DailyExpenseList data={financialTop.data ?? []} />
+                )
             )}
           </div>
 
           {activeView === "overview" && (
-            <OverviewTopProducts data={publicTop.data ?? []} />
+            publicTop.isLoading
+              ? <CardLoader />
+              : <OverviewTopProducts data={publicTop.data ?? []} />
           )}
 
           {activeView === "sales" && (
-            <SalesTopProducts data={salesTop.data ?? []} />
+            salesTop.isLoading
+              ? <CardLoader />
+              : <SalesTopProducts data={salesTop.data ?? []} />
           )}
 
           {activeView === "financial" && (
-            < DailyFinancialList data={financialDaily.data ?? []} />
+            financialTop.isLoading
+              ? <CardLoader />
+              : (
+                <DailyFinancialList data={financialDaily.data ?? []} />
+              )
           )}
         </div>
       )}
+
     </div>
   );
 }

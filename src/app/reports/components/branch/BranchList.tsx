@@ -14,6 +14,7 @@ import SingleBranchStatsCards from "./single_branch/SingleBranchStatsCards";
 import SingleBranchDailyReport from "./single_branch/SingleBranchDailyReport";
 import SingleBrachTopProducts from "./single_branch/SingleBrachTopProducts";
 import BranchTopProducts from "./BranchTopProducts";
+import { CardLoader } from "@/components/loading/DataLoading";
 import { ShoppingCart, Users, DollarSign } from "lucide-react"
 
 // تایپ‌های API
@@ -79,14 +80,6 @@ export default function BranchList() {
     selectedBranchId ? SINGLE_BRANCH.branch_stock(selectedBranchId) : "",
     { enabled: !!selectedBranchId }
   );
-
-  // وقتی شعبه انتخاب شد
-  const handleViewBranch = (branch: IUser) => {
-    if (branch.id !== undefined) {
-      setSelectedBranchId(branch.id);
-      setSelectedBranch(branch);
-    }
-  };
 
   return (
     <div className="w-full space-y-6">
@@ -158,30 +151,68 @@ export default function BranchList() {
 
 
           {/* آمار و گزارش کلی شعبه‌ها */}
-          {!selectedBranchId && branchMain.data && (
+          {!selectedBranchId && (
             <>
-              <BranchStatsCards stats={branchMain.data} />
+              {/* ---- MAIN STATS ---- */}
+              {branchMain.isLoading ? (
+                <CardLoader />
+              ) : branchMain.data && (
+                <BranchStatsCards stats={branchMain.data} />
+              )}
+
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                {/* ---- DAILY REPORT ---- */}
                 <div className="xl:col-span-2">
-                  <BranchDailySalesReport data={branchDaily.data ?? []} />
+                  {branchDaily.isLoading ? (
+                    <CardLoader />
+                  ) : (
+                    <BranchDailySalesReport data={branchDaily.data ?? []} />
+                  )}
                 </div>
-                <BranchTopProducts data={branchStock.data ?? []} />
+
+                {/* ---- TOP PRODUCTS ---- */}
+                {branchStock.isLoading ? (
+                  <CardLoader />
+                ) : (
+                  <BranchTopProducts data={branchStock.data ?? []} />
+                )}
               </div>
             </>
           )}
 
+
           {/* جزئیات شعبه واحد */}
-          {selectedBranchId && singleBranchMain.data && (
+          {selectedBranchId && (
             <>
-              <SingleBranchStatsCards stats={singleBranchMain.data} />
+              {/* ---- SINGLE MAIN ---- */}
+              {singleBranchMain.isLoading ? (
+                <CardLoader />
+              ) : singleBranchMain.data && (
+                <SingleBranchStatsCards stats={singleBranchMain.data} />
+              )}
+
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                {/* ---- SINGLE DAILY ---- */}
                 <div className="xl:col-span-2">
-                  <SingleBranchDailyReport data={singleBranchDaily.data ?? []} />
+                  {singleBranchDaily.isLoading ? (
+                    <CardLoader />
+                  ) : (
+                    <SingleBranchDailyReport data={singleBranchDaily.data ?? []} />
+                  )}
                 </div>
-                <SingleBrachTopProducts data={singleBranchStock.data ?? []} />
+
+                {/* ---- SINGLE TOP PRODUCTS ---- */}
+                {singleBranchStock.isLoading ? (
+                  <CardLoader />
+                ) : (
+                  <SingleBrachTopProducts data={singleBranchStock.data ?? []} />
+                )}
               </div>
             </>
           )}
+
         </>
       )}
     </div>
