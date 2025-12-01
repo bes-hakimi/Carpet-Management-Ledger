@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
-import { SyncProvider } from "@/offline/SyncProvider";
 import ClientLayout from "@/components/layout/ClientLayout";
 import Providers from "./providers";
 import { AuthProvider } from "@/context/AuthContext";
@@ -38,7 +37,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${vazirmatn.variable} font-sans antialiased bg-gray-50`}>
         <AuthProvider >
           <Providers>
-            <SyncProvider />
             <PushRegister />
             <ClientLayout>{children}</ClientLayout>
           </Providers>
