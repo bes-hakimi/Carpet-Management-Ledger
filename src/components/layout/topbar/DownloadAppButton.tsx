@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Loader2, Check, Download } from "lucide-react";
+import { Loader2, Check, Download, XCircle, Info } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => Promise<void>;
@@ -74,18 +74,24 @@ const DownloadAppButton = () => {
                         </h2>
 
                         {isInstalled ? (
-                            <p className="text-green-600 font-medium mb-6">
-                                ✔️ شما قبلاً اپ را نصب کرده‌اید.
-                            </p>
+                            <div className="flex items-center text-green-600 font-medium mb-6 gap-2">
+                                <Check className="min-w-5 min-h-5 max-h-5 max-w-5" /> شما قبلاً اپ را نصب کرده‌اید.
+                            </div>
                         ) : deferredPrompt ? (
-                            <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                                برای دسترسی سریع‌تر و تجربه بهتر، می‌توانید اپلیکیشن وب ما را نصب کنید.
-                                نصب بسیار سریع است و در صفحه اصلی موبایل یا دسکتاپ شما قرار می‌گیرد.
-                            </p>
+                            <div className="flex items-start text-gray-600 text-sm mb-6 gap-2 leading-relaxed">
+                                <Download className="min-w-5 min-h-5 max-h-5 max-w-5 mt-1 text-teal-500" />
+                                <span>
+                                    برای دسترسی سریع‌تر و تجربه بهتر، می‌توانید اپلیکیشن وب ما را نصب کنید.
+                                    نصب بسیار سریع است و در صفحه اصلی موبایل یا دسکتاپ شما قرار می‌گیرد.
+                                </span>
+                            </div>
                         ) : (
-                            <p className="text-red-600 mb-6">
-                                مرورگر شما در حال حاضر پیشنهاد نصب را پشتیبانی نمی‌کند.
-                            </p>
+                            <div className="flex items-start text-red-600 mb-6 gap-2">
+                                <XCircle className="min-w-5 min-h-5 max-h-5 max-w-5 mt-1" />
+                                <span>
+                                    مرورگر شما در حال حاضر پیشنهاد نصب را پشتیبانی نمی‌کند.
+                                </span>
+                            </div>
                         )}
 
                         <div className="flex justify-end gap-3">
@@ -96,7 +102,6 @@ const DownloadAppButton = () => {
                             {!isInstalled && deferredPrompt && (
                                 <Button
                                     variant="primary"
-                                    icon={<Loader2 className="w-4 h-4 animate-spin" />}
                                     loading={loading}
                                     success={success}
                                     onClick={installApp}
