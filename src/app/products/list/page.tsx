@@ -163,7 +163,7 @@ export default function ProductsPage() {
           key: "user.company_name" as NestedKeyOf<ProductType>,
           label: "شرکت",
           sortable: true,
-          render: (value: unknown, row: ProductType) => (
+          render: (value: unknown) => (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
               {typeof value === "string" || typeof value === "number" ? value : "-"}
             </span>
@@ -178,7 +178,7 @@ export default function ProductsPage() {
           key: "user.branch_name" as NestedKeyOf<ProductType>,
           label: "شعبه",
           sortable: true,
-          render: (value: unknown, row: ProductType) => (
+          render: (value: unknown,) => (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
               {typeof value === "string" || typeof value === "number" ? value : "-"}
             </span>
@@ -193,7 +193,7 @@ export default function ProductsPage() {
           key: "user.staff_name" as NestedKeyOf<ProductType>,
           label: "کارمند",
           sortable: true,
-          render: (value: unknown, row: ProductType) => (
+          render: (value: unknown) => (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
               {typeof value === "string" || typeof value === "number" ? value : "-"}
             </span>

@@ -2,7 +2,7 @@
 "use client";
 
 import { DataTable, Column } from "@/components/ui/DataTable";
-import { Eye, Edit, Trash2, Building } from "lucide-react";
+import { Eye, Building } from "lucide-react";
 import { IUser } from "@/types/user/user";
 
 interface BranchTableProps {

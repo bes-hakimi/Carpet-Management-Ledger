@@ -15,7 +15,7 @@ export default function SalesPage() {
   const { data: sales = [], isLoading } = useApiGet<SaleList[]>("sales", SALES.list);
 
   // فیلترها
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     customerName: "",
     dateFrom: "",
     dateTo: "",

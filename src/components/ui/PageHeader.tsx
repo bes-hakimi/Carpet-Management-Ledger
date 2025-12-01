@@ -38,7 +38,6 @@ export function PageHeader({
 
     // منطق ساده برای غیرفعال کردن دکمه‌ها
     const isBackDisabled = !backUrl && pathname === '/';
-    const isNextDisabled = !nextUrl;
 
     return (
         <div className="relative mb-6">

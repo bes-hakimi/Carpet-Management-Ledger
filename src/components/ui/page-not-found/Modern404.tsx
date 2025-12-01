@@ -6,10 +6,9 @@ import {
   Home,
   AlertTriangle,
   LayoutDashboard,
-  Shield
 } from 'lucide-react';
 import Link from 'next/link';
-import { Button, PrimaryButton, OutlineButton } from '@/components/ui/Button';
+import { PrimaryButton, OutlineButton } from '@/components/ui/Button';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Menu } from './menu';
 

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Calendar, DollarSign, FileText } from "lucide-react";
+import { DollarSign, FileText } from "lucide-react";
 import { categories, paymentMethods } from "../constant/constant";
 import { useApiPost } from "@/hooks/useApi";
 import { EXPENSE } from "@/endpoints/expense";

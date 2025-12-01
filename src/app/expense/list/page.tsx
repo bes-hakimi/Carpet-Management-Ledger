@@ -7,7 +7,7 @@ import { DataTable, Column } from "@/components/ui/DataTable";
 import { Search } from "@/components/ui/Search";
 import { Select } from "@/components/ui/Select";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Eye } from "lucide-react";
 
 import { useApiGet } from "@/hooks/useApi";
 import { EXPENSE } from "@/endpoints/expense";

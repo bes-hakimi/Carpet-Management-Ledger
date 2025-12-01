@@ -67,7 +67,6 @@ export default function EditBranchPage() {
   };
 
   const handleDeleteConfirm = async () => {
-    const toastId = toast.loading("در حال حذف شعبه...");
     await deleteMutation.mutateAsync(USERS.delete(branchId), {
       onSuccess: () => {
         toast.success("شعبه با موفقیت حذف شد!");

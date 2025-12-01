@@ -163,7 +163,3 @@ export default function StaffDetailsPage() {
     </div>
   );
 }
-
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}

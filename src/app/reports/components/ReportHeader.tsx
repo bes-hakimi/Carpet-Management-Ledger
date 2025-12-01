@@ -31,7 +31,12 @@ const ViewToggle = ({
       <Button
         key={item.id}
         onClick={() => setActiveView(item.id)}
-        variant={activeView === item.id ? "primary" : "ghost"}
+        variant={
+          item.id === "overview"
+            ? activeView !== "branches" ? "primary" : "ghost"
+            : activeView === "branches" ? "primary" : "ghost"
+        }
+
         size="sm"
         icon={<item.icon className="w-5 h-5" />}
         className="flex items-center"

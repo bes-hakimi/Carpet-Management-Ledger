@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
-        <link rel="manifest" href="./favicon/site.webmanifest" />
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
 
       <body className={`${vazirmatn.variable} font-sans antialiased bg-gray-50`}>
