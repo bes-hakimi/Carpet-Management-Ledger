@@ -16,6 +16,7 @@ const vazirmatn = Vazirmatn({
 export const metadata: Metadata = {
   title: "Management Ledger",
   description: "This app created for management",
+  manifest: "/site.webmanifest",
   icons: {
     icon: [
       { url: "/favicon/favicon.ico" },
