@@ -6,6 +6,7 @@ import { useApiGet } from "@/hooks/useApi";
 import { USERS } from "@/endpoints/users";
 import { useAuth } from "@/hooks/useAuth";
 import ProfileMenu from "./ProfileMenu";
+import DownloadAppButton from "./DownloadAppButton";
 
 interface IUserResponse {
   details: IUser;
@@ -31,6 +32,7 @@ export default function TopBar() {
         <div className="flex items-center gap-6">
           <Fullscreen />
           <NotificationBell />
+          <DownloadAppButton />
         </div>
         <div className="flex items-center gap-5">
           <ProfileMenu

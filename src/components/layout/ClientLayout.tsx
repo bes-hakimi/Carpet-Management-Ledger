@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Sidebar from "@/components/layout/sidebar/Sidebar";
 import TopBar from "@/components/layout/topbar/TopBar";
@@ -10,6 +10,16 @@ import { useAuth } from "@/hooks/useAuth";
 import PageLoading from "@/components/loading/PageLoading";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("SW Registered"))
+        .catch((err) => console.log("SW Failed:", err));
+    }
+  }, []);
+
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const { isLoggedIn, isAuthLoading } = useAuth();
@@ -19,7 +29,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   // مسیرهایی که نباید نوار بالا نمایش داده شود
   const hidePaths = ["/login", "/forgot-password"];
-  if (!isLoggedIn) hidePaths.push("/"); 
+  if (!isLoggedIn) hidePaths.push("/");
 
   const showTopBar = !hidePaths.includes(pathname);
 
@@ -38,7 +48,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
         {/* بخش محتوا */}
         <main
-          className={`flex-1 overflow-y-auto transition-all duration-300 ${showTopBar && (collapsed ? "sm:mr-[4rem]" : "sm:mr-[16rem]") } ${showTopBar ? "p-3 md:p-6 pb-36 md:pb-16" : ""}`}
+          className={`flex-1 overflow-y-auto transition-all duration-300 ${showTopBar && (collapsed ? "sm:mr-[4rem]" : "sm:mr-[16rem]")} ${showTopBar ? "p-3 md:p-6 pb-36 md:pb-16" : ""}`}
         >
           {children}
         </main>
