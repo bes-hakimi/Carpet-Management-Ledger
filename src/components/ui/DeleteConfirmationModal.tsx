@@ -126,7 +126,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-4 flex items-center justify-center gap-2 text-teal-600 bg-teal-50 px-4 py-3 rounded-lg"
+                    className="mt-4 flex items-center justify-center gap-2 text-primary-600 bg-primary-50 px-4 py-3 rounded-lg"
                   >
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span className="text-sm font-medium">در حال حذف...</span>

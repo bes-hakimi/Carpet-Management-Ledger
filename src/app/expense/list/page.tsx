@@ -36,7 +36,7 @@ export default function ExpenseListPage() {
         const firstLetter = row.title?.charAt(0).toUpperCase() || "-";
         return (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-cyan-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">{firstLetter}</span>
             </div>
             <span className="font-medium text-gray-900">{row.title}</span>
@@ -49,7 +49,7 @@ export default function ExpenseListPage() {
       label: "مبلغ (افغانی)",
       sortable: true,
       render: (_, row) => (
-        <span className="font-bold text-teal-600">{Number(row.price).toLocaleString()} افغانی</span>
+        <span className="font-bold text-primary-600">{Number(row.price).toLocaleString()} افغانی</span>
       ),
     },
     {
@@ -57,7 +57,7 @@ export default function ExpenseListPage() {
       label: "کتگوری",
       sortable: true,
       render: (_, row) => (
-        <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
+        <span className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm font-medium">
           {row.category}
         </span>
       ),

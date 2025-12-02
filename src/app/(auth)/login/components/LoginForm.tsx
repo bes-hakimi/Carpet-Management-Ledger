@@ -68,7 +68,7 @@ export default function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
             <div className="flex justify-end">
                 <Link
                     href="/forgot-password"
-                    className="text-sm text-teal-600 hover:text-teal-800 transition-colors font-medium hover:underline underline-offset-2"
+                    className="text-sm text-primary-600 hover:text-primary-800 transition-colors font-medium hover:underline underline-offset-2"
                 >
                     رمز عبور خود را فراموش کرده‌اید؟
                 </Link>

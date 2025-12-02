@@ -11,7 +11,7 @@ export default function DashboardHeader() {
       animate={{ opacity: 1, y: 0 }}
     >
       <h1 className="text-xl font-bold">داشبورد مدیریت</h1>
-      <div className="flex flex-nowrap items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-sm">
+      <div className="flex flex-nowrap items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-sm">
         <ArrowUpRight className="h-4 w-4" />
         <span>عملیات سریع </span>
       </div>

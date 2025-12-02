@@ -28,7 +28,7 @@ export default function MobileBottomBar() {
     return (
         <>
             {/* 🔹 نوار پایین */}
-            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/70 backdrop-blur-xl border border-teal-100 shadow-lg rounded-2xl flex justify-around items-center py-2 w-[95%] max-w-md z-50 sm:hidden">
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/70 backdrop-blur-xl border border-primary-100 shadow-lg rounded-2xl flex justify-around items-center py-2 w-[95%] max-w-md z-50 sm:hidden">
                 {visibleItems.map(({ title, link, icon: Icon, submenu }) => {
                     // مسیر فعلی فعال
                     const activeLink = link && pathname === link;
@@ -54,14 +54,14 @@ export default function MobileBottomBar() {
                             <div
                                 className={clsx(
                                     "flex flex-col items-center justify-center transition-all duration-300",
-                                    active ? "text-teal-600" : "text-gray-500"
+                                    active ? "text-primary-600" : "text-gray-500"
                                 )}
                             >
                                 <div
                                     className={clsx(
                                         "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                                         active
-                                            ? "bg-teal-100 text-teal-600 shadow-inner"
+                                            ? "bg-primary-100 text-primary-600 shadow-inner"
                                             : "group-hover:bg-gray-100"
                                     )}
                                 >
@@ -73,7 +73,7 @@ export default function MobileBottomBar() {
                             {hasSubmenu && (
                                 <span className="absolute -top-1 right-1">
                                     {openSubmenu === title ? (
-                                        <ChevronUp className="w-3 h-3 text-teal-500" />
+                                        <ChevronUp className="w-3 h-3 text-primary-500" />
                                     ) : (
                                         <ChevronDown className="w-3 h-3 text-gray-400" />
                                     )}
@@ -91,7 +91,7 @@ export default function MobileBottomBar() {
                             setShowMore(!showMore);
                             setOpenSubmenu(null);
                         }}
-                        className="flex flex-col items-center text-[11px] text-gray-600 hover:text-teal-600 transition-all"
+                        className="flex flex-col items-center text-[11px] text-gray-600 hover:text-primary-600 transition-all"
                     >
                         <div className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100">
                             <MoreHorizontal className="w-5 h-5" />
@@ -116,15 +116,15 @@ export default function MobileBottomBar() {
                                     className={clsx(
                                         "flex items-center gap-3 px-4 py-2 rounded-xl transition-colors",
                                         active
-                                            ? "bg-teal-50 text-teal-600"
-                                            : "text-gray-700 hover:bg-teal-50"
+                                            ? "bg-primary-50 text-primary-600"
+                                            : "text-gray-700 hover:bg-primary-50"
                                     )}
                                 >
                                     {sub.icon && (
                                         <sub.icon
                                             className={clsx(
                                                 "w-5 h-5",
-                                                active ? "text-teal-600" : "text-teal-500"
+                                                active ? "text-primary-600" : "text-primary-500"
                                             )}
                                         />
                                     )}
@@ -150,16 +150,16 @@ export default function MobileBottomBar() {
                                     className={clsx(
                                         "flex items-center gap-3 px-4 py-2 rounded-xl w-full transition-colors",
                                         openSubmenu === title
-                                            ? "bg-teal-50 text-teal-600"
-                                            : "text-gray-700 hover:bg-teal-50"
+                                            ? "bg-primary-50 text-primary-600"
+                                            : "text-gray-700 hover:bg-primary-50"
                                     )}
                                 >
-                                    <Icon className="w-5 h-5 text-teal-500" />
+                                    <Icon className="w-5 h-5 text-primary-500" />
                                     {title}
                                     {hasSubmenu && (
                                         <span className="ml-auto">
                                             {openSubmenu === title ? (
-                                                <ChevronUp className="w-4 h-4 text-teal-500" />
+                                                <ChevronUp className="w-4 h-4 text-primary-500" />
                                             ) : (
                                                 <ChevronDown className="w-4 h-4 text-gray-400" />
                                             )}
@@ -179,7 +179,7 @@ export default function MobileBottomBar() {
                                                 className={clsx(
                                                     "flex items-center gap-3 pl-10 pr-4 py-2 rounded-lg text-sm transition-colors",
                                                     active
-                                                        ? "bg-teal-50 text-teal-600"
+                                                        ? "bg-primary-50 text-primary-600"
                                                         : "text-gray-600 hover:bg-gray-50"
                                                 )}
                                             >
@@ -187,7 +187,7 @@ export default function MobileBottomBar() {
                                                     <sub.icon
                                                         className={clsx(
                                                             "w-4 h-4",
-                                                            active ? "text-teal-600" : "text-teal-400"
+                                                            active ? "text-primary-600" : "text-primary-400"
                                                         )}
                                                     />
                                                 )}

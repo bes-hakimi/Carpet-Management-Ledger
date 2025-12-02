@@ -78,7 +78,7 @@ export default function ExpenseDetailPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-gray-600">مبلغ</p>
-                    <p className="text-xl font-bold text-teal-600">
+                    <p className="text-xl font-bold text-primary-600">
                       {Number(expense.price).toLocaleString()} افغانی
                     </p>
                   </div>
@@ -87,12 +87,12 @@ export default function ExpenseDetailPage() {
                 {/* Details Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <DetailItem
-                    icon={<FileText className="w-5 h-5 text-teal-600" />}
+                    icon={<FileText className="w-5 h-5 text-primary-600" />}
                     label="عنوان مصرف"
                     value={expense.title}
                   />
                   <DetailItem
-                    icon={<Tag className="w-5 h-5 text-teal-600" />}
+                    icon={<Tag className="w-5 h-5 text-primary-600" />}
                     label="کتگوری"
                     value={expense.category}
                   />
@@ -122,19 +122,19 @@ export default function ExpenseDetailPage() {
 
               {/* Sidebar */}
               <div className="space-y-6">
-                <div className="bg-teal-50 rounded-xl border border-teal-200 p-6">
-                  <h3 className="text-lg font-semibold text-teal-900 mb-3">راهنمایی</h3>
-                  <ul className="space-y-2 text-sm text-teal-800">
+                <div className="bg-primary-50 rounded-xl border border-primary-200 p-6">
+                  <h3 className="text-lg font-semibold text-primary-900 mb-3">راهنمایی</h3>
+                  <ul className="space-y-2 text-sm text-primary-800">
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" />
                       <span>مصرف های خود را به طور منظم ثبت کنید</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" />
                       <span>کتگوری صحیح برای هر مصرف انتخاب کنید</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" />
                       <span>توضیحات کامل برای مصارف بزرگ وارد کنید</span>
                     </li>
                   </ul>

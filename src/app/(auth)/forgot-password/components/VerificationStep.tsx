@@ -134,7 +134,7 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={index === 0 ? handlePaste : undefined}
-              className="w-8 h-8 md:w-10 md:h-10 text-center text-base font-semibold border-2 border-gray-300 rounded-md md:rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+              className="w-8 h-8 md:w-10 md:h-10 text-center text-base font-semibold border-2 border-gray-300 rounded-md md:rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
               style={{ direction: "ltr" }}
             />
           ))}
@@ -169,7 +169,7 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
           disabled={timeLeft > 0 || isResendLoading}
           className={`text-sm transition-colors ${timeLeft > 0 || isResendLoading
               ? "text-gray-400 cursor-not-allowed"
-              : "text-teal-600 hover:text-teal-800"
+              : "text-primary-600 hover:text-primary-800"
             }`}
         >
           {isResendLoading

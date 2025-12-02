@@ -16,7 +16,7 @@ export default function NotificationStatsCard({
     <div className="bg-white rounded-lg shadow-xs border border-gray-200/60 p-6 mb-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg shadow-lg">
             <Bell className="w-8 h-8 text-white" />
           </div>
 

@@ -35,7 +35,7 @@ const Loading: React.FC<LoadingProps> = ({
   // اسپینر کلاسیک
   const SpinLoader = () => (
     <motion.div
-      className={`${sizes[size].container} border-4 border-teal-200 border-t-teal-500 rounded-full`}
+      className={`${sizes[size].container} border-4 border-primary-200 border-t-primary-500 rounded-full`}
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
     />
@@ -44,7 +44,7 @@ const Loading: React.FC<LoadingProps> = ({
   // پالس نرم
   const PulseLoader = () => (
     <motion.div
-      className={`${sizes[size].container} bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full`}
+      className={`${sizes[size].container} bg-gradient-to-r from-primary-500 to-cyan-500 rounded-full`}
       animate={{
         scale: [1, 1.1, 1],
         opacity: [1, 0.8, 1]
@@ -63,7 +63,7 @@ const Loading: React.FC<LoadingProps> = ({
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
-          className="w-2 h-2 bg-teal-500 rounded-full"
+          className="w-2 h-2 bg-primary-500 rounded-full"
           animate={{
             y: [0, -6, 0],
           }}
@@ -84,7 +84,7 @@ const Loading: React.FC<LoadingProps> = ({
       {[0, 1, 2, 3, 4].map((i) => (
         <motion.div
           key={i}
-          className="w-1 bg-gradient-to-t from-teal-500 to-cyan-500 rounded-full"
+          className="w-1 bg-gradient-to-t from-primary-500 to-cyan-500 rounded-full"
           style={{ 
             height: size === 'sm' ? '12px' : size === 'md' ? '16px' : '20px' 
           }}
@@ -113,7 +113,7 @@ const Loading: React.FC<LoadingProps> = ({
         animate={{ rotate: 360 }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
       >
-        <Orbit className="w-full h-full text-teal-400" />
+        <Orbit className="w-full h-full text-primary-400" />
       </motion.div>
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -129,7 +129,7 @@ const Loading: React.FC<LoadingProps> = ({
   const NeonLoader = () => (
     <div className={`relative ${sizes[size].container}`}>
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full"
+        className="absolute inset-0 bg-gradient-to-r from-primary-400 to-cyan-400 rounded-full"
         animate={{
           opacity: [0.7, 1, 0.7],
         }}

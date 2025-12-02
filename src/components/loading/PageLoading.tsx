@@ -7,9 +7,9 @@ export default function PageLoading() {
       <div className="text-center space-y-8">
         {/* Animated Spinner */}
         <div className="relative mx-auto w-20 h-20">
-          <div className="absolute inset-0 border-4 border-teal-200 rounded-full animate-ping"></div>
-          <div className="absolute inset-2 border-4 border-teal-300 rounded-full animate-pulse"></div>
-          <div className="absolute inset-4 border-4 border-teal-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 border-4 border-primary-200 rounded-full animate-ping"></div>
+          <div className="absolute inset-2 border-4 border-primary-300 rounded-full animate-pulse"></div>
+          <div className="absolute inset-4 border-4 border-primary-500 rounded-full animate-spin"></div>
         </div>
 
         {/* Text Content */}

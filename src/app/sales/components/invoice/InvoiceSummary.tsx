@@ -39,14 +39,14 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
             alt="لگوی شرکت"
             className="w-12 h-12 object-contain print:w-10 print:h-10"
           />
-          <div className="flex items-center gap-4 bg-teal-50 border border-teal-200 rounded-md px-3 py-1 w-fit shadow-sm print:shadow-none print:bg-teal-50 print:border-teal-200 mt-2">
-            <div className="flex items-center gap-1 text-teal-800">
+          <div className="flex items-center gap-4 bg-primary-50 border border-primary-200 rounded-md px-3 py-1 w-fit shadow-sm print:shadow-none print:bg-primary-50 print:border-primary-200 mt-2">
+            <div className="flex items-center gap-1 text-primary-800">
               <FileText className="w-3 h-3" />
               <span className="text-xs font-semibold">شماره:</span>
               <span className="text-xs">{saleData?.slug ?? "-"}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-teal-800">
+            <div className="flex items-center gap-1 text-primary-800">
               <span className="text-xs font-semibold">تاریخ:</span>
               <span className="text-xs">
                 {saleData?.created_at
@@ -57,17 +57,17 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
           </div>
         </div>
 
-        <div className="text-teal-900 text-xs space-y-1">
+        <div className="text-primary-900 text-xs space-y-1">
           <div className="flex items-center gap-1">
-            <Building2 className="w-3 h-3 text-teal-700" />
+            <Building2 className="w-3 h-3 text-primary-700" />
             <p className="font-semibold">{saleData.company_info?.company_name}</p>
           </div>
           <div className="flex items-center gap-1">
-            <MapPin className="w-3 h-3 text-teal-700" />
+            <MapPin className="w-3 h-3 text-primary-700" />
             <p>{saleData.company_info?.address}</p>
           </div>
           <div className="flex items-center gap-1">
-            <Phone className="w-3 h-3 text-teal-700" />
+            <Phone className="w-3 h-3 text-primary-700" />
             <p>{saleData.company_info?.phone}</p>
           </div>
         </div>
@@ -75,13 +75,13 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
 
       {/* اطلاعات مشتری */}
       <div className="space-y-2 py-2 my-2">
-        <h2 className="text-xs font-semibold text-teal-800">
+        <h2 className="text-xs font-semibold text-primary-800">
           اطلاعات خریدار
         </h2>
 
         <div className="text-gray-700 w-full grid grid-cols-1 md:grid-cols-3 gap-3 text-xs print:grid-cols-3">
           <div className="flex items-center">
-            <User className="w-3 h-3 ml-1 text-teal-700 flex-shrink-0" />
+            <User className="w-3 h-3 ml-1 text-primary-700 flex-shrink-0" />
             <span className="font-semibold ml-1 whitespace-nowrap">نام:</span>
             <span className="mr-1 whitespace-nowrap overflow-hidden text-ellipsis">
               {saleData.customer?.customer_name || "نامشخص"}
@@ -89,7 +89,7 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
           </div>
 
           <div className="flex items-center">
-            <Phone className="w-3 h-3 ml-1 text-teal-700 flex-shrink-0" />
+            <Phone className="w-3 h-3 ml-1 text-primary-700 flex-shrink-0" />
             <span className="font-semibold whitespace-nowrap ml-1">
               شماره تماس:
             </span>
@@ -99,7 +99,7 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
           </div>
 
           <div className="flex items-center">
-            <MapPin className="w-3 h-3 ml-1 text-teal-700 flex-shrink-0" />
+            <MapPin className="w-3 h-3 ml-1 text-primary-700 flex-shrink-0" />
             <span className="font-semibold ml-1 whitespace-nowrap">
               آدرس:
             </span>
@@ -114,17 +114,17 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
       <div className="mb-6 flex-1">
         <table className="w-full border-collapse text-xs">
           <thead>
-            <tr className="bg-teal-500 text-xs print:bg-teal-500">
-              <th className="text-right py-2 px-2 font-bold text-white border border-teal-600">
+            <tr className="bg-primary-500 text-xs print:bg-primary-500">
+              <th className="text-right py-2 px-2 font-bold text-white border border-primary-600">
                 شرح اجناس
               </th>
-              <th className="text-center py-2 px-2 font-bold text-white border border-teal-600">
+              <th className="text-center py-2 px-2 font-bold text-white border border-primary-600">
                 قیمت
               </th>
-              <th className="text-center py-2 px-2 font-bold text-white border border-teal-600">
+              <th className="text-center py-2 px-2 font-bold text-white border border-primary-600">
                 تعداد
               </th>
-              <th className="text-center py-2 px-2 font-bold text-white border border-teal-600">
+              <th className="text-center py-2 px-2 font-bold text-white border border-primary-600">
                 مجموع
               </th>
             </tr>
@@ -174,7 +174,7 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
         </div>
 
         <div className="w-1/3 flex items-end">
-          <div className="bg-teal-500 py-2 px-3 w-full print:bg-teal-500">
+          <div className="bg-primary-500 py-2 px-3 w-full print:bg-primary-500">
             <div className="flex justify-between items-center text-xs font-semibold text-white">
               <span>مجموع کل:</span>
               <span className="text-sm font-bold tracking-wide">

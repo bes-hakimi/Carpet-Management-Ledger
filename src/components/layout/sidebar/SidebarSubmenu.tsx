@@ -12,7 +12,7 @@ const SidebarSubmenu = ({ items }: SidebarSubmenuProps) => {
         <Link
           key={item.title}
           href={item.link}
-          className="block px-3 py-1.5 text-sm text-gray-600 hover:bg-teal-100 hover:text-teal-700 rounded-md transition"
+          className="block px-3 py-1.5 text-sm text-gray-600 hover:bg-primary-100 hover:text-primary-700 rounded-md transition"
         >
           {item.title}
         </Link>

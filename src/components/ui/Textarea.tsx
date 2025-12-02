@@ -39,7 +39,7 @@ export function Textarea({
         placeholder={placeholder}
         rows={rows}
         disabled={disabled}
-        className={`w-full px-3 py-2 rounded-md ring-1 ring-gray-300 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all resize-none ${
+        className={`w-full px-3 py-2 rounded-md ring-1 ring-gray-300 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all resize-none ${
           disabled ? "bg-gray-100 cursor-not-allowed" : ""
         } ${error ? "ring-red-500 focus:ring-red-500" : ""}`}
       />

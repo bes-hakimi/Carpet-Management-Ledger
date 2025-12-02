@@ -173,7 +173,7 @@ export function DataTable<T extends object>({
                           size={14}
                           className={`${sortConfig?.key === column.key &&
                               sortConfig.direction === "asc"
-                              ? "text-teal-500"
+                              ? "text-primary-500"
                               : "text-gray-400"
                             }`}
                         />
@@ -181,7 +181,7 @@ export function DataTable<T extends object>({
                           size={14}
                           className={`-mt-1 ${sortConfig?.key === column.key &&
                               sortConfig.direction === "desc"
-                              ? "text-teal-500"
+                              ? "text-primary-500"
                               : "text-gray-400"
                             }`}
                         />
@@ -230,7 +230,7 @@ export function DataTable<T extends object>({
                             e.stopPropagation();
                             action.onClick(row);
                           }}
-                          className="p-2 text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                           title={action.label}
                         >
                           {action.icon}

@@ -23,7 +23,7 @@ const SidebarHeader = ({ collapsed, onToggle }: SidebarHeaderProps) => {
           alt="logo"
           width={32}
           height={32}
-          className="rounded-md border border-teal-400 min-w-8 max-w-8 h-8"
+          className="rounded-md border border-primary-400 min-w-8 max-w-8 h-8"
         />
         {!collapsed && (
           <span className="font-semibold text-gray-800 text-nowrap">پنل مدیریت</span>
@@ -34,7 +34,7 @@ const SidebarHeader = ({ collapsed, onToggle }: SidebarHeaderProps) => {
       <button
         onClick={onToggle}
         className={clsx(
-          'p-1 rounded-md bg-teal-500 text-white hover:bg-teal-600 hover:cursor-pointer transition-all duration-300 absolute',
+          'p-1 rounded-md bg-primary-500 text-white hover:bg-primary-600 hover:cursor-pointer transition-all duration-300 absolute',
           collapsed
             ? '-left-8 top-24 -translate-y-1/2 shadow-lg' // دکمه در بیرون نمایش داده شود
             : 'left-4 top-1/2 -translate-y-1/2'

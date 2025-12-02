@@ -16,7 +16,7 @@ export default function RecentTransactions() {
   const getStatusColor = (type: string) => {
     switch (type) {
       case "income":
-        return "text-teal-600 bg-teal-50 border-teal-200";
+        return "text-primary-600 bg-primary-50 border-primary-200";
       case "expense":
         return "text-red-600 bg-red-50 border-red-200";
       default:
@@ -26,7 +26,7 @@ export default function RecentTransactions() {
 
   const getStatusIcon = (type: string) => {
     if (type === "income") {
-      return <TrendingUp className="w-4 h-4 text-teal-500" />;
+      return <TrendingUp className="w-4 h-4 text-primary-500" />;
     }
     return <TrendingDown className="w-4 h-4 text-red-500" />;
   };
@@ -58,11 +58,11 @@ export default function RecentTransactions() {
         {/* سربرگ */}
         <div className="flex items-center justify-between mb-6">
           <div className="w-full flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg">
+            <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-lg">
               <ArrowUpRight className="w-5 h-5 text-white" />
             </div>
             <div className="w-full flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-teal-600">معاملات اخیر</h2>
+              <h2 className="text-lg font-semibold text-primary-600">معاملات اخیر</h2>
               <div className="text-sm text-gray-600">
                 نمایش {transactions?.length ?? 0} معامله
               </div>
@@ -75,7 +75,7 @@ export default function RecentTransactions() {
           {transactions?.map((transaction) => (
             <div
               key={transaction.id}
-              className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-200/60 hover:border-teal-300 hover:shadow-sm transition-all duration-200 group"
+              className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-200/60 hover:border-primary-300 hover:shadow-sm transition-all duration-200 group"
             >
               {/* معلومات معامله */}
               <div className="flex items-center gap-4 flex-1">
@@ -107,7 +107,7 @@ export default function RecentTransactions() {
               {/* مقدار */}
               <div className="text-left ml-4">
                 <div
-                  className={`text-lg font-bold ${transaction.type === "income" ? "text-teal-600" : "text-red-600"
+                  className={`text-lg font-bold ${transaction.type === "income" ? "text-primary-600" : "text-red-600"
                     }`}
                 >
                   {transaction.amount.toLocaleString("fa-AF")}
@@ -123,7 +123,7 @@ export default function RecentTransactions() {
           <div className="text-sm text-gray-600">
             نمایش {transactions?.length ?? 0} معامله
           </div>
-          <button className="flex items-center gap-2 text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors duration-200 group">
+          <button className="flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200 group">
             دیدن همه معاملات
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
           </button>

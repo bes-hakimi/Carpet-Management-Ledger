@@ -59,7 +59,7 @@ export function StaffTab({ data }: { data: IUser[] }) {
       sortable: true,
       render: (_value, row) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-cyan-500 rounded-lg flex items-center justify-center">
             <User2 size={20} className="text-white" />
           </div>
           <div>

@@ -125,7 +125,7 @@ export function CompanyGeneralInfoTab({ data, onDownload }: Props) {
                             {data.company_logo && (
                                 <button
                                     onClick={() => onDownload?.("logo")}
-                                    className="flex items-center text-teal-600 hover:text-teal-700 text-sm font-medium"
+                                    className="flex items-center text-primary-600 hover:text-primary-700 text-sm font-medium"
                                 >
                                     <Download className="w-4 h-4 ml-1" /> دانلود
                                 </button>
@@ -173,7 +173,7 @@ export function CompanyGeneralInfoTab({ data, onDownload }: Props) {
                             {data.contract && (
                                 <button
                                     onClick={() => onDownload?.("contract")}
-                                    className="flex items-center text-teal-600 hover:text-teal-700 text-sm font-medium"
+                                    className="flex items-center text-primary-600 hover:text-primary-700 text-sm font-medium"
                                 >
                                     <Download className="w-4 h-4 ml-1" /> دانلود
                                 </button>

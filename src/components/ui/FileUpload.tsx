@@ -94,11 +94,11 @@ export function FileUpload({
 
   const getFileIcon = () => {
     if (uploadedUrl && uploadedUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i))
-      return <Image size={48} className="text-teal-500" />;
+      return <Image size={48} className="text-primary-500" />;
     if (file?.type.startsWith("image/"))
-      return <Image size={48} className="text-teal-500" />;
+      return <Image size={48} className="text-primary-500" />;
     if (file || uploadedUrl)
-      return <File size={48} className="text-teal-500" />;
+      return <File size={48} className="text-primary-500" />;
     return <Upload size={48} className="text-gray-400" />;
   };
 
@@ -127,10 +127,10 @@ export function FileUpload({
         onDragLeave={handleDragLeave}
         className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 h-40
           ${isDragOver
-            ? "border-teal-500 bg-teal-50"
+            ? "border-primary-500 bg-primary-50"
             : uploadedUrl || file
-              ? "border-teal-500 bg-teal-50"
-              : "border-gray-300 bg-gray-50 hover:border-teal-400 hover:bg-teal-50"}
+              ? "border-primary-500 bg-primary-50"
+              : "border-gray-300 bg-gray-50 hover:border-primary-400 hover:bg-primary-50"}
           ${error ? "border-red-400 bg-red-50" : ""}
         `}
       >
@@ -145,7 +145,7 @@ export function FileUpload({
                   href={uploadedUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-teal-600 text-sm flex items-center justify-center gap-1 hover:underline"
+                  className="text-primary-600 text-sm flex items-center justify-center gap-1 hover:underline"
                   onClick={(e) => e.stopPropagation()}
                 >
                   مشاهده فایل <ExternalLink size={14} />

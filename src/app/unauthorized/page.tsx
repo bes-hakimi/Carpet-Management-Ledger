@@ -9,7 +9,7 @@ export default function UnauthorizedPage() {
     const router = useRouter();
 
     return (
-        <div className="h-full bg-gradient-to-br from-gray-50 to-teal-50/30 flex items-center justify-center p-4">
+        <div className="h-full bg-gradient-to-br from-gray-50 to-primary-50/30 flex items-center justify-center p-4">
             <div className="max-w-2xl w-full">
                 {/* Header */}
                 <motion.div
@@ -31,16 +31,16 @@ export default function UnauthorizedPage() {
                                     repeat: Infinity,
                                     ease: "easeInOut",
                                 }}
-                                className="absolute inset-0 bg-teal-500 rounded-full blur-xl"
+                                className="absolute inset-0 bg-primary-500 rounded-full blur-xl"
                             />
 
                             {/* Main icon */}
                             <motion.div
                                 whileHover={{ scale: 1.05 }}
-                                className="relative bg-white p-6 rounded-2xl shadow-2xl border border-teal-100"
+                                className="relative bg-white p-6 rounded-2xl shadow-2xl border border-primary-100"
                             >
                                 <div className="relative">
-                                    <Shield className="w-16 h-16 text-teal-500 mx-auto" />
+                                    <Shield className="w-16 h-16 text-primary-500 mx-auto" />
                                     <motion.div
                                         initial={{ scale: 0, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
@@ -81,7 +81,7 @@ export default function UnauthorizedPage() {
                         onClick={() => router.back()}
                         variant="outline"
                         size="md"
-                        className="hover:bg-teal-50 hover:text-teal-600"
+                        className="hover:bg-primary-50 hover:text-primary-600"
                     >
                         بازگشت به صفحه قبلی
                     </PrevButton>
@@ -111,7 +111,7 @@ export default function UnauthorizedPage() {
                         transition={{ duration: 2, repeat: Infinity }}
                         className="mt-2"
                     >
-                        <span className="text-teal-500 font-medium">کد خطا: 403_UNAUTHORIZED</span>
+                        <span className="text-primary-500 font-medium">کد خطا: 403_UNAUTHORIZED</span>
                     </motion.div>
                 </motion.div>
 
@@ -127,7 +127,7 @@ export default function UnauthorizedPage() {
                             repeat: Infinity,
                             ease: "linear",
                         }}
-                        className="absolute top-1/4 left-1/4 w-64 h-64 bg-teal-200/20 rounded-full blur-3xl"
+                        className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-200/20 rounded-full blur-3xl"
                     />
                     <motion.div
                         animate={{

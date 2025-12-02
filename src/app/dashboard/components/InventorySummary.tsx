@@ -32,10 +32,10 @@ export default function InventorySummary() {
         };
       default:
         return {
-          bg: "bg-teal-50",
-          border: "border-teal-200",
-          text: "text-teal-700",
-          progress: "bg-teal-500",
+          bg: "bg-primary-50",
+          border: "border-primary-200",
+          text: "text-primary-700",
+          progress: "bg-primary-500",
         };
     }
   };
@@ -86,11 +86,11 @@ export default function InventorySummary() {
         {/* سربرگ */}
         <div className="flex items-center justify-between mb-6">
           <div className="w-full flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg">
+            <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-lg">
               <Package className="w-5 h-5 text-white" />
             </div>
             <div className="w-full flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-teal-600">وضعیت گدام</h2>
+              <h2 className="text-lg font-semibold text-primary-600">وضعیت گدام</h2>
               <p className="text-sm text-gray-600 mt-1">مشاهده موجودی محصولات</p>
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function InventorySummary() {
           <div className="text-sm text-gray-600">خلاصه وضعیت گدام</div>
           <Link
             href="/products/list"
-            className="flex items-center gap-2 text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors duration-200"
+            className="flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200"
           >
             جزئیات کامل
             <Package className="w-4 h-4" />

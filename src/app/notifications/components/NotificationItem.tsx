@@ -86,7 +86,7 @@ export default function NotificationItem({
     <div
       className={`group rounded-lg shadow-xs border-2 transition-all duration-300 hover:shadow-md ${notification.is_read
           ? "border-gray-200/60 bg-white opacity-90"
-          : "border-teal-200 bg-teal-50 shadow-teal-100"
+          : "border-primary-200 bg-primary-50 shadow-primary-100"
         }`}
     >
       <div className="p-6">
@@ -148,7 +148,7 @@ export default function NotificationItem({
         </div>
 
         {/* Actions */}
-        <div className={`flex justify-end gap-4 mt-4 pt-4 border-t  ${notification.is_read ? 'border-gray-200/60' : ' border-teal-300'}`}>
+        <div className={`flex justify-end gap-4 mt-4 pt-4 border-t  ${notification.is_read ? 'border-gray-200/60' : ' border-primary-300'}`}>
           {!notification.is_read && (
             <OutlineButton
               icon={<Check className="w-4 h-4" />}

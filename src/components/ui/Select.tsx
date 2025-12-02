@@ -99,7 +99,7 @@ export function Select({
         type="button"
         onClick={() => !disabled && setOpen(!open)}
         disabled={disabled}
-        className={`w-full ${sizes[size]} rounded-md ring-1 ring-gray-300 bg-white flex items-center justify-between transition-all duration-150 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${error ? 'ring-red-500' : 'hover:ring-2 hover:ring-teal-500'} ${open ? 'ring-2 ring-teal-500' : ''}`}
+        className={`w-full ${sizes[size]} rounded-md ring-1 ring-gray-300 bg-white flex items-center justify-between transition-all duration-150 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${error ? 'ring-red-500' : 'hover:ring-2 hover:ring-primary-500'} ${open ? 'ring-2 ring-primary-500' : ''}`}
       >
         <span className={`${selected ? "text-gray-900" : "text-gray-400"}`}>
           {selected ? selected.label : placeholder}
@@ -116,7 +116,7 @@ export function Select({
           )}
           <ChevronDown
             size={18}
-            className={`text-teal-500 transition-all duration-100 ${open ? "rotate-180" : ""}`}
+            className={`text-primary-500 transition-all duration-100 ${open ? "rotate-180" : ""}`}
           />
         </div>
       </button>
@@ -139,7 +139,7 @@ export function Select({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="جستجو..."
-                  className="w-full pr-9 pl-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 placeholder:text-gray-400"
+                  className="w-full pr-9 pl-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 placeholder:text-gray-400"
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@ export function Select({
                   dir={dir}
                   key={option.value}
                   onClick={() => handleSelect(option.value)}
-                  className={`flex items-center justify-between text-sm px-4 py-2 cursor-pointer hover:bg-teal-500 hover:text-white transition-all duration-150 ${value === option.value ? "bg-teal-500 text-white" : ""
+                  className={`flex items-center justify-between text-sm px-4 py-2 cursor-pointer hover:bg-primary-500 hover:text-white transition-all duration-150 ${value === option.value ? "bg-primary-500 text-white" : ""
                     }`}
                 >
                   <span>{option.label}</span>

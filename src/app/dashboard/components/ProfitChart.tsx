@@ -16,7 +16,6 @@ import { Select } from "@/components/ui/Select";
 import { useApiGet } from "@/hooks/useApi";
 import { DASHBOARD } from "@/endpoints/report/dashboard/dashboard";
 
-// ✅ ایمپورت تایپ‌ها از فایل جداگانه
 import {
   NetIncomeResponse,
   NetIncomeDayItem,
@@ -70,7 +69,7 @@ export default function ProfitChart() {
   return (
     <Card className="p-4 border-gray-200/60 shadow-none">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold text-teal-600">
+        <h1 className="text-lg font-semibold text-primary-600">
           مفاد {periodOptions.find((p) => p.value === period)?.label}
         </h1>
 
@@ -94,23 +93,28 @@ export default function ProfitChart() {
             margin={{ top: 10, right: 20, bottom: 10, left: 0 }}
           >
             <defs>
+              {/* Bar Gradient (vertical) */}
               <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.9} />
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0.3} />
+                <stop offset="5%" stopColor="var(--primary-500)" stopOpacity={0.9} />
+                <stop offset="95%" stopColor="var(--primary-500)" stopOpacity={0.3} />
               </linearGradient>
 
+              {/* Line Gradient (horizontal) */}
               <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#059669" />
+                <stop offset="0%" stopColor="var(--primary-400)" />
+                <stop offset="100%" stopColor="var(--primary-600)" />
               </linearGradient>
             </defs>
 
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" />
+
             <XAxis dataKey="month" tick={{ fill: "#6b7280", fontSize: 12 }} />
             <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
 
             <Tooltip
-              cursor={{ fill: "rgba(16,185,129,0.1)" }}
+              cursor={{
+                fill: "color-mix(in srgb, var(--primary-500) 15%, transparent)",
+              }}
               contentStyle={{
                 backgroundColor: "#fff",
                 borderRadius: "8px",
@@ -140,10 +144,15 @@ export default function ProfitChart() {
               dataKey="profit"
               stroke="url(#lineGradient)"
               strokeWidth={3}
-              dot={{ r: 5, fill: "#10b981", strokeWidth: 2, stroke: "#fff" }}
+              dot={{
+                r: 5,
+                fill: "var(--primary-500)",
+                strokeWidth: 2,
+                stroke: "#fff",
+              }}
               activeDot={{
                 r: 7,
-                stroke: "#10b981",
+                stroke: "var(--primary-500)",
                 strokeWidth: 3,
                 fill: "#fff",
               }}

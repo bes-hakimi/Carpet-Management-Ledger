@@ -57,12 +57,12 @@ export default function NewPasswordStep({ onSubmit, isLoading }: NewPasswordStep
         transition={{ delay: 0.2 }}
         className="text-center mb-4"
       >
-        <div className="bg-teal-50 rounded-lg p-4 border border-teal-200">
-          <Lock className="w-8 h-8 text-teal-500 mx-auto mb-2" />
-          <h3 className="text-sm font-medium text-teal-800">
+        <div className="bg-primary-50 rounded-lg p-4 border border-primary-200">
+          <Lock className="w-8 h-8 text-primary-500 mx-auto mb-2" />
+          <h3 className="text-sm font-medium text-primary-800">
             رمز عبور جدید خود را وارد کنید
           </h3>
-          <p className="text-xs text-teal-600 mt-1">
+          <p className="text-xs text-primary-600 mt-1">
             رمز عبور باید حداقل 6 کاراکتر باشد
           </p>
         </div>

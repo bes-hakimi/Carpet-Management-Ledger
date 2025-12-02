@@ -75,7 +75,7 @@ export function Switch({
         className={cn(
           "relative rounded-full transition-all duration-200 focus:outline-none",
           sizes[size],
-          isChecked ? "bg-teal-500" : "bg-gray-300",
+          isChecked ? "bg-primary-500" : "bg-gray-300",
           disabled && "opacity-50 cursor-not-allowed",
           !disabled && "cursor-pointer"
         )}

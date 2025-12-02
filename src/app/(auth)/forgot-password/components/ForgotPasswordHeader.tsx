@@ -64,13 +64,13 @@ export default function ForgotPasswordHeader({ step }: ForgotPasswordHeaderProps
       className="text-center mb-4 md:mb-8"
     >
       <div className="relative inline-flex items-center justify-center mb-4">
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
-        <div className="relative bg-gradient-to-br from-teal-500 to-cyan-600 p-4 rounded-2xl shadow-lg">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-cyan-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
+        <div className="relative bg-gradient-to-br from-primary-500 to-cyan-600 p-4 rounded-2xl shadow-lg">
           {getStepIcon()}
         </div>
       </div>
 
-      <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+      <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-600 to-cyan-600 bg-clip-text text-transparent">
         {getTitle()}
       </h1>
 
@@ -84,9 +84,9 @@ export default function ForgotPasswordHeader({ step }: ForgotPasswordHeaderProps
             key={s}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
               step === s
-                ? "bg-teal-500 w-6"
+                ? "bg-primary-500 w-6"
                 : index < steps.indexOf(step)
-                ? "bg-teal-300"
+                ? "bg-primary-300"
                 : "bg-gray-300"
             }`}
           />

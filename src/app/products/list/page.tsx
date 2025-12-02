@@ -86,7 +86,7 @@ export default function ProductsPage() {
         const displayValue = (typeof value === "string" || typeof value === "number") ? value : "-";
         return (
           <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-lg border-2 border-teal-500 overflow-hidden">
+            <div className="relative w-10 h-10 rounded-lg border-2 border-primary-500 overflow-hidden">
               <Image
                 src={row.image || "/placeholder.png"}
                 alt={row.name}

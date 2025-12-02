@@ -23,7 +23,7 @@ export function SalesList({ sales, onViewDetails }: SalesListProps) {
         return (
           <div className="flex items-center gap-3">
             {/* مربع با حرف اول */}
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-cyan-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">{firstLetter}</span>
             </div>
             {/* نام کامل مشتری */}

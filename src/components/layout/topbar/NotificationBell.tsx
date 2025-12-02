@@ -79,7 +79,7 @@ export default function NotificationBell() {
   return (
     <div className="relative" ref={modalRef}>
       <button
-        className="relative p-2 rounded-md hover:bg-teal-100 transition-colors duration-200 group"
+        className="relative p-2 rounded-md hover:bg-primary-100 transition-colors duration-200 group"
         onClick={() => setIsOpen(prev => !prev)}
       >
         <Bell
@@ -99,7 +99,7 @@ export default function NotificationBell() {
           <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-2 bg-teal-600 rounded-md">
+                <div className="p-2 bg-primary-600 rounded-md">
                   <Bell size={18} className="text-white" />
                 </div>
                 <div>
@@ -126,7 +126,7 @@ export default function NotificationBell() {
               </div>
             ) : unreadNotifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <CheckCircle2 size={48} className="text-teal-400 mb-3" />
+                <CheckCircle2 size={48} className="text-primary-400 mb-3" />
                 <p className="text-sm font-medium text-gray-900">همه اعلان‌ها خوانده شدند</p>
                 <p className="text-xs text-gray-500 mt-1">هیچ اعلان جدیدی ندارید</p>
               </div>
@@ -141,7 +141,7 @@ export default function NotificationBell() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+                          <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {notification.title}
                           </p>

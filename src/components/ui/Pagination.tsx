@@ -29,7 +29,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           onClick={() => onPageChange(page)}
           className={`px-3 py-2 text-sm border rounded-md min-w-[40px] transition-colors hover:cursor-pointer ${
             currentPage === page
-              ? 'bg-teal-500 text-white border-teal-500'
+              ? 'bg-primary-500 text-white border-primary-500'
               : 'border-gray-300 hover:bg-gray-50'
           }`}
         >
