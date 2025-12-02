@@ -70,7 +70,7 @@ export default function SalesChart() {
 
 
   return (
-    <Card className="p-6 border-gray-200/60 shadow-none">
+    <Card className="p-3 md:p-6 border-gray-200/60 shadow-none">
 
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-primary-600">
@@ -91,7 +91,7 @@ export default function SalesChart() {
       {isLoading && <CardLoader />}
 
       {!isLoading && (
-        <div className="h-64">
+        <div className="h-44 md:h-64">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}

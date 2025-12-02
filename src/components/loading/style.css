@@ -10,7 +10,11 @@
 }
 
 .progress-fill {
-  background: linear-gradient(to right, #2dd4bf, #0d9488);
+  background: linear-gradient(
+    to right,
+    var(--primary-400),
+    var(--primary-600)
+  );
   height: 0.5rem;
   border-radius: 9999px;
   animation: fillAnimation 2s ease-in-out infinite;

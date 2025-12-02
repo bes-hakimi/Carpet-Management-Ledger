@@ -3,12 +3,13 @@ import clsx from 'clsx';
 import SidebarHeader from './SidebarHeader';
 import SidebarFooter from './SidebarFooter';
 import SidebarItem from './SidebarItem';
-import { useAuth } from '@/hooks/useAuth'; // مسیر هوک خودتان
+import { useAuth } from '@/hooks/useAuth';
 
-// منوهای جدا برای هر نقش
+// منوهای جداگانه
 import { sidebarMenuSuperAdmin } from './sidebar-menu/SuperAdmin';
 import { sidebarMenuAdmin } from './sidebar-menu/Admin';
 import { sidebarMenuStaff } from './sidebar-menu/Staff';
+import { sidebarMenuBranch } from './sidebar-menu/Branch';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -19,18 +20,21 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const toggleCollapse = () => setCollapsed(!collapsed);
 
   const { userData } = useAuth();
-  const role = userData?.user?.role || 'superadmin';
-  // type Role = 'superadmin' | 'admin' | 'staff';
-  // const role = 'staff' as Role;
 
+  // نقش کاربر
+  const role: string = userData?.user?.role || 'superadmin';
 
   // انتخاب منو بر اساس نقش
   const sidebarMenu =
     role === 'superadmin'
       ? sidebarMenuSuperAdmin
       : role === 'admin'
-        ? sidebarMenuAdmin
-        : sidebarMenuStaff;
+      ? sidebarMenuAdmin
+      : role === 'staff'
+      ? sidebarMenuStaff
+      : role === 'branch'
+      ? sidebarMenuBranch
+      : sidebarMenuStaff; // fallback
 
   return (
     <aside

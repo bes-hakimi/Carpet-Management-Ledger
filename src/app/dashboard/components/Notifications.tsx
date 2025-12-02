@@ -66,7 +66,7 @@ export default function Notifications() {
 
   return (
     <Card className="bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm border border-gray-200/60 shadow-xs hover:shadow-md transition-all duration-300">
-      <div className="p-6">
+      <div className="p-0 md:p-6">
         {/* سربرگ */}
         <div className="flex items-center justify-between mb-6">
           <div className="w-full flex items-center gap-3">
