@@ -108,7 +108,7 @@ export default function CompanyDetailsPage() {
                 <button
                   key={tab}
                   className={`py-2 px-4 text-sm font-medium ${activeTab === tab
-                      ? "border-b-2 border-teal-600 text-teal-600"
+                      ? "border-b-2 border-primary-600 text-primary-600"
                       : "text-gray-500 hover:text-gray-700"
                     }`}
                   onClick={() => setActiveTab(tab as typeof activeTab)}

@@ -55,7 +55,7 @@ export default function PasswordInput({
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute left-10 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 transition-colors duration-200 z-10"
+          className="absolute left-10 top-1/2 transform -translate-y-1/2 text-primary-500 hover:text-primary-600 transition-colors duration-200 z-10"
         >
           {showPassword ? (
             <EyeOff className="w-4 h-4" />

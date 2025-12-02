@@ -21,7 +21,7 @@ export const Loading: React.FC<LoadingProps> = ({
 
   const spinner = (
     <motion.div
-      className={`${sizes[size]} border-4 border-teal-200 border-t-teal-500 rounded-full`}
+      className={`${sizes[size]} border-4 border-primary-200 border-t-primary-500 rounded-full`}
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
     />

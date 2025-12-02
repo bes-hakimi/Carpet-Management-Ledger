@@ -102,7 +102,7 @@ export default function UserProfile() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
                     {/* هدر پروفایل */}
-                    <div className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-8 text-white flex justify-between">
+                    <div className="bg-gradient-to-r from-primary-400 to-primary-600 px-6 py-8 text-white flex justify-between">
                         <div className="flex items-center gap-4">
 
                             <div className="h-14 w-14 bg-white/20 rounded-md flex items-center justify-center">
@@ -117,9 +117,9 @@ export default function UserProfile() {
                                     {formData.first_name} {formData.last_name}
                                 </h1>
                                 {userRoll === "branch" ?
-                                    <p className="text-sm text-teal-100">{formData.branch_name}</p>
+                                    <p className="text-sm text-primary-100">{formData.branch_name}</p>
                                     :
-                                    <p className="text-sm text-teal-100">{formData.company_name}</p>
+                                    <p className="text-sm text-primary-100">{formData.company_name}</p>
                                 }
                             </div>
 

@@ -30,7 +30,7 @@ export default function Notifications() {
         return "bg-emerald-50 border-emerald-200 text-emerald-700";
       case "product":
       case "inventory":
-        return "bg-teal-50 border-teal-200 text-teal-700"; // رنگ برند
+        return "bg-primary-50 border-primary-200 text-primary-700"; // رنگ برند
       case "sales":
         return "bg-indigo-50 border-indigo-200 text-indigo-700";
       case "info":
@@ -70,11 +70,11 @@ export default function Notifications() {
         {/* سربرگ */}
         <div className="flex items-center justify-between mb-6">
           <div className="w-full flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg">
+            <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-lg">
               <Bell className="w-5 h-5 text-white" />
             </div>
             <div className="w-full flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-teal-600">آخرین اعلان‌ها</h2>
+              <h2 className="text-lg font-semibold text-primary-600">آخرین اعلان‌ها</h2>
               <p className="text-sm text-gray-600 mt-1">
                 نمایش {latestNotifications.length} اعلان از {totalCount}
               </p>
@@ -100,7 +100,7 @@ export default function Notifications() {
             latestNotifications.map((note) => (
               <div
                 key={note.id}
-                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-sm group ${!note.is_read ? "border-teal-200 bg-teal-50/50" : "border-gray-200/60 bg-white"
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-sm group ${!note.is_read ? "border-primary-200 bg-primary-50/50" : "border-gray-200/60 bg-white"
                   }`}
               >
                 {/* آیکون */}
@@ -120,7 +120,7 @@ export default function Notifications() {
                       {note.message}
                     </p>
                     {!note.is_read && (
-                      <div className="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0 mt-2 animate-pulse"></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0 mt-2 animate-pulse"></div>
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -140,7 +140,7 @@ export default function Notifications() {
           </div>
           <button
             onClick={() => router.push("/notifications")}
-            className="flex items-center gap-2 text-sm font-medium text-teal-500 hover:text-teal-600 transition-colors duration-200 group"
+            className="flex items-center gap-2 text-sm font-medium text-primary-500 hover:text-primary-600 transition-colors duration-200 group"
           >
             دیدن همه اعلان‌ها
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-200" />

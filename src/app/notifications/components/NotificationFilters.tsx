@@ -61,7 +61,7 @@ export default function NotificationFilters({
           <h3 className="text-lg font-semibold text-gray-800">فیلترها</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1 max-w-2xl z-20">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1 max-w-2xl">
 
           <Select
             options={readStatusOptions}

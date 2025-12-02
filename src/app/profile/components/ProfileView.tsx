@@ -122,14 +122,14 @@ interface InfoCardProps {
 
 function InfoCard({ label, value, icon, fullWidth = false, status }: InfoCardProps) {
     const statusClasses = status === "active"
-        ? "text-teal-700 bg-teal-100"
+        ? "text-primary-700 bg-primary-100"
         : status === "inactive"
             ? "text-red-700 bg-red-100"
             : "";
 
     return (
         <div className={`flex items-center gap-4 p-4 rounded-lg border border-gray-200 bg-white ${fullWidth ? "col-span-2" : ""} ${statusClasses}`}>
-            <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-md">{icon}</div>
+            <div className="p-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-md">{icon}</div>
             <div className="flex flex-col">
                 <span className="text-gray-500 text-sm">{label}</span>
                 <span className="font-medium text-gray-900">{value}</span>

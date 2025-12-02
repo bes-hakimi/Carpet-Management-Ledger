@@ -25,7 +25,7 @@ export default function Fullscreen() {
 
   return (
     <div className="flex items-center gap-4 p-1 rounded-md hover:cursor-pointer
-                bg-gradient-to-r from-teal-500 via-teal-500/80 to-teal-500/60">
+                bg-gradient-to-r from-primary-500 via-primary-500/80 to-primary-500/60">
       <button
         onClick={toggleFullscreen}
         className="text-white hover:cursor-pointer hover:scale-110 transition-all"

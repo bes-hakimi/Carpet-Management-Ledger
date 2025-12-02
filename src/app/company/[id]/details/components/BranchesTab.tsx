@@ -63,7 +63,7 @@ export function BranchesTab({ data }: { data: IUser[] }) {
         const branchName = (value as string) ?? "بدون نام";
         return (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-cyan-500 rounded-lg flex items-center justify-center">
               <Building2 size={20} className="text-white" />
             </div>
             <div>

@@ -126,7 +126,7 @@ export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
           type="button"
           onClick={() => handleNewCustomerToggle(false)}
           className={`${!isNewCustomer
-            ? "bg-teal-500 text-white border-teal-500"
+            ? "bg-primary-500 text-white border-primary-500"
             : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
         >
@@ -136,7 +136,7 @@ export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
           type="button"
           onClick={() => handleNewCustomerToggle(true)}
           className={`${isNewCustomer
-            ? "bg-teal-500 text-white border-teal-500"
+            ? "bg-primary-500 text-white border-primary-500"
             : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
         >

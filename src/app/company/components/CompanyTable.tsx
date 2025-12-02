@@ -27,7 +27,7 @@ export function CompanyTable({ companies, onView, onEdit, onDelete }: CompanyTab
       sortable: true,
       render: (_value: unknown, row: Company) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-cyan-500 rounded-lg flex items-center justify-center">
             <Building size={20} className="text-white" />
           </div>
           <div>

@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
 import { Button, DownloadButton, PrintButton } from "@/components/ui/Button";
-import { Filter, Eye, MapPin } from "lucide-react";
+import { Filter, Eye, Building2 } from "lucide-react";
 import React from "react";
 
 type ActiveViewType = "overview" | "sales" | "financial" | "branches";
@@ -26,7 +26,7 @@ const ViewToggle = ({
   <div className="flex bg-gray-100 rounded-lg p-1">
     {[
       { id: "overview" as ActiveViewType, label: "نمایه کلی", icon: Eye },
-      { id: "branches" as ActiveViewType, label: "شعبات", icon: MapPin },
+      { id: "branches" as ActiveViewType, label: "شعبات", icon: Building2 },
     ].map((item) => (
       <Button
         key={item.id}

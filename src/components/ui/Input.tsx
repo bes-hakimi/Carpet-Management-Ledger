@@ -32,7 +32,7 @@ export const Input = ({
 
       <div className="relative">
         {icon && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-teal-500">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-500">
             {icon}
           </span>
         )}
@@ -41,7 +41,7 @@ export const Input = ({
           className={cn(
             "w-full rounded-md ring-1 ring-gray-300 px-3 py-2 text-sm text-gray-900",
             "placeholder:text-gray-400",
-            "focus:ring-2 focus:ring-teal-500 outline-none transition-all duration-150",
+            "focus:ring-2 focus:ring-primary-500 outline-none transition-all duration-150",
             icon && "pl-10",
             error && "ring-red-500 focus:ring-red-500",
             className

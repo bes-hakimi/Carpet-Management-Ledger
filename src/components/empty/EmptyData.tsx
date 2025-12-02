@@ -24,28 +24,28 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   const variants = {
     default: {
       icon: <Database className="w-16 h-16" />,
-      gradient: "from-teal-500 to-teal-500",
-      bgGradient: "from-teal-50 to-teal-50"
+      gradient: "from-primary-500 to-primary-500",
+      bgGradient: "from-primary-50 to-primary-50"
     },
     search: {
       icon: <FileSearch className="w-16 h-16" />,
-      gradient: "from-teal-500 to-teal-500",
-      bgGradient: "from-pink-100 to-teal-100"
+      gradient: "from-primary-500 to-primary-500",
+      bgGradient: "from-pink-100 to-primary-100"
     },
     data: {
       icon: <Database className="w-16 h-16" />,
-      gradient: "from-teal-500 to-teal-500",
-      bgGradient: "from-pink-100 to-teal-100"
+      gradient: "from-primary-500 to-primary-500",
+      bgGradient: "from-pink-100 to-primary-100"
     },
     file: {
       icon: <FolderOpen className="w-16 h-16" />,
-      gradient: "from-teal-500 to-teal-500",
-      bgGradient: "from-pink-100 to-teal-100"
+      gradient: "from-primary-500 to-primary-500",
+      bgGradient: "from-pink-100 to-primary-100"
     },
     message: {
       icon: <Inbox className="w-16 h-16" />,
-      gradient: "from-teal-500 to-teal-500",
-      bgGradient: "from-pink-100 to-teal-100"
+      gradient: "from-primary-500 to-primary-500",
+      bgGradient: "from-pink-100 to-primary-100"
     }
   };
 
@@ -116,7 +116,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       {/* افکت دکوراتیو */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-40 h-40 bg-teal-200 rounded-full opacity-20 blur-xl"
+          className="absolute -top-20 -right-20 w-40 h-40 bg-primary-200 rounded-full opacity-20 blur-xl"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.2, 0.3, 0.2]
@@ -128,7 +128,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-40 h-40 bg-teal-200 rounded-full opacity-20 blur-xl"
+          className="absolute -bottom-20 -left-20 w-40 h-40 bg-primary-200 rounded-full opacity-20 blur-xl"
           animate={{ 
             scale: [1.2, 1, 1.2],
             opacity: [0.3, 0.2, 0.3]

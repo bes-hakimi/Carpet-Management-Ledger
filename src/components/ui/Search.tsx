@@ -16,7 +16,7 @@ export function Search({ value, onChange, placeholder = "جستجو..." }: Searc
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full sm:w-64 pl-4 pr-10 py-2 text-sm  ring ring-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
+        className="w-full sm:w-64 pl-4 pr-10 py-2 text-sm  ring ring-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
       />
     </div>
   );

@@ -70,7 +70,7 @@ const { mutateAsync: createExpense, isPending } = useApiPost<ExpenseCreateRespon
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-xl overflow-hidden border border-gray-200"
       >
-        <div className="bg-gradient-to-r from-cyan-500 to-teal-500 p-6">
+        <div className="bg-gradient-to-r from-cyan-500 to-primary-500 p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-white/20 rounded-xl">
@@ -78,11 +78,11 @@ const { mutateAsync: createExpense, isPending } = useApiPost<ExpenseCreateRespon
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">فرم ثبت مصرف</h2>
-                <p className="text-teal-100 mt-1 text-sm">تمام فیلدهای ضروری را پر کنید</p>
+                <p className="text-primary-100 mt-1 text-sm">تمام فیلدهای ضروری را پر کنید</p>
               </div>
             </div>
             <div className="hidden md:block">
-              <div className="flex items-center gap-2 text-teal-100 text-sm">
+              <div className="flex items-center gap-2 text-primary-100 text-sm">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
                 <span>مصرف جدید</span>
               </div>

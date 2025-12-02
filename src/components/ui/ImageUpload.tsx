@@ -130,10 +130,10 @@ export function ImageUpload({
         onDragLeave={(e) => e.preventDefault()}
         className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 h-40
           ${isDragOver
-            ? "border-teal-500 bg-teal-50"
+            ? "border-primary-500 bg-primary-50"
             : uploadedUrl
-              ? "border-teal-500 bg-teal-50"
-              : "border-gray-300 bg-gray-50 hover:border-teal-400 hover:bg-teal-50"}
+              ? "border-primary-500 bg-primary-50"
+              : "border-gray-300 bg-gray-50 hover:border-primary-400 hover:bg-primary-50"}
           ${error ? "border-red-400 bg-red-50" : ""}
         `}
       >

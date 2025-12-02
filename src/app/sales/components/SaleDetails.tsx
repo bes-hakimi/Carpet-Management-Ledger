@@ -73,11 +73,11 @@ export function SaleDetails({ saleData }: SaleDetailsProps) {
           <InfoCard
             title="نام مشتری"
             icon={User}
-            className="bg-teal-50 border-teal-200"
-            iconClassName="ml-2 w-4 h-4 text-teal-500"
-            titleClassName="text-sm font-medium text-blue-700 text-teal-500"
+            className="bg-primary-50 border-primary-200"
+            iconClassName="ml-2 w-4 h-4 text-primary-500"
+            titleClassName="text-sm font-medium text-blue-700 text-primary-500"
           >
-            <div className="text-lg font-medium text-teal-500">{customer.customer_name}</div>
+            <div className="text-lg font-medium text-primary-500">{customer.customer_name}</div>
           </InfoCard>
 
           <InfoCard

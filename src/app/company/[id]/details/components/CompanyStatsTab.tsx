@@ -12,8 +12,8 @@ export function CompanyStatsTab({ data }: Props) {
     {
       title: "تعداد محصولات",
       value: data.products_count ?? 0,
-      icon: <Store className="w-6 h-6 text-teal-600" />,
-      color: "bg-teal-50",
+      icon: <Store className="w-6 h-6 text-primary-600" />,
+      color: "bg-primary-50",
     },
     {
       title: "تعداد کارمندان",

@@ -55,9 +55,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "inline-flex items-center justify-center font-medium rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-4 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group";
 
         const variants = {
-            primary: "bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:from-teal-600 hover:to-cyan-600 focus:ring-teal-200 shadow-lg hover:shadow-xl",
+            primary: "bg-gradient-to-r from-primary-500 to-cyan-500 text-white hover:from-primary-600 hover:to-cyan-600 focus:ring-primary-200 shadow-lg hover:shadow-xl",
             secondary: "bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 focus:ring-gray-200 shadow-md hover:shadow-lg",
-            outline: "border-2 border-teal-500 text-teal-600 hover:bg-teal-500 hover:text-white focus:ring-teal-200 bg-transparent",
+            outline: "border-2 border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white focus:ring-primary-200 bg-transparent",
             ghost: "text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:ring-gray-200 bg-transparent",
             destructive: "bg-gradient-to-r from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 focus:ring-red-200 shadow-lg hover:shadow-xl",
             success: "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 focus:ring-green-200 shadow-lg hover:shadow-xl",

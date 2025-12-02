@@ -79,7 +79,7 @@ const DownloadAppButton = () => {
                             </div>
                         ) : deferredPrompt ? (
                             <div className="flex items-start text-gray-600 text-sm mb-6 gap-2 leading-relaxed">
-                                <Download className="min-w-5 min-h-5 max-h-5 max-w-5 mt-1 text-teal-500" />
+                                <Download className="min-w-5 min-h-5 max-h-5 max-w-5 mt-1 text-primary-500" />
                                 <span>
                                     برای دسترسی سریع‌تر و تجربه بهتر، می‌توانید اپلیکیشن وب ما را نصب کنید.
                                     نصب بسیار سریع است و در صفحه اصلی موبایل یا دسکتاپ شما قرار می‌گیرد.
