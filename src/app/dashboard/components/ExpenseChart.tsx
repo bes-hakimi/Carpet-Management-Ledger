@@ -41,7 +41,7 @@ export default function ExpenseDonutChart() {
   return (
     <Card className="bg-gradient-to-br from-white to-primary-50/20 backdrop-blur-sm 
                      border border-gray-200/60 shadow-xs hover:shadow-md transition-all duration-300">
-      <div className="p-6">
+      <div className="p-0 md:p-6">
         <h2 className="text-lg font-bold text-primary-600 mb-4">مصارف شش ماه اخیر</h2>
 
         {isLoading ? (

@@ -60,7 +60,7 @@ export default function InventorySummary() {
 
   if (isLoading) {
     return (
-      <Card className="p-6 text-center text-gray-500">
+      <Card className="p-0 md:p-6 text-center text-gray-500">
         <CardLoader />
       </Card>
     );
@@ -68,7 +68,7 @@ export default function InventorySummary() {
 
   if (!items || items.length === 0) {
     return (
-      <Card className="p-6 text-center text-gray-500">
+      <Card className="p-0 md:p-6 text-center text-gray-500">
         <div className="py-10 flex flex-col items-center gap-3">
           <Package className="w-10 h-10 text-gray-400" />
           <p className="text-base font-medium text-gray-600">هیچ محصولی در گدام یافت نشد</p>
@@ -81,7 +81,7 @@ export default function InventorySummary() {
 
   return (
     <Card className="bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm border border-gray-200/60 shadow-xs hover:shadow-md transition-all duration-300">
-      <div className="p-6">
+      <div className="p-0 md:p-6">
 
         {/* سربرگ */}
         <div className="flex items-center justify-between mb-6">

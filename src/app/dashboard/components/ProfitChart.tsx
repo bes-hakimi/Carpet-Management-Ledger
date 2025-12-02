@@ -67,7 +67,7 @@ export default function ProfitChart() {
     }) ?? [];
 
   return (
-    <Card className="p-4 border-gray-200/60 shadow-none">
+    <Card className="p-3 md:p-6 border-gray-200/60 shadow-none">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold text-primary-600">
           مفاد {periodOptions.find((p) => p.value === period)?.label}
@@ -87,7 +87,8 @@ export default function ProfitChart() {
       {isLoading ? (
         <CardLoader />
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+          <div className="h-52 md:h-64">
+        <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={chartData}
             margin={{ top: 10, right: 20, bottom: 10, left: 0 }}
@@ -160,6 +161,7 @@ export default function ProfitChart() {
             />
           </ComposedChart>
         </ResponsiveContainer>
+        </div>
       )}
     </Card>
   );
