@@ -37,7 +37,6 @@ export default function OverviewTopProducts({ data }: TopProductsProps) {
     <SectionCard
       title="محصولات پرفروش"
       icon={Package}
-      action={<ViewButton size="sm" variant="outline">مشاهده همه</ViewButton>}
     >
       <div className="space-y-4">
         {data.map((product, index) => (

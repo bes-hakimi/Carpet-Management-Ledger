@@ -12,7 +12,7 @@ interface VerificationStepProps {
 export default function VerificationStep({ onSubmit, isLoading, onResendCode }: VerificationStepProps) {
   const CODE_LENGTH = 6;
   const [code, setCode] = useState(Array(CODE_LENGTH).fill(""));
-  const [timeLeft, setTimeLeft] = useState(20); // 2 دقیقه
+  const [timeLeft, setTimeLeft] = useState(120); // 2 دقیقه
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   // تایمر برای ارسال مجدد کد
@@ -89,7 +89,7 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
 
     setIsResendLoading(true);
     try {
-      setTimeLeft(20); // ریست تایمر
+      setTimeLeft(120); // ریست تایمر
       await onResendCode(); // فراخوانی تابع ارسال واقعی
     } catch (err) {
       console.error(err);

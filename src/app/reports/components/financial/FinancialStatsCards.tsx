@@ -32,7 +32,7 @@ const StatCard = ({
   const isPositive = trend && trend >= 0;
 
   return (
-    <Card className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 p-6 border-0 bg-gradient-to-br from-white to-gray-50/50">
+    <Card className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 p-4 border-0 bg-gradient-to-br from-white to-gray-50/50">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
         <div className={`p-3 rounded-xl bg-gradient-to-br ${colorClasses[color]} text-white shadow-lg`}>
@@ -41,7 +41,7 @@ const StatCard = ({
       </div>
 
       <div>
-        <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
+        <div className="text-xl font-bold text-gray-900 mb-1">{value}</div>
         {subtitle && <p className="text-sm text-gray-600 mb-2">{subtitle}</p>}
         {trend !== undefined && (
           <div className={`flex items-center text-sm font-medium ${isPositive ? "text-emerald-600" : "text-red-600"}`}>
@@ -70,7 +70,7 @@ export default function FinancialStatsCards({ stats }: FinancialStatsCardsProps)
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <StatCard
         title="فروش کل"
         value={report.total_sales_price.toLocaleString()}

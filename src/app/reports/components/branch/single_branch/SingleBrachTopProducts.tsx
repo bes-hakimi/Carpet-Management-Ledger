@@ -37,7 +37,6 @@ export default function SingleBrachTopProducts({ data }: SingleBrachTopProductsP
     <SectionCard
       title="محصولات پرفروش"
       icon={Package}
-      action={<ViewButton size="sm" variant="outline">مشاهده همه</ViewButton>}
     >
       <div className="space-y-4">
         {data.map((product, index) => (
@@ -90,7 +89,7 @@ export default function SingleBrachTopProducts({ data }: SingleBrachTopProductsP
 
             {/* ستون سمت چپ خالی می‌ماند چون total_amount وجود ندارد */}
             <div className="text-left text-sm text-gray-500">
-              {/* اگر چیزی لازم بود اینجا اضافه کنیم تو بگو */}
+             
             </div>
           </div>
         ))}
