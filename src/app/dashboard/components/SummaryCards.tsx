@@ -30,33 +30,40 @@ export default function SummaryCards() {
       value: r.total_stock_qty ?? 0,
       icon: Package,
       gradient: "from-blue-400 to-blue-700",
-      update: data.last_update ?? "--:--",
+      update: data.last_update ?? "08:00 AM",
     },
     {
       title: "مجموع فروشات",
       value: r.total_sales_price ?? 0,
       icon: DollarSign,
       gradient: "from-yellow-400 to-orange-600",
-      update: data.last_update ?? "--:--",
+      update: data.last_update ?? "08:00 AM",
     },
     {
-      title: "مصارف این ماه",
+      title: "مجموع مصارف",
       value: `${r.total_expense ?? 0} افغانی`,
       icon: Activity,
       gradient: "from-red-400 to-rose-600",
-      update: data.last_update ?? "--:--",
+      update: data.last_update ?? "08:00 AM",
     },
     {
-      title: "مفاد این ماه",
+      title: "مجموع اصل پول",
+      value: `${r.product_cost ?? 0} افغانی`,
+      icon: Activity,
+      gradient: "from-teal-400 to-teal-600",
+      update: data.last_update ?? "08:00 AM",
+    },
+    {
+      title: "مجموع مفاد خالص",
       value: `${r.net_income ?? 0} افغانی`,
       icon: TrendingUp,
       gradient: "from-green-500 to-emerald-600",
-      update: data.last_update ?? "--:--",
+      update: data.last_update ?? "08:00 AM",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       {summaryData.map((item, index) => (
         <motion.div
           key={index}
@@ -65,15 +72,15 @@ export default function SummaryCards() {
           transition={{ delay: index * 0.1 }}
         >
           <Card
-            className={`bg-gradient-to-r ${item.gradient} text-white border-none shadow-none shadow-gray-300`}
+            className={`p-3 md:p-4 bg-gradient-to-r ${item.gradient} text-white border-none shadow-none shadow-gray-300`}
           >
             <div className="flex justify-between items-center">
               <div className="space-y-2">
                 <h1 className="text-base font-medium">{item.title}</h1>
-                <div className="text-xl font-bold">{item.value}</div>
+                <div className="text-lg font-bold">{item.value}</div>
               </div>
 
-              <item.icon className="h-10 w-10 p-2 bg-white/30 rounded-md" />
+              <item.icon className="h-9 w-9 p-2 bg-white/30 rounded-md" />
             </div>
 
             <div className="flex items-center gap-1 border-t border-white mt-2 pt-2 text-sm text-white/90">

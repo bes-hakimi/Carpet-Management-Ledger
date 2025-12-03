@@ -37,7 +37,6 @@ export default function BranchTopProducts({ data }: BranchTopProductsProps) {
     <SectionCard
       title="محصولات پرفروش"
       icon={Package}
-      action={<ViewButton size="sm" variant="outline">مشاهده همه</ViewButton>}
     >
       <div className="space-y-4">
         {data.map((product, index) => (

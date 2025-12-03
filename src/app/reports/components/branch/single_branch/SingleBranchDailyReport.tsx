@@ -45,7 +45,7 @@ export default function SingleBranchDailyReport({ data }: SingleBranchDailyRepor
       }
     >
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full tex-sm">
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-right py-4 px-4 font-bold text-gray-900">تاریخ</th>

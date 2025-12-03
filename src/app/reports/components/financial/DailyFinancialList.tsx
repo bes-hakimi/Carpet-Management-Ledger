@@ -10,7 +10,7 @@ export default function DailyFinancialList({ data }: DailyFinancialListProps) {
     <Card className="p-6 border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
       <h3 className="text-base font-bold text-gray-900 mb-4">گزارش روزانه هزینه‌ها</h3>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
               <th className="py-4 px-4 text-right font-bold text-gray-900">روز</th>

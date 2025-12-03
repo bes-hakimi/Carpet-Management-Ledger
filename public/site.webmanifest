@@ -1,7 +1,7 @@
 {
-  "name": "Carpet Management Ledger",
+  "name": "مدیریت",
   "short_name": "مدریت",
-  "description": "A Next.js PWA that works offline.",
+  "description": "یک وبسایت مدرن برای مدیریت کمپنی ها",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#015249",

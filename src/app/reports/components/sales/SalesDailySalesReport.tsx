@@ -45,7 +45,7 @@ export default function SalesDailySalesReport({ data }: DailySalesReportProps) {
       }
     >
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-right py-4 px-4 font-bold text-gray-900">تاریخ</th>
@@ -67,7 +67,7 @@ export default function SalesDailySalesReport({ data }: DailySalesReportProps) {
                 </td>
 
                 <td className="py-4 px-4 text-center font-bold text-gray-900">
-                  {(Number(sale.total_amount) / 1_000_000).toFixed(1)}M
+                  {(Number(sale.total_amount)).toLocaleString()} افغانی
                 </td>
 
                 <td className="py-4 px-4 text-center">

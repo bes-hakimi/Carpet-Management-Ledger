@@ -120,7 +120,7 @@ export default function NotificationItem({
                 </span>
 
                 {!notification.is_read && (
-                  <span className="flex items-center gap-1 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium animate-pulse">
+                  <span className="flex items-center gap-1 bg-primary-500 text-white px-2 py-1 rounded-full text-xs font-medium animate-pulse">
                     <AlertCircle className="w-3 h-3" />
                     جدید
                   </span>

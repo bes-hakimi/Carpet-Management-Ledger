@@ -10,7 +10,7 @@ export default function SuccessStep() {
       transition={{ duration: 0.5 }}
       className="text-center"
     >
-      <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+      <CheckCircle className="w-16 h-16 text-primary-500 mx-auto mb-4" />
       
       <h3 className="text-lg font-semibold text-gray-800 mb-2">
         رمز عبور با موفقیت تغییر کرد
