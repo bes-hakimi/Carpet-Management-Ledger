@@ -254,7 +254,7 @@ export function DataTable<T extends object>({
             <p className="text-gray-400 text-sm mt-1">
               {searchTerm
                 ? "سعی کنید عبارت جستجو را تغییر دهید"
-                : "هیچ داده‌ای موجود نیست"}
+                : "هیچ دیتایی موجود نیست"}
             </p>
           </div>
         )}

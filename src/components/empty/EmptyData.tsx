@@ -15,7 +15,7 @@ interface EmptyStateProps {
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({
-  title = "داده‌ای یافت نشد",
+  title = "دیتایی یافت نشد",
   description = "اطلاعاتی برای نمایش وجود ندارد.",
   variant = 'default',
   action,

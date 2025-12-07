@@ -16,7 +16,7 @@ interface User {
   created_by?: string | null;
 }
 
-// نوع داده‌ای که در localStorage ذخیره می‌شود
+// نوع دیتایی که در localStorage ذخیره می‌شود
 interface StoredUserData {
   access: string;
   refresh: string;
@@ -70,7 +70,7 @@ export function useAuth() {
     // هدایت بعد از لاگین
     const next = sessionStorage.getItem("redirectAfterLogin") || "/dashboard";
     sessionStorage.removeItem("redirectAfterLogin");
-    window.location.href = next; // یا router.replace اگر توی کامپوننت باشی
+    window.location.href = next;
   };
 
 

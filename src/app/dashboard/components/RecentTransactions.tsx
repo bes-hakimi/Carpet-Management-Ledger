@@ -41,7 +41,7 @@ export default function RecentTransactions() {
 
   if (!isLoading && (!transactions || transactions.length === 0)) {
     return (
-      <Card className="p-6 text-center text-gray-500">
+      <Card className="p-3 md:p-6 border-gray-300 bg-gray-50 shadow-none text-center text-gray-500">
         <div className="py-10 flex flex-col items-center gap-3">
           <ArrowUpRight className="w-10 h-10 text-gray-400" />
           <p className="text-base font-medium text-gray-600">هیچ معامله‌ای یافت نشد</p>

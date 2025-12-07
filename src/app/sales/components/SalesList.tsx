@@ -70,7 +70,7 @@ export function SalesList({ sales, onViewDetails }: SalesListProps) {
       <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
         <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">فروشی یافت نشد</h3>
-        <p className="text-gray-500">هیچ فروشی با فیلترهای انتخاب شده مطابقت ندارد.</p>
+        <p className="text-gray-500">هیچ فروشی موجود نمی‌باشد.</p>
       </div>
     );
   }
