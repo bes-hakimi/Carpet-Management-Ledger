@@ -71,10 +71,11 @@ export function useApiDeleteDynamic<T>() {
       const res = await apiClient.delete<T>(url);
       return res.data;
     },
-    onSuccess: (_data) => {
-      // حالا TypeScript می‌داند _data از نوع T است
+    onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries();
     },
+
   });
 }
 

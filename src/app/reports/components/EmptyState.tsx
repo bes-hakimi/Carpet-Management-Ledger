@@ -1,7 +1,6 @@
 //EmptyState.tsx
 "use client";
 
-import { ReactNode } from "react";
 import { Card } from "@/components/ui/Card";
 
 interface EmptyStateProps {

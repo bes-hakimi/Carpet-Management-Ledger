@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Loader2, Check, Download, XCircle, Info } from "lucide-react";
+import { Check, Download, XCircle } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => Promise<void>;

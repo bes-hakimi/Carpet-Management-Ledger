@@ -1,10 +1,19 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'react-hot-toast';
 import PageLoading from '@/components/loading/PageLoading';
+
+// ثابت‌ها بیرون از کامپوننت
+const publicRoutes = ['/login', '/forgot-password', '/unauthorized'];
+
+const forbiddenRoutes: Record<string, string[]> = {
+  superadmin: [],
+  admin: ['/company'],
+  staff: ['/company', '/staff', '/branch'],
+};
 
 interface AuthContextType {
   canAccess: boolean;
@@ -24,18 +33,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const role = userData?.user?.role || null;
 
-  // مسیرهای عمومی
-  const publicRoutes = ['/login', '/forgot-password', '/unauthorized'];
-
-  // مسیرهای ممنوعه بر اساس نقش
-  const forbiddenRoutes: Record<string, string[]> = {
-    superadmin: [],
-    admin: ['/company'],
-    staff: ['/company', '/staff', '/branch'],
-  };
-
   useEffect(() => {
-    if (isAuthLoading) return; 
+    if (isAuthLoading) return;
 
     const checkAccess = () => {
       setIsLoading(true);
@@ -65,12 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-
       if (role) {
         const forbidden = forbiddenRoutes[role] || [];
-        const isForbidden = forbidden.some(forbiddenPath =>
-          pathname.startsWith(forbiddenPath)
-        );
+        const isForbidden = forbidden.some(f => pathname.startsWith(f));
+
         if (isForbidden) {
           toast.error('شما به این صفحه دسترسی ندارید');
           router.replace('/unauthorized');
@@ -86,14 +83,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     checkAccess();
     window.addEventListener("auth-changed", checkAccess);
-    return () => {
-      window.removeEventListener("auth-changed", checkAccess);
-    };
-  }, [pathname, isLoggedIn, isExpired, role, isAuthLoading]);
 
-  if (isAuthLoading || isLoading) {
-    return <PageLoading />;
-  }
+    return () => window.removeEventListener("auth-changed", checkAccess);
+
+  }, [pathname, isLoggedIn, isExpired, role, isAuthLoading, logout, router]); // ← همه deps لازم
+
+  if (isAuthLoading || isLoading) return <PageLoading />;
 
   if (!canAccess && pathname !== '/unauthorized') return null;
 
@@ -102,10 +97,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuthContext() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuthContext must be used inside AuthProvider');
-  return ctx;
 }
