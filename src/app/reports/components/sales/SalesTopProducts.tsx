@@ -84,7 +84,7 @@ export default function SalesTopProducts({ data }: TopProductsProps) {
 
               <div className="text-left">
                 <p className="font-bold text-emerald-600 text-sm">
-                  {(Number(product.total_amount) / 1_000_000).toFixed(1)}M
+                  {(Number(product.total_amount).toLocaleString("fa-IR"))} افغانی
                 </p>
               </div>
             </div>

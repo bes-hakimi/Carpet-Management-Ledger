@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { Package } from "lucide-react";
+import EmptyState from "../EmptyState";
 import { IBranchStockItem } from "@/types/report/branch";
 
 interface BranchTopProductsProps {
@@ -32,6 +33,17 @@ const SectionCard = ({
 );
 
 export default function BranchTopProducts({ data }: BranchTopProductsProps) {
+  if (!data || data.length === 0) {
+    return (
+      <SectionCard title="محصولات پرفروش" icon={Package}>
+        <EmptyState
+          title="هیچ محصولی ثبت نشده"
+          description="برای مشاهده محصولات پرفروش، باید موجودی انبار ثبت شده باشد."
+          icon={Package}
+        />
+      </SectionCard>
+    );
+  }
   return (
     <SectionCard
       title="محصولات پرفروش"
@@ -47,15 +59,14 @@ export default function BranchTopProducts({ data }: BranchTopProductsProps) {
             <div className="flex items-center flex-1">
               {/* Rank */}
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${
-                  index === 0
+                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${index === 0
                     ? "bg-gradient-to-br from-yellow-500 to-orange-500"
                     : index === 1
-                    ? "bg-gradient-to-br from-gray-500 to-gray-700"
-                    : index === 2
-                    ? "bg-gradient-to-br from-orange-500 to-red-500"
-                    : "bg-gradient-to-br from-blue-500 to-cyan-500"
-                }`}
+                      ? "bg-gradient-to-br from-gray-500 to-gray-700"
+                      : index === 2
+                        ? "bg-gradient-to-br from-orange-500 to-red-500"
+                        : "bg-gradient-to-br from-blue-500 to-cyan-500"
+                  }`}
               >
                 {index + 1}
               </div>
@@ -81,19 +92,18 @@ export default function BranchTopProducts({ data }: BranchTopProductsProps) {
                   </span>
 
                   <span
-                    className={`text-xs font-semibold ${
-                      product.status === "normal"
+                    className={`text-xs font-semibold ${product.status === "normal"
                         ? "text-emerald-600"
                         : product.status === "low"
-                        ? "text-orange-500"
-                        : "text-red-600"
-                    }`}
+                          ? "text-orange-500"
+                          : "text-red-600"
+                      }`}
                   >
                     {product.status === "normal"
                       ? "عادی"
                       : product.status === "low"
-                      ? "کم"
-                      : "تمام شده"}
+                        ? "کم"
+                        : "تمام شده"}
                   </span>
                 </div>
               </div>

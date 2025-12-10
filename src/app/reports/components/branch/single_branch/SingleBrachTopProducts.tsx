@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { Package } from "lucide-react";
+import EmptyState from "../../EmptyState";
 import { ISingleBranchStockItem } from "@/types/report/single-branch";
 
 interface SingleBrachTopProductsProps {
@@ -32,6 +33,17 @@ const SectionCard = ({
 );
 
 export default function SingleBrachTopProducts({ data }: SingleBrachTopProductsProps) {
+  if (!data || data.length === 0) {
+    return (
+      <SectionCard title="محصولات پرفروش" icon={Package}>
+        <EmptyState
+          title="هیچ محصولی یافت نشد"
+          description="برای مشاهده محصولات پرفروش، باید حداقل یک محصول در انبار ثبت شده باشد."
+          icon={Package}
+        />
+      </SectionCard>
+    );
+  }
   return (
     <SectionCard
       title="محصولات پرفروش"
@@ -46,15 +58,14 @@ export default function SingleBrachTopProducts({ data }: SingleBrachTopProductsP
             <div className="flex items-center flex-1">
               {/* رتبه با رنگ بندی قبلی (UI دست‌نخورده) */}
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${
-                  index === 0
+                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${index === 0
                     ? "bg-gradient-to-br from-yellow-500 to-orange-500"
                     : index === 1
-                    ? "bg-gradient-to-br from-gray-500 to-gray-700"
-                    : index === 2
-                    ? "bg-gradient-to-br from-orange-500 to-red-500"
-                    : "bg-gradient-to-br from-blue-500 to-cyan-500"
-                }`}
+                      ? "bg-gradient-to-br from-gray-500 to-gray-700"
+                      : index === 2
+                        ? "bg-gradient-to-br from-orange-500 to-red-500"
+                        : "bg-gradient-to-br from-blue-500 to-cyan-500"
+                  }`}
               >
                 {index + 1}
               </div>
@@ -76,8 +87,8 @@ export default function SingleBrachTopProducts({ data }: SingleBrachTopProductsP
                       product.status === "normal"
                         ? "text-emerald-600 font-bold"
                         : product.status === "low"
-                        ? "text-orange-500 font-bold"
-                        : "text-red-500 font-bold"
+                          ? "text-orange-500 font-bold"
+                          : "text-red-500 font-bold"
                     }
                   >
                     وضعیت: {product.status}
@@ -88,7 +99,7 @@ export default function SingleBrachTopProducts({ data }: SingleBrachTopProductsP
 
             {/* ستون سمت چپ خالی می‌ماند چون total_amount وجود ندارد */}
             <div className="text-left text-sm text-gray-500">
-             
+
             </div>
           </div>
         ))}
