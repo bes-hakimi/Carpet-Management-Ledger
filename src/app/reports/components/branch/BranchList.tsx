@@ -104,7 +104,7 @@ export default function BranchList() {
           />
           {/* اطلاعات مختصر شعبه انتخاب‌شده */}
           {selectedBranch && (
-            <div className="p-6 bg-white rounded-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+            <div className="p-4 md:p-6 bg-white rounded-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">
@@ -123,7 +123,7 @@ export default function BranchList() {
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div className="flex items-center gap-3 p-3 bg-blue-100 rounded-md">
                   <ShoppingCart className="w-6 h-6 text-blue-600" />
                   <div>

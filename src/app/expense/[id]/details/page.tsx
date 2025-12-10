@@ -23,7 +23,7 @@ function DetailItem({ icon, label, value, valueColor = "text-gray-900" }: Detail
       <div className="p-2 bg-white rounded-lg shadow-sm">{icon}</div>
       <div className="flex-1">
         <p className="text-sm font-medium text-gray-600">{label}</p>
-        <p className={`text-lg font-semibold mt-1 ${valueColor}`}>{value}</p>
+        <p className={`text-sm md:text-lg font-semibold mt-1 ${valueColor}`}>{value}</p>
       </div>
     </div>
   );
@@ -53,7 +53,7 @@ export default function ExpenseDetailPage() {
         showHomeIcon
       />
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 p-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 p-4 md:p-6 border border-gray-200 rounded-xl">
         {isLoading && <ContentLoader />}
         {isError && <p className="text-center text-red-500">خطا در دریافت داده‌ها</p>}
 
@@ -65,27 +65,27 @@ export default function ExpenseDetailPage() {
               <AddButton onClick={() => router.push("/expense/create")}>مصرف جدید</AddButton>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
               {/* Main Information */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white rounded-xl border border-gray-200 p-6 flex justify-between items-center">
+              <div className="lg:col-span-2 space-y-4 md:space-y-6">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6 flex justify-between items-center">
                   <div>
                     <p className="text-gray-600">وضعیت مصرف</p>
                     <div className="flex items-center gap-2 mt-2">
                       <div className={`p-2 rounded-lg ${statusInfo.color}`}>{statusInfo.icon}</div>
-                      <span className="text-xl font-bold text-gray-900">{statusInfo.label}</span>
+                      <span className="text-sm md:text-xl font-bold text-gray-900">{statusInfo.label}</span>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-gray-600">مبلغ</p>
-                    <p className="text-xl font-bold text-primary-600">
+                    <p className="text-sm md:text-xl font-bold text-primary-600">
                       {Number(expense.price).toLocaleString()} افغانی
                     </p>
                   </div>
                 </div>
 
                 {/* Details Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <DetailItem
                     icon={<FileText className="w-5 h-5 text-primary-600" />}
                     label="عنوان مصرف"
@@ -110,10 +110,10 @@ export default function ExpenseDetailPage() {
 
                 {/* Description */}
                 {expense.description && (
-                  <div className="bg-white rounded-xl border border-gray-200 p-6">
+                  <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <FileText className="w-5 h-5 text-gray-600" />
-                      <h3 className="text-lg font-semibold text-gray-900">توضیحات</h3>
+                      <h3 className="text-sm md:text-lg font-semibold text-gray-900">توضیحات</h3>
                     </div>
                     <p className="text-gray-700 leading-relaxed">{expense.description}</p>
                   </div>
@@ -122,7 +122,7 @@ export default function ExpenseDetailPage() {
 
               {/* Sidebar */}
               <div className="space-y-6">
-                <div className="bg-primary-50 rounded-xl border border-primary-200 p-6">
+                <div className="bg-primary-50 rounded-xl border border-primary-200 p-4 md:p-6">
                   <h3 className="text-lg font-semibold text-primary-900 mb-3">راهنمایی</h3>
                   <ul className="space-y-2 text-sm text-primary-800">
                     <li className="flex items-start gap-2">

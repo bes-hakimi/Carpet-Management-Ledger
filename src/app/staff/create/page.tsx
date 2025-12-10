@@ -109,7 +109,7 @@ export default function CreateStaffPage() {
         description="اطلاعات کارمند را در فرم زیر وارد کنید"
       />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 border border-gray-300 rounded-md p-4 md:p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="نام"

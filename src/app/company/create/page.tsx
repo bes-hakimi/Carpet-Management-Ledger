@@ -128,8 +128,8 @@ export default function CreateCompanyPage() {
     <div className="w-full">
       <PageHeader title="ایجاد شرکت" showHomeIcon description="اطلاعات شرکت را در فرم زیر وارد کنید" />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-6 border border-gray-300 rounded-md p-4 md:p-6">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="نام"
             placeholder="نام مدیر شرکت را وارد کنید"
@@ -190,7 +190,7 @@ export default function CreateCompanyPage() {
             error={errors.companyName}
           />
 
-          <div className="md:col-span-2">
+          <div className="col-span-1 md:col-span-2">
             <Input
               label="آدرس"
               placeholder="آدرس دقیق شرکت را وارد کنید"
@@ -221,7 +221,7 @@ export default function CreateCompanyPage() {
             />
           </div>
 
-          <div className="col-span-2 rounded-xl border border-gray-200 p-6">
+          <div className="md:col-span-2 rounded-xl border border-gray-200 p-4 md:p-6">
             <h3 className="text-lg font-semibold mb-6">تنظیمات فروشگاه</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 

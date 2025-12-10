@@ -70,7 +70,7 @@ const { mutateAsync: createExpense, isPending } = useApiPost<ExpenseCreateRespon
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-xl overflow-hidden border border-gray-200"
       >
-        <div className="bg-gradient-to-r from-cyan-500 to-primary-500 p-6">
+        <div className="bg-gradient-to-r from-cyan-500 to-primary-500 p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-white/20 rounded-xl">
@@ -90,7 +90,7 @@ const { mutateAsync: createExpense, isPending } = useApiPost<ExpenseCreateRespon
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
               label="عنوان مصرف"

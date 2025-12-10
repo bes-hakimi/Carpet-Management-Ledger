@@ -75,7 +75,7 @@ export default function RecentTransactions() {
           {transactions?.map((transaction) => (
             <div
               key={transaction.id}
-              className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-200/60 hover:border-primary-300 hover:shadow-sm transition-all duration-200 group"
+              className="flex items-center justify-between p-3 md:p-4 bg-white rounded-lg md:rounded-xl border border-gray-200/60 hover:border-primary-300 hover:shadow-sm transition-all duration-200 group"
             >
               {/* معلومات معامله */}
               <div className="flex items-center gap-4 flex-1">
@@ -91,7 +91,7 @@ export default function RecentTransactions() {
                       {transaction.title}
                     </span>
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(transaction.type)}`}
+                      className={`px-2 py-[2px] md:py-1 rounded-full text-[10px] md:text-xs font-medium border ${getStatusColor(transaction.type)}`}
                     >
                       {transaction.type === "income" ? "مؤفق" : "مصرف"}
                     </span>
@@ -112,7 +112,7 @@ export default function RecentTransactions() {
                 >
                   {transaction.amount.toLocaleString("fa-AF")}
                 </div>
-                <div className="text-xs text-gray-500 mt-1">افغانی</div>
+                <div className="text-xs md:text-xs text-gray-500 mt-1">افغانی</div>
               </div>
             </div>
           ))}

@@ -36,9 +36,9 @@ export function SaleActions({onPrint, saleStatus }: SaleActionsProps) {
     const IconComponent = config.icon;
 
     return (
-      <div className={`flex items-center px-3 py-2 rounded-lg ${config.bgColor}`}>
+      <div className={`flex items-center px-2 py-1 md:px-3 mdpy-2 rounded-md md:rounded-lg ${config.bgColor}`}>
         <IconComponent className={`w-4 h-4 ml-2 ${config.color}`} />
-        <span className={`text-sm font-medium ${config.color}`}>
+        <span className={`text-sm md:font-medium ${config.color}`}>
           {config.label}
         </span>
       </div>
@@ -48,8 +48,8 @@ export function SaleActions({onPrint, saleStatus }: SaleActionsProps) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-3 md:p-6">
       <div className="flex justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-2 md:gap-4">
-          <span className="text-sm font-medium text-gray-700">وضعیت بل:</span>
+        <div className="flex items-center gap-2 md:gap-4 text-sm">
+          <span className=" font-medium text-gray-700">وضعیت بل:</span>
           {getStatusInfo(saleStatus)}
         </div>
 

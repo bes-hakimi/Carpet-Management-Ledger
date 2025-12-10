@@ -122,7 +122,7 @@ export function DataTable<T extends object>({
   return (
     <div className="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-4 md:p-6 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-gray-900">

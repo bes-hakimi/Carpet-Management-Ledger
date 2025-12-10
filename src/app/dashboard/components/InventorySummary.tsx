@@ -105,7 +105,7 @@ export default function InventorySummary() {
             return (
               <div
                 key={index}
-                className={`p-4 rounded-2xl border-2 transition-all duration-200 hover:shadow-sm ${colors.bg} ${colors.border}`}
+                className={`p-2 md:p-4 rounded-xl md:rounded-2xl border-2 transition-all duration-200 hover:shadow-sm ${colors.bg} ${colors.border}`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -114,7 +114,7 @@ export default function InventorySummary() {
                     </div>
                     <div>
                       <div className="flex items-center gap-1">
-                        <h3 className="font-medium text-gray-900">{item.name}</h3>
+                        <h3 className="text-sm md:text-base font-medium text-gray-900">{item.name}</h3>
                         <p className="text-xs text-gray-600"> دسته بنده({item.type})</p>
                       </div>
 

@@ -64,7 +64,7 @@ export function SaleDetails({ saleData }: SaleDetailsProps) {
     <div className="space-y-4 md:space-y-6">
       {/* اطلاعات مشتری */}
       <div className="bg-white rounded-xl border border-gray-200 p-3 md:p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <User className="ml-2 w-5 h-5" />
           اطلاعات مشتری
         </h3>
@@ -108,7 +108,7 @@ export function SaleDetails({ saleData }: SaleDetailsProps) {
 
       {/* اطلاعات محصولات */}
       <div className="bg-white rounded-xl border border-gray-200 p-3 md:p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Package className="ml-2 w-5 h-5" />
           اطلاعات محصولات ({items.length} محصول)
         </h3>
@@ -149,12 +149,12 @@ export function SaleDetails({ saleData }: SaleDetailsProps) {
 
       {/* اطلاعات مالی */}
       <div className="bg-white rounded-xl border border-gray-200 p-3 md:p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <DollarSign className="ml-2 w-5 h-5" />
           اطلاعات مالی
         </h3>
 
-        <div className="grid grid-cols-3 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
           <InfoCard title="تعداد کل محصولات">
             <div className="text-lg font-bold text-gray-900">{totalQuantity} عدد</div>
           </InfoCard>

@@ -114,7 +114,7 @@ export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
     }));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
+    <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
       <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
         <User className="ml-2 w-5 h-5" />
         معلومات مشتری
