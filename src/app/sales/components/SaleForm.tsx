@@ -45,7 +45,7 @@ export function SaleForm({ onCancel, initialData, onShowInvoice }: SaleFormProps
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
       <ProductSelection
         saleProducts={saleProducts}
         onSaleProductsChange={setSaleProducts}

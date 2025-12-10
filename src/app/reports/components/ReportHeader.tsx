@@ -60,14 +60,14 @@ export default function ReportHeader({
   const isFilterEnabled = activeView !== "branches";
 
   return (
-    <Card className="p-6 border-0 bg-gradient-to-r from-blue-50 to-cyan-50">
+    <Card className="p-4 md:p-6 border-0 bg-gradient-to-r from-blue-50 to-cyan-50">
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between md:justify-start gap-4">
           <h2 className="text-lg lg:text-xl font-bold text-gray-900 whitespace-nowrap">گزارشات تجارتي</h2>
           <ViewToggle activeView={activeView} setActiveView={setActiveView} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col md:flex-row gap-3">
           <Select
             label="نوع گزارش"
             options={[
@@ -81,7 +81,7 @@ export default function ReportHeader({
             disabled={!isFilterEnabled} // فلتر فقط وقتی شعبات انتخاب نشده فعال
           />
 
-          <div className="flex gap-2 items-end">
+          <div className="grid grid-cols-3 md:flex gap-2 items-end">
             <Button
               onClick={onGenerateReport}
               loading={isLoading}

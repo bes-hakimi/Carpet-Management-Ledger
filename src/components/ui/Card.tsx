@@ -8,7 +8,7 @@ interface CardProps {
 }
 
 export const Card = ({ children, className }: CardProps) => (
-  <div className={cn("bg-white border border-custom rounded-md p-5 transition-all shadow-lg shadow-custom ", className)}>
+  <div className={cn("bg-white border border-custom rounded-md p-2 md:p-4 transition-all shadow-lg shadow-custom ", className)}>
     <div>{children}</div>
   </div>
 );

@@ -89,7 +89,7 @@ export default function NotificationItem({
           : "border-primary-200 bg-primary-50 shadow-primary-100"
         }`}
     >
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         <div className="flex gap-4">
           {/* Icon */}
           <div

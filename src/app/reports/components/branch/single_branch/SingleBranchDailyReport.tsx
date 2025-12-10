@@ -19,10 +19,10 @@ const SectionCard = ({
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   action?: React.ReactNode;
 }) => (
-  <Card className="p-6 border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+  <Card className="p-4 md:p-6 border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
     <div className="flex items-center justify-between mb-6">
       <div className="flex gap-2 items-center">
-        <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white mr-3">
+        <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white md:mr-3">
           <Icon className="w-5 h-5" />
         </div>
         <h3 className="text-base font-bold text-gray-900">{title}</h3>
@@ -62,7 +62,7 @@ export default function SingleBranchDailyReport({ data }: SingleBranchDailyRepor
                 <th className="text-right py-4 px-4 font-bold text-gray-900">تاریخ</th>
                 <th className="text-left py-4 px-4 font-bold text-gray-900">عنوان</th>
                 <th className="text-center py-4 px-4 font-bold text-gray-900">مبلغ</th>
-                <th className="text-center py-4 px-4 font-bold text-gray-900">نوع تراکنش</th>
+                <th className="text-center py-4 px-4 font-bold text-gray-900 text-nowrap">نوع تراکنش</th>
               </tr>
             </thead>
             <tbody>
@@ -71,17 +71,17 @@ export default function SingleBranchDailyReport({ data }: SingleBranchDailyRepor
                   key={tx.id}
                   className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
                 >
-                  <td className="py-4 px-4 text-right font-semibold text-gray-900">{tx.date}</td>
+                  <td className="py-4 px-4 text-right font-semibold text-gray-900 text-nowrap">{tx.date}</td>
 
-                  <td className="py-4 px-4 text-left text-gray-700">{tx.title}</td>
+                  <td className="py-4 px-4 text-left text-gray-700 text-nowrap">{tx.title}</td>
 
-                  <td className="py-4 px-4 text-center font-bold text-gray-900">
+                  <td className="py-4 px-4 text-center font-bold text-gray-900 text-nowrap">
                     {Number(tx.amount).toLocaleString("fa-IR")} افغانی
                   </td>
 
                   <td className="py-4 px-4 text-center">
                     <span
-                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border"
+                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border text-nowrap"
                       style={{
                         color: tx.color,
                         borderColor: tx.color + "40",

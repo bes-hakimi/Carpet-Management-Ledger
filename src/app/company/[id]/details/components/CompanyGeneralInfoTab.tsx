@@ -32,9 +32,9 @@ export function CompanyGeneralInfoTab({ data, onDownload }: Props) {
     return (
         <div className="space-y-6">
             {/* اطلاعات شخصی */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-gray-900">اطلاعات شخصی</h3>
+                    <h3 className="text-base md:text-xl font-semibold text-gray-900">اطلاعات شخصی</h3>
                     <StatusBadge isActive={data.status} />
                 </div>
 
@@ -102,8 +102,8 @@ export function CompanyGeneralInfoTab({ data, onDownload }: Props) {
             </div>
 
 
-            <div className="bg-white rounded-xl border border-gray-200 p-6 mt-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">فایل‌ها و مدارک</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6 mt-4 md:mt-8">
+                <h3 className="text-base md:text-xl font-semibold text-gray-900 mb-6">فایل‌ها و مدارک</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* لوگوی شرکت */}
@@ -185,16 +185,16 @@ export function CompanyGeneralInfoTab({ data, onDownload }: Props) {
 
 
             {/* توضیحات */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">توضیحات</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+                <h3 className="text-base md:text-xl font-semibold text-gray-900 mb-4">توضیحات</h3>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <p className="text-gray-700 leading-relaxed">{data.description || "توضیحاتی ثبت نشده است."}</p>
                 </div>
             </div>
 
             {/* تاریخ‌ها */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">تاریخ‌ها</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+                <h3 className="text-base md:text-xl font-semibold text-gray-900 mb-6">تاریخ‌ها</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <InfoCard title="تاریخ ایجاد">
                         <div className="flex items-center justify-between">

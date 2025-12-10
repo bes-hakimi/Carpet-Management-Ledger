@@ -44,7 +44,7 @@ export default function SalesPage() {
   };
 
   return (
-    <div className="w-full">
+    <div className="md:w-full">
       <PageHeader
         title="لیست فروشات"
         showHomeIcon={true}

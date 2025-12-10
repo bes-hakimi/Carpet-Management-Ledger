@@ -130,9 +130,9 @@ export default function AddProductPage() {
     <div className="w-full">
       <PageHeader title="اضافه کردن محصول جدید" description="اطلاعات قالین جدید را وارد کنید" backUrl="/products" />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         {/* اطلاعات اصلی */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
           <h3 className="font-semibold mb-4 text-gray-900">اطلاعات اصلی</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="نام محصول" placeholder="نام محصول را وارد کنید" value={formData.name} onChange={e => handleInputChange("name", e.target.value)} error={errors.name} required />
@@ -152,7 +152,7 @@ export default function AddProductPage() {
         </div>
 
         {/* مشخصات فنی */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
           <h3 className="font-semibold mb-4 text-gray-900">مشخصات فنی (اختیاری)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Input label="وزن (کیلوگرم)" placeholder="مثلا: 10" type="number" step="0.1" value={formData.weight} onChange={e => handleInputChange("weight", e.target.value)} icon={<Weight size={16} />} />
@@ -162,7 +162,7 @@ export default function AddProductPage() {
         </div>
 
         {/* تصویر */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
           <h3 className="font-semibold mb-4 text-gray-900">تصویر محصول</h3>
           <ImageUpload onImageSelect={handleImageSelect} label="عکس قالین را انتخاب کنید" maxSize={5} />
           {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
@@ -177,7 +177,7 @@ export default function AddProductPage() {
         </div>
 
         {/* توضیحات */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
           <h3 className="font-semibold mb-4 text-gray-900">توضیحات (اختیاری)</h3>
           <Textarea value={formData.description} onChange={v => handleInputChange("description", v)} placeholder="توضیحات کامل درباره محصول" rows={6} error={errors.description} />
         </div>

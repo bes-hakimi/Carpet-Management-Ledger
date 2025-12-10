@@ -126,7 +126,7 @@ export default function EditProductPage() {
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* اطلاعات اصلی */}
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                    <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
                         <h3 className="font-semibold mb-4 text-gray-900">اطلاعات اصلی</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
@@ -181,7 +181,7 @@ export default function EditProductPage() {
                     </div>
 
                     {/* مشخصات فنی */}
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                    <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
                         <h3 className="font-semibold mb-4 text-gray-900">مشخصات فنی</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <Input
@@ -214,7 +214,7 @@ export default function EditProductPage() {
                     </div>
 
                     {/* تصاویر */}
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                    <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
                         <h3 className="font-semibold mb-4 text-gray-900">تصاویر محصول</h3>
                         <ImageUpload
                             label="تصویر اصلی"
@@ -257,7 +257,7 @@ export default function EditProductPage() {
                     </div>
 
                     {/* توضیحات */}
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                    <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
                         <h3 className="font-semibold mb-4 text-gray-900">توضیحات</h3>
                         <Textarea
                             value={formData.description || ""}
