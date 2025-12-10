@@ -1,11 +1,11 @@
 'use client';
+import { useState } from 'react';
 import clsx from 'clsx';
 import SidebarHeader from './SidebarHeader';
 import SidebarFooter from './SidebarFooter';
 import SidebarItem from './SidebarItem';
 import { useAuth } from '@/hooks/useAuth';
 
-// منوهای جداگانه
 import { sidebarMenuSuperAdmin } from './sidebar-menu/SuperAdmin';
 import { sidebarMenuAdmin } from './sidebar-menu/Admin';
 import { sidebarMenuStaff } from './sidebar-menu/Staff';
@@ -20,11 +20,8 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const toggleCollapse = () => setCollapsed(!collapsed);
 
   const { userData } = useAuth();
-
-  // نقش کاربر
   const role: string = userData?.user?.role || 'superadmin';
 
-  // انتخاب منو بر اساس نقش
   const sidebarMenu =
     role === 'superadmin'
       ? sidebarMenuSuperAdmin
@@ -34,7 +31,10 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
       ? sidebarMenuStaff
       : role === 'branch'
       ? sidebarMenuBranch
-      : sidebarMenuStaff; // fallback
+      : sidebarMenuStaff;
+
+  // اضافه شد ↓↓↓
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   return (
     <aside
@@ -47,7 +47,15 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
 
       <nav className="flex-1 overflow-y-auto px-2 space-y-2">
         {sidebarMenu.map((item) => (
-          <SidebarItem key={item.title} {...item} collapsed={collapsed} />
+          <SidebarItem
+            key={item.title}
+            {...item}
+            collapsed={collapsed}
+            isOpen={openMenu === item.title}
+            onToggle={() => {
+              setOpenMenu(openMenu === item.title ? null : item.title);
+            }}
+          />
         ))}
       </nav>
 

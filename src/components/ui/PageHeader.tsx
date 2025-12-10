@@ -19,7 +19,6 @@ export function PageHeader({
     showBackButton = true,
     showHomeIcon = true,
     backUrl,
-    nextUrl
 }: PageHeaderProps) {
     const router = useRouter();
     const pathname = usePathname();

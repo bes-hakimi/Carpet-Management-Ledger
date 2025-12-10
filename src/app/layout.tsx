@@ -5,6 +5,7 @@ import ClientLayout from "@/components/layout/ClientLayout";
 import Providers from "./providers";
 import { AuthProvider } from "@/context/AuthContext";
 import PushRegister from "@/components/push-register/PushRegister";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],

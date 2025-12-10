@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { DownloadButton, ViewButton } from "@/components/ui/Button";
 import { Calendar } from "lucide-react";
+import EmptyState from "../../EmptyState";
 import { ISingleBranchDailyTransaction } from "@/types/report/single-branch";
 
 interface SingleBranchDailyReportProps {
@@ -33,6 +34,8 @@ const SectionCard = ({
 );
 
 export default function SingleBranchDailyReport({ data }: SingleBranchDailyReportProps) {
+  const isEmpty = !data || data.length === 0;
+
   return (
     <SectionCard
       title="گزارش روزانه فروش"
@@ -44,47 +47,56 @@ export default function SingleBranchDailyReport({ data }: SingleBranchDailyRepor
         </div>
       }
     >
-      <div className="overflow-x-auto">
-        <table className="w-full tex-sm">
-          <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-right py-4 px-4 font-bold text-gray-900">تاریخ</th>
-              <th className="text-left py-4 px-4 font-bold text-gray-900">عنوان</th>
-              <th className="text-center py-4 px-4 font-bold text-gray-900">مبلغ</th>
-              <th className="text-center py-4 px-4 font-bold text-gray-900">نوع تراکنش</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((tx) => (
-              <tr
-                key={tx.id}
-                className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
-              >
-                <td className="py-4 px-4 text-right font-semibold text-gray-900">{tx.date}</td>
-
-                <td className="py-4 px-4 text-left text-gray-700">{tx.title}</td>
-
-                <td className="py-4 px-4 text-center font-bold text-gray-900">
-                  {(Number(tx.amount) / 1_000_000).toFixed(1)}M
-                </td>
-
-                <td className="py-4 px-4 text-center">
-                  <span
-                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border`}
-                    style={{
-                      color: tx.color,
-                      borderColor: tx.color + "40",
-                      backgroundColor: tx.color + "20",
-                    }}
-                  >
-                    {tx.type === "income" ? "درآمد" : "هزینه"}
-                  </span>
-                </td>
+      {/* اگر دیتایی نبود → EmptyState */}
+      {isEmpty ? (
+        <EmptyState
+          title="دیتایی برای امروز ثبت نشده است"
+          description="هنوز هیچ تراکنشی در این روز ثبت نشده است."
+          icon={Calendar}
+        />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-right py-4 px-4 font-bold text-gray-900">تاریخ</th>
+                <th className="text-left py-4 px-4 font-bold text-gray-900">عنوان</th>
+                <th className="text-center py-4 px-4 font-bold text-gray-900">مبلغ</th>
+                <th className="text-center py-4 px-4 font-bold text-gray-900">نوع تراکنش</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {data.map((tx) => (
+                <tr
+                  key={tx.id}
+                  className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
+                >
+                  <td className="py-4 px-4 text-right font-semibold text-gray-900">{tx.date}</td>
+
+                  <td className="py-4 px-4 text-left text-gray-700">{tx.title}</td>
+
+                  <td className="py-4 px-4 text-center font-bold text-gray-900">
+                    {Number(tx.amount).toLocaleString("fa-IR")} افغانی
+                  </td>
+
+                  <td className="py-4 px-4 text-center">
+                    <span
+                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border"
+                      style={{
+                        color: tx.color,
+                        borderColor: tx.color + "40",
+                        backgroundColor: tx.color + "20",
+                      }}
+                    >
+                      {tx.type === "income" ? "درآمد" : "هزینه"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </SectionCard>
   );
 }

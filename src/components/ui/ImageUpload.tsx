@@ -1,7 +1,7 @@
 // src/components/ui/ImageUpload.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { Upload, Image, X, Eye, AlertCircle } from "lucide-react";
+import { Image, X, Eye, AlertCircle } from "lucide-react";
 import { Modal } from "./Modal";
 import toast from "react-hot-toast";
 import { generateReactHelpers } from "@uploadthing/react";

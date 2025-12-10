@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { DownloadButton, ViewButton } from "@/components/ui/Button";
 import { Calendar } from "lucide-react";
+import EmptyState from "../EmptyState";
 import { IBranchDailySale } from "@/types/report/branch";
 
 interface BranchDailySalesReportProps {
@@ -33,6 +34,26 @@ const SectionCard = ({
 );
 
 export default function BranchDailySalesReport({ data }: BranchDailySalesReportProps) {
+  if (!data || data.length === 0) {
+    return (
+      <SectionCard
+        title="گزارش روزانه فروش"
+        icon={Calendar}
+        action={
+          <div className="flex gap-2">
+            <DownloadButton size="sm" variant="outline" />
+            <ViewButton size="sm" variant="outline" />
+          </div>
+        }
+      >
+        <EmptyState
+          title="هیچ گزارش فروشی ثبت نشده"
+          description="برای مشاهده گزارش فروش روزانه، باید حداقل یک فروش ثبت شود."
+          icon={Calendar}
+        />
+      </SectionCard>
+    );
+  }
   return (
     <SectionCard
       title="گزارش روزانه فروش"
@@ -67,7 +88,7 @@ export default function BranchDailySalesReport({ data }: BranchDailySalesReportP
                 </td>
 
                 <td className="py-4 px-4 text-center font-bold text-gray-900">
-                  {(Number(sale.total_sales) / 1_000_000).toFixed(1)}M
+                  {(Number(sale.total_sales).toLocaleString("fa-IR"))} افغانی
                 </td>
 
                 <td className="py-4 px-4 text-center">

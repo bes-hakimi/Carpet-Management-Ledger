@@ -19,7 +19,7 @@ export default function TopBar() {
   const userId = userData?.user?.id ?? null;
   const userRoll = userData?.user?.role ?? null;
 
-  const { data, isLoading, error } = useApiGet<IUserResponse>(
+  const { data } = useApiGet<IUserResponse>(
     `user-profile-${userId}`,
     userId ? USERS.details(userId) : "",
     { enabled: !!userId }

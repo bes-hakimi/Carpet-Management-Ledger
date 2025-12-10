@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/Card";
-import { ViewButton } from "@/components/ui/Button";
+import EmptyState from "../EmptyState";
 import { Package } from "lucide-react";
 import { IPublicTopSellingProduct } from "@/types/report/overview";
 
@@ -33,6 +33,17 @@ const SectionCard = ({
 );
 
 export default function OverviewTopProducts({ data }: TopProductsProps) {
+  if (!data || data.length === 0) {
+    return (
+      <SectionCard title="محصولات پرفروش" icon={Package}>
+        <EmptyState
+          title="هیچ محصول پرفروشی ثبت نشده"
+          description="برای مشاهده محصولات پرفروش، باید حداقل یک فروش ثبت شود."
+          icon={Package}
+        />
+      </SectionCard>
+    );
+  }
   return (
     <SectionCard
       title="محصولات پرفروش"
@@ -46,15 +57,14 @@ export default function OverviewTopProducts({ data }: TopProductsProps) {
           >
             <div className="flex items-center flex-1">
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${
-                  index === 0
+                className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${index === 0
                     ? "bg-gradient-to-br from-yellow-500 to-orange-500"
                     : index === 1
-                    ? "bg-gradient-to-br from-gray-500 to-gray-700"
-                    : index === 2
-                    ? "bg-gradient-to-br from-orange-500 to-red-500"
-                    : "bg-gradient-to-br from-blue-500 to-cyan-500"
-                }`}
+                      ? "bg-gradient-to-br from-gray-500 to-gray-700"
+                      : index === 2
+                        ? "bg-gradient-to-br from-orange-500 to-red-500"
+                        : "bg-gradient-to-br from-blue-500 to-cyan-500"
+                  }`}
               >
                 {product.rank ?? index + 1}
               </div>
@@ -77,7 +87,7 @@ export default function OverviewTopProducts({ data }: TopProductsProps) {
 
             <div className="text-left">
               <p className="font-bold text-emerald-600 text-sm">
-                {(Number(product.total_amount) / 1_000_000).toFixed(1)}M
+                {(Number(product.total_amount).toLocaleString("fa-IR"))} افغانی
               </p>
             </div>
           </div>

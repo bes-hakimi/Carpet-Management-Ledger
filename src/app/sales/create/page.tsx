@@ -21,7 +21,7 @@ export default function CreateSalePage() {
   const userId = userData?.user.id;
 
   // استفاده از enabled برای کنترل اجرای query
-  const { data: apiData, isLoading, error } = useApiGet<{ details: CompanyInfo }>(
+  const { data: apiData, error } = useApiGet<{ details: CompanyInfo }>(
     "user-company",
     userId ? USERS.details(userId) : "",
     { enabled: !!userId } 
