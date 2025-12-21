@@ -19,6 +19,7 @@ export default function AddProductPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
+    code: "",
     type: "",
     origin: "",
     size: "",
@@ -53,6 +54,7 @@ export default function AddProductPage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "نام محصول الزامی است.";
+    if (!formData.code.trim()) newErrors.code = "کد الزامی است.";
     if (!formData.type) newErrors.type = "نوع محصول الزامی است.";
     if (!formData.origin) newErrors.origin = "مبدأ محصول الزامی است.";
     if (!formData.size) newErrors.size = "سایز محصول الزامی است.";
@@ -90,6 +92,7 @@ export default function AddProductPage() {
 
     const productData = {
       name: formData.name,
+      code: formData.code,
       type: formData.type,
       country: formData.origin,
       size: finalSize,
@@ -136,6 +139,7 @@ export default function AddProductPage() {
           <h3 className="font-semibold mb-4 text-gray-900">اطلاعات اصلی</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="نام محصول" placeholder="نام محصول را وارد کنید" value={formData.name} onChange={e => handleInputChange("name", e.target.value)} error={errors.name} required />
+            <Input label="کد" placeholder="کد یکتا محصول را وارد کنید" value={formData.code} onChange={e => handleInputChange("code", e.target.value)} error={errors.code} required />
             <Input label="قیمت خرید (افغانی)" placeholder="قیمت خرید را وارد کنید" type="number" value={formData.salePrice} onChange={e => handleInputChange("salePrice", e.target.value)} icon={<DollarSign size={16} />} error={errors.salePrice} required />
             <Input label="تعداد موجودی" placeholder="تعداد موجودی را وارد کنید" type="number" value={formData.stock} onChange={e => handleInputChange("stock", e.target.value)} icon={<Package size={16} />} error={errors.stock} required />
             <Select label="نوع" options={carpetTypes} value={formData.type} onChange={v => handleInputChange("type", v)} error={errors.type} required />

@@ -1,6 +1,6 @@
 "use client";
 
-import { PrevButton } from "@/components/ui/Button";
+import { AddButton, Button, PrevButton } from "@/components/ui/Button";
 import { useState } from "react";
 import {
   FileText,
@@ -72,9 +72,12 @@ export function InvoicePreview({ saleData, onBack }: InvoicePreviewProps) {
           پیش‌نمایش بل
         </h2>
         <div className="flex gap-3">
-          <PrevButton onClick={onBack} disabled={isProcessing}>
+          <AddButton onClick={() => window.location.reload()}>
+            فروش جدید
+          </AddButton>
+          <Button variant="secondary" onClick={onBack} disabled={isProcessing}>
             بازگشت به ویرایش
-          </PrevButton>
+          </Button>
 
           <PrintAndSaveButton
             saleData={saleData}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/Input";
@@ -12,6 +13,7 @@ interface EmailStepProps {
 export default function EmailStep({ onSubmit, isLoading }: EmailStepProps) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const validateEmail = (email: string) => {
     if (!email.trim()) return "ایمیل الزامی است";
@@ -23,13 +25,13 @@ export default function EmailStep({ onSubmit, isLoading }: EmailStepProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const validationError = validateEmail(email);
     if (validationError) {
       setError(validationError);
       return;
     }
-    
+
     setError("");
     onSubmit(email);
   };
@@ -57,22 +59,37 @@ export default function EmailStep({ onSubmit, isLoading }: EmailStepProps) {
           dir="ltr"
         />
       </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <Button
-          type="submit"
-          loading={isLoading}
-          loadingText="در حال ارسال کد..."
-          fullWidth
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
         >
-          ارسال کد تایید
-        </Button>
-      </motion.div>
+          <Button
+            type="submit"
+            loading={isLoading}
+            loadingText="در حال ارسال کد..."
+            fullWidth
+          >
+            ارسال کد تایید
+          </Button>
+        </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Button
+            type="button"
+            variant="secondary"
+            fullWidth
+            onClick={() => router.push("/login")}
+          >
+            بازگشت به ورود
+          </Button>
+        </motion.div>
+      </div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

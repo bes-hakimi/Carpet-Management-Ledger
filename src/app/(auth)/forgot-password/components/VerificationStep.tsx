@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { useRouter } from "next/navigation";
 
 interface VerificationStepProps {
   onSubmit: (code: string) => void;
@@ -14,6 +15,7 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
   const [code, setCode] = useState(Array(CODE_LENGTH).fill(""));
   const [timeLeft, setTimeLeft] = useState(120); // 2 دقیقه
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
 
   // تایمر برای ارسال مجدد کد
   useEffect(() => {
@@ -85,7 +87,7 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
   const [isResendLoading, setIsResendLoading] = useState(false);
 
   const handleResendCode = async () => {
-    if (timeLeft > 0 || isResendLoading) return; // جلوگیری از چند کلیک همزمان
+    if (timeLeft > 0 || isResendLoading) return; 
 
     setIsResendLoading(true);
     try {
@@ -140,22 +142,40 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
           ))}
         </div>
       </motion.div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <Button
-          type="submit"
-          loading={isLoading}
-          loadingText="در حال تایید..."
-          fullWidth
-          disabled={code.join("").length !== CODE_LENGTH}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
         >
-          تایید کد
-        </Button>
-      </motion.div>
+          <Button
+            type="submit"
+            loading={isLoading}
+            loadingText="در حال تایید..."
+            fullWidth
+            disabled={code.join("").length !== CODE_LENGTH}
+          >
+            تایید کد
+          </Button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Button
+            type="button"
+            variant="secondary"
+            fullWidth
+            onClick={() => router.push("/login")}
+          >
+            بازگشت به ورود
+          </Button>
+        </motion.div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -168,8 +188,8 @@ export default function VerificationStep({ onSubmit, isLoading, onResendCode }: 
           onClick={handleResendCode}
           disabled={timeLeft > 0 || isResendLoading}
           className={`text-sm transition-colors ${timeLeft > 0 || isResendLoading
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-primary-600 hover:text-primary-800"
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-primary-600 hover:text-primary-800"
             }`}
         >
           {isResendLoading

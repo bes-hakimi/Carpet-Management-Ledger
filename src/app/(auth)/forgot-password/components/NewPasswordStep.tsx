@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import PasswordInput from "@/components/ui/PasswordInput";
+import { useRouter } from "next/navigation";
 
 interface NewPasswordStepProps {
   onSubmit: (newPassword: string, confirmPassword: string) => void;
@@ -12,6 +13,7 @@ interface NewPasswordStepProps {
 export default function NewPasswordStep({ onSubmit, isLoading }: NewPasswordStepProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
   const [errors, setErrors] = useState({
     password: "",
     confirmPassword: ""
@@ -41,11 +43,11 @@ export default function NewPasswordStep({ onSubmit, isLoading }: NewPasswordStep
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     // فقط رمز عبور را ارسال کن و اجازه بده صفحه اصلی مرحله success را مدیریت کند
-   onSubmit(password, confirmPassword);
+    onSubmit(password, confirmPassword);
 
   };
 
@@ -96,20 +98,38 @@ export default function NewPasswordStep({ onSubmit, isLoading }: NewPasswordStep
         />
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <Button
-          type="submit"
-          loading={isLoading}
-          loadingText="در حال تغییر رمز عبور..."
-          fullWidth
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
         >
-          تغییر رمز عبور
-        </Button>
-      </motion.div>
+          <Button
+            type="submit"
+            loading={isLoading}
+            loadingText="در حال تغییر رمز عبور..."
+            fullWidth
+          >
+            تغییر رمز عبور
+          </Button>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Button
+            type="button"
+            variant="secondary"
+            fullWidth
+            onClick={() => router.push("/login")}
+          >
+            بازگشت به ورود
+          </Button>
+        </motion.div>
+      </div>
+
     </form>
   );
 }
