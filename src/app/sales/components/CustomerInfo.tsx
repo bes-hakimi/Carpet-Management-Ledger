@@ -127,7 +127,7 @@ export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
           onClick={() => handleNewCustomerToggle(false)}
           className={`${!isNewCustomer
             ? "bg-primary-500 text-white border-primary-500"
-            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
+            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
             }`}
         >
           مشتری موجود
@@ -137,7 +137,7 @@ export function CustomerInfo({ customer, onChange }: CustomerInfoProps) {
           onClick={() => handleNewCustomerToggle(true)}
           className={`${isNewCustomer
             ? "bg-primary-500 text-white border-primary-500"
-            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
+            : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
             }`}
         >
           مشتری جدید
