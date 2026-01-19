@@ -55,7 +55,7 @@ export default function SupportPage() {
     };
 
     return (
-        <div className="min-h-screen bg-secondary-100 p-4 md:p-6">
+        <div className="min-h-screen p-4 md:p-6">
             <PageHeader
                 title="پشتیبانی"
                 showHomeIcon={true}
@@ -68,7 +68,7 @@ export default function SupportPage() {
                     <div className="space-y-6">
 
                         {/* کارت اطلاعات */}
-                        <div className="bg-surface rounded-xl shadow p-6 border border-border">
+                        <div className="bg-surface rounded-xl shadow p-6 border border-gray-300">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
                                     <User className="w-6 h-6 text-primary-600" />
@@ -85,11 +85,11 @@ export default function SupportPage() {
                         </div>
 
                         {/* راه‌های تماس */}
-                        <div className="bg-surface rounded-xl shadow p-6 border border-border">
+                        <div className="bg-surface rounded-xl shadow p-6 border border-gray-300">
                             <h3 className="font-semibold mb-4">تماس مستقیم</h3>
 
                             <div className="space-y-4">
-                                <a href="tel:09123456789" className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-secondary-50">
+                                <a href="tel:09123456789" className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-primary-50">
                                     <Phone className="w-5 h-5 text-danger" />
                                     <div>
                                         <p className="font-medium">تماس تلفنی</p>
@@ -97,7 +97,7 @@ export default function SupportPage() {
                                     </div>
                                 </a>
 
-                                <a href="mailto:support@gold-system.ir" className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-secondary-50">
+                                <a href="mailto:support@gold-system.ir" className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-primary-50">
                                     <Mail className="w-5 h-5 text-info" />
                                     <div>
                                         <p className="font-medium">ایمیل</p>
@@ -106,7 +106,7 @@ export default function SupportPage() {
                                 </a>
                             </div>
 
-                            <div className="mt-6 pt-6 border-t border-border">
+                            <div className="mt-6 pt-6 border-t border-gray-300">
                                 <div className="flex items-center gap-2 text-text-secondary">
                                     <Clock className="w-4 h-4" />
                                     <span className="text-sm">پاسخگویی: ۹ صبح تا ۵ عصر</span>
@@ -115,14 +115,14 @@ export default function SupportPage() {
                         </div>
 
                         {/* ثبت مشکل */}
-                        <div className="bg-surface rounded-xl shadow p-6 border border-border">
+                        <div className="bg-surface rounded-xl shadow p-6 border border-gray-300">
                             <h3 className="font-semibold mb-4">ثبت مشکل جدید</h3>
                             <textarea
                                 value={problem}
                                 onChange={(e) => setProblem(e.target.value)}
                                 placeholder="مشکل خود را شرح دهید..."
                                 rows={4}
-                                className="w-full border border-border rounded-lg p-3 mb-3 text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                className="w-full border border-gray-300 rounded-lg p-3 mb-3 text-sm focus:ring-2 focus:ring-primary-500 outline-none"
                             />
                             <Button
                                 onClick={submitProblem}
@@ -136,10 +136,10 @@ export default function SupportPage() {
 
                     {/* ستون چپ: چت */}
                     <div className="lg:col-span-2">
-                        <div className="bg-surface rounded-xl shadow h-full flex flex-col border border-border">
+                        <div className="bg-surface rounded-xl shadow h-full flex flex-col border border-gray-300">
 
                             {/* هدر چت */}
-                            <div className="p-4 border-b border-border">
+                            <div className="p-4 border-b border-gray-300">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
@@ -157,7 +157,7 @@ export default function SupportPage() {
                             </div>
 
                             {/* پیام‌ها */}
-                            <div className="flex-1 p-4 overflow-y-auto bg-secondary-50">
+                            <div className="flex-1 p-4 overflow-y-auto">
                                 <div className="space-y-4">
                                     {messages.map((msg) => (
                                         <div
@@ -167,7 +167,7 @@ export default function SupportPage() {
                                             <div
                                                 className={`max-w-md px-4 py-3 rounded-2xl ${msg.sender === 'user'
                                                         ? 'bg-primary-500 text-white rounded-tr-none'
-                                                        : 'bg-surface border border-border text-text-primary rounded-tl-none'
+                                                        : 'border border-gray-300 text-text-primary rounded-tl-none'
                                                     }`}
                                             >
                                                 <p>{msg.text}</p>
@@ -182,7 +182,7 @@ export default function SupportPage() {
                             </div>
 
                             {/* ارسال پیام */}
-                            <div className="p-4 border-t border-border">
+                            <div className="p-4 border-t border-gray-300">
                                 <div className="flex gap-2">
                                     <Input
                                         value={newMessage}
