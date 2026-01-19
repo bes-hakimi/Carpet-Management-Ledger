@@ -14,6 +14,7 @@ import {
   Building,
   Building2,
   MapPinPlus,
+  MessageSquare,
 } from "lucide-react";
 
 export const sidebarMenuSuperAdmin = [
@@ -79,5 +80,10 @@ export const sidebarMenuSuperAdmin = [
     title: "گزارشات",
     icon: FileText,
     link: "/reports",
+  },
+    {
+    title: "پشتیبانی مشتریان",
+    icon: MessageSquare,
+    link: "/admin-support",
   },
 ];
