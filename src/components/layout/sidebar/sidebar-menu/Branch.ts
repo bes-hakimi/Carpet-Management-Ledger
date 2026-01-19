@@ -8,6 +8,7 @@ import {
   PlusCircle,
   List,
   Package,
+  Headset,
 } from "lucide-react";
 
 export const sidebarMenuBranch = [
@@ -44,5 +45,10 @@ export const sidebarMenuBranch = [
     title: "اعلانات",
     icon: Bell,
     link: "/notifications",
+  },
+  {
+    title: "پشتیبانی",
+    icon: Headset,
+    link: "/support",
   },
 ];
