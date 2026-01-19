@@ -55,7 +55,7 @@ export default function AdminSupportPage() {
     );
 
     return (
-        <div className="min-h-screen bg-secondary-100 p-4">
+        <div className="min-h-screen p-4">
             <PageHeader
                 title="پشتیبانی مشتریان"
                 showHomeIcon={true}
@@ -66,10 +66,10 @@ export default function AdminSupportPage() {
 
                     {/* لیست مشتریان */}
                     <div>
-                        <div className="bg-surface rounded-xl shadow border border-border">
+                        <div className="bg-surface rounded-xl shadow border border-gray-300">
 
                             {/* جستجو */}
-                            <div className="p-4 border-b border-border">
+                            <div className="p-4 border-b border-gray-300">
                                 <Input
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
@@ -79,7 +79,7 @@ export default function AdminSupportPage() {
                             </div>
 
                             {/* مشتریان */}
-                            <div className="divide-y divide-border">
+                            <div className="divide-y divide-gray-300">
                                 {filteredCustomers.map((customer) => (
                                     <button
                                         key={customer.id}
@@ -93,7 +93,7 @@ export default function AdminSupportPage() {
                                                     <User className="w-5 h-5 text-primary-600" />
                                                 </div>
                                                 {customer.status === 'online' && (
-                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-surface"></div>
+                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-green-400"></div>
                                                 )}
                                             </div>
                                             <div>
@@ -103,7 +103,7 @@ export default function AdminSupportPage() {
                                         </div>
 
                                         <div className="flex flex-col items-end">
-                                            <span className={`text-xs ${customer.status === 'online' ? 'text-success' : 'text-text-secondary'}`}>
+                                            <span className={`text-xs ${customer.status === 'online' ? 'text-green-500' : 'text-text-gray-500'}`}>
                                                 {customer.status === 'online' ? 'آنلاین' : 'آفلاین'}
                                             </span>
                                             {customer.unread > 0 && (
@@ -120,10 +120,10 @@ export default function AdminSupportPage() {
 
                     {/* چت */}
                     <div className="lg:col-span-3">
-                        <div className="bg-surface rounded-xl shadow h-full flex flex-col border border-border">
+                        <div className="bg-surface rounded-xl shadow h-full flex flex-col border border-gray-300">
 
                             {/* هدر */}
-                            <div className="p-4 border-b border-border">
+                            <div className="p-4 border-b border-gray-300">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
@@ -160,7 +160,7 @@ export default function AdminSupportPage() {
                             </div>
 
                             {/* پیام‌ها */}
-                            <div className="flex-1 p-4 overflow-y-auto bg-secondary-50">
+                            <div className="flex-1 p-4 overflow-y-auto">
                                 <div className="space-y-4">
                                     {messages.map((msg) => (
                                         <div
@@ -169,7 +169,7 @@ export default function AdminSupportPage() {
                                         >
                                             <div
                                                 className={`max-w-md px-4 py-3 rounded-2xl ${msg.sender === 'customer'
-                                                        ? 'bg-surface border border-border text-text-primary rounded-tl-none'
+                                                        ? 'bg-white border border-gray-300 text-text-primary rounded-tl-none'
                                                         : 'bg-primary-500 text-white rounded-tr-none'
                                                     }`}
                                             >
@@ -184,7 +184,7 @@ export default function AdminSupportPage() {
                             </div>
 
                             {/* ارسال */}
-                            <div className="p-4 border-t border-border">
+                            <div className="p-4 border-t border-gray-300">
                                 <div className="flex gap-2">
                                     <Input
                                         value={newMessage}
@@ -208,7 +208,7 @@ export default function AdminSupportPage() {
 
                 {/* آمار */}
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-surface p-6 rounded-xl shadow border border-border">
+                    <div className="bg-surface p-6 rounded-xl shadow border border-gray-300">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
                                 <MessageCircle className="w-5 h-5 text-primary-600" />
@@ -220,9 +220,9 @@ export default function AdminSupportPage() {
                         </div>
                     </div>
 
-                    <div className="bg-surface p-6 rounded-xl shadow border border-border">
+                    <div className="p-6 rounded-xl shadow border border-gray-300">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                 <User className="w-5 h-5 text-success" />
                             </div>
                             <div>
@@ -232,9 +232,9 @@ export default function AdminSupportPage() {
                         </div>
                     </div>
 
-                    <div className="bg-surface p-6 rounded-xl shadow border border-border">
+                    <div className="p-6 rounded-xl shadow border border-gray-300">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-danger/10 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
                                 <MessageCircle className="w-5 h-5 text-danger" />
                             </div>
                             <div>
