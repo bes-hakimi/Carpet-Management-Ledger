@@ -96,8 +96,8 @@ export function InvoicePreview({ saleData, onBack }: InvoicePreviewProps) {
         className="print:overflow-hidden bg-white border border-gray-300 p-2 md:p-6 md:max-w-2xl mx-auto font-sans print:border-0 print:shadow-none print:max-w-none print:m-0 print:p-3 min-h-screen flex flex-col print:bg-white print:text-xs"
       >
         {/* هدر بل */}
-        <div className="w-full flex justify-between items-start mb-3 border-b border-gray-300 pb-2">
-          <div>
+        <div className="w-full grid grid-cols-3 justify-between items-start mb-3 border-b border-gray-300 pb-2">
+          <div className="col-span-2">
             <img
               src={saleData.company_info?.company_logo || "/images/logo/carpet-logo.png"}
               alt="لگوی شرکت"

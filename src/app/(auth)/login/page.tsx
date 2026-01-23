@@ -6,6 +6,7 @@ import LoginHeader from "./components/LoginHeader";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import GuestLoginButton from "./components/GuestLoginButton";
 
 
 export default function LoginPage() {
@@ -62,6 +63,10 @@ export default function LoginPage() {
           isLoading={isLoading}
         />
       </div>
+      <GuestLoginButton
+        onGuestLogin={handleLogin}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
