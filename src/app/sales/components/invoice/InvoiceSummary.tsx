@@ -32,8 +32,8 @@ export function InvoiceSummary({ saleData }: InvoicePreviewProps) {
       className="bg-white border border-gray-300 p-6 max-w-2xl mx-auto font-sans print:border-0 print:shadow-none print:max-w-none print:m-0 print:p-3 min-h-screen flex flex-col print:bg-white print:text-xs"
     >
       {/* هدر بل */}
-      <div className="flex justify-between items-start mb-3 border-b border-gray-300 pb-2">
-        <div>
+      <div className="w-full grid grid-cols-3 justify-between items-start mb-3 border-b border-gray-300 pb-2">
+        <div className="col-span-2">
           <img
             src="/images/logo/carpet-logo.png"
             alt="لگوی شرکت"
