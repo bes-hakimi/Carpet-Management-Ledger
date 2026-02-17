@@ -21,7 +21,7 @@ export default function SupportPage() {
     const [messages] = useState<Message[]>([
         {
             id: 1,
-            text: '⚠️ چت آنلاین هنوز فعال نیست. لطفاً از تماس تلفنی، ایمیل یا بخش ثبت مشکل استفاده کنید.',
+            text: 'چت آنلاین هنوز فعال نیست. لطفاً از تماس تلفنی، ایمیل یا بخش ثبت مشکل استفاده کنید.',
             sender: 'support',
             time: '',
         },
@@ -30,7 +30,7 @@ export default function SupportPage() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     return (
-        <div className="min-h-screen p-4 md:p-6">
+        <div className="min-h-screen sm:p-4 md:p-6">
             <PageHeader
                 title="پشتیبانی"
                 showHomeIcon

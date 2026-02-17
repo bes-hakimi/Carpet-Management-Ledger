@@ -30,7 +30,7 @@ export default function ContactSection() {
     
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             <ContactProfileCard
                 data={data}
                 userRole={userRole}
