@@ -53,7 +53,8 @@ export default function GuestLoginButton({
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.96 }}
                             transition={{ duration: 0.25 }}
-                            className="fixed bottom-6 right-6 z-50 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-gray-200"
+                            className="fixed max-w-xs bottom-6 right-4 md:right-6 z-50 w-full md:max-w-sm rounded-2xl bg-white p-4 md:p-6 shadow-2xl border border-gray-200"
+
                         >
                             {/* Header */}
                             <div className="flex items-center justify-between mb-3">
@@ -94,7 +95,7 @@ export default function GuestLoginButton({
                                     setOpen(false);
                                 }}
                             >
-                               ورود به عنوان بازدیدکننده | Login as Guest
+                                ورود به عنوان بازدیدکننده | Login as Guest
                             </Button>
                         </motion.div>
                     </>

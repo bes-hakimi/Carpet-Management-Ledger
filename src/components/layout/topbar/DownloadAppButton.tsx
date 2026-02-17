@@ -61,6 +61,7 @@ const DownloadAppButton = () => {
             <Button
                 variant="primary"
                 icon={<Download className="w-4 h-4" />}
+                className="text-nowrap"
                 onClick={() => setModalOpen(true)}
             >
                 دانلود اپ

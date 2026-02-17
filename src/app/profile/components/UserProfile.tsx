@@ -102,7 +102,7 @@ export default function UserProfile() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
                     {/* هدر پروفایل */}
-                    <div className="bg-gradient-to-r from-primary-400 to-primary-600 px-6 py-8 text-white flex justify-between">
+                    <div className="bg-gradient-to-r from-primary-400 to-primary-600 p-4 md:px-6 md:py-8 text-white flex flex-col md:flex-row gap-4 justify-between">
                         <div className="flex items-center gap-4">
 
                             <div className="h-14 w-14 bg-white/20 rounded-md flex items-center justify-center">
@@ -113,7 +113,7 @@ export default function UserProfile() {
                             </div>
 
                             <div>
-                                <h1 className="text-xl font-bold">
+                                <h1 className="md:text-xl font-bold">
                                     {formData.first_name} {formData.last_name}
                                 </h1>
                                 {userRoll === "branch" ?
@@ -134,7 +134,7 @@ export default function UserProfile() {
                     </div>
 
                     {/* نمایش یا ویرایش */}
-                    <div className="p-6">
+                    <div className="p-4 md:p-6">
                         {isEditing ? (
                             <ProfileEdit
                                 profile={formData}
