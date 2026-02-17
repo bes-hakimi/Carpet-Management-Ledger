@@ -49,7 +49,7 @@ export default function NewProblemForm() {
     };
 
     return (
-        <div className="bg-surface rounded-xl shadow p-6 border border-gray-300">
+        <div className="bg-surface rounded-xl shadow p-4 md:p-6 border border-gray-300">
             <h3 className="font-semibold mb-4">ثبت مشکل جدید</h3>
 
             <textarea

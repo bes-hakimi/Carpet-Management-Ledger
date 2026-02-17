@@ -17,14 +17,14 @@ export default function ContactProfileCard({ data, userRole }: Props) {
             : null;
 
     return (
-        <div className="bg-surface rounded-xl shadow p-6 border border-gray-300">
+        <div className="bg-surface rounded-xl shadow p-4 md:p-6 border border-gray-300">
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
                     {data?.details.company_logo ? (
                         <img
                             src={data.details.company_logo}
                             alt="Avatar"
-                            className="w-11 h-11 rounded-full object-cover"
+                            className="min-w-11 max-w-11 h-11 rounded-full object-cover"
                         />
                     ) : (
                         <User className="w-6 h-6 text-primary-600" />
@@ -32,7 +32,7 @@ export default function ContactProfileCard({ data, userRole }: Props) {
                 </div>
 
                 <div>
-                    <h3 className="font-semibold">
+                    <h3 className="text-sm md:text-base font-semibold truncate">
                         {name ?? 'نام شرکت یا شعبه'}
                     </h3>
                     <p className="text-sm text-text-secondary">

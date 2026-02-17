@@ -30,7 +30,7 @@ export default function SupportPage() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     return (
-        <div className="min-h-screen p-4 md:p-6">
+        <div className="min-h-screen sm:p-4 md:p-6">
             <PageHeader
                 title="پشتیبانی"
                 showHomeIcon

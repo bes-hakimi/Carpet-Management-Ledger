@@ -2,7 +2,7 @@ import { Phone, Mail, Clock } from 'lucide-react';
 
 export default function ContactMethods() {
     return (
-        <div className="bg-surface rounded-xl shadow p-6 border border-gray-300">
+        <div className="bg-surface rounded-xl shadow p-4 md:p-6 border border-gray-300">
             <h3 className="font-semibold mb-4">تماس مستقیم</h3>
 
             <div className="space-y-4">
@@ -14,7 +14,7 @@ export default function ContactMethods() {
                     <div>
                         <p className="font-medium">تماس تلفنی</p>
                         <p className="text-sm text-text-secondary">
-                            +93796968666
+                            0093796968666
                         </p>
                     </div>
                 </a>
