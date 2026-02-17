@@ -7,27 +7,27 @@ export default function ContactMethods() {
 
             <div className="space-y-4">
                 <a
-                    href="tel:09123456789"
+                    href="tel:+93796968666"
                     className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-primary-100 transition-all"
                 >
                     <Phone className="w-5 h-5 text-danger" />
                     <div>
                         <p className="font-medium">تماس تلفنی</p>
                         <p className="text-sm text-text-secondary">
-                            ۰۹۱۲۳۴۵۶۷۸۹
+                            +93796968666
                         </p>
                     </div>
                 </a>
 
                 <a
-                    href="mailto:support@gold-system.ir"
+                    href="mailto:hakimi.work2025@gmail.com"
                     className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-primary-100 transition-all"
                 >
                     <Mail className="w-5 h-5 text-info" />
                     <div>
                         <p className="font-medium">ایمیل</p>
                         <p className="text-sm text-text-secondary">
-                            support@gold-system.ir
+                            hakimi.work2025@gmail.com
                         </p>
                     </div>
                 </a>
